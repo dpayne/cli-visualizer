@@ -1,0 +1,19 @@
+layout
+    source  -> input stream interface
+        AlsaReader
+
+    transformer -> instream to output stream
+        sound bar
+
+    sink: sets up output stream
+        cli-ncurses
+
+main
+    read config
+    setup source
+        AlsaReader
+    setup sink
+        CLI-ncurses
+
+    setup runner
+        setup transformer
