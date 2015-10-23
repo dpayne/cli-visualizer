@@ -12,11 +12,10 @@
 
 class NcursesWriter : public GenericWriter
 {
-    public:
-        explicit NcursesWriter();
+  public:
+    explicit NcursesWriter();
 
-        ~NcursesWriter();
+    ~NcursesWriter();
 };
 
 #endif
-

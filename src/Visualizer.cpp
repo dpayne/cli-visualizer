@@ -11,35 +11,36 @@
 
 #include <iostream>
 
-vis::Visualizer::Visualizer( const vis::Settings * const settings ) : m_current_audio_source( nullptr ), m_shutdown( false ), m_settings( settings )
+vis::Visualizer::Visualizer(const vis::Settings *const settings)
+    : m_current_audio_source(nullptr), m_shutdown(false), m_settings(settings)
 {
 }
 
-void vis::Visualizer::add_audio_source( const std::string & audio_source )
+void vis::Visualizer::add_audio_source(const std::string &audio_source)
 {
-    if ( audio_source == VisConstants::kMpdAudioSourceName )
+    if (audio_source == VisConstants::kMpdAudioSourceName)
     {
-        m_audio_sources.emplace_back( std::unique_ptr<vis::MpdAudioSource> { new vis::MpdAudioSource{ m_settings } } );
+        m_audio_sources.emplace_back(std::unique_ptr<vis::MpdAudioSource>{new vis::MpdAudioSource{m_settings}});
     }
 }
 
 void vis::Visualizer::run()
 {
-    //setup audio sources
-    for ( const auto & audioSource : m_settings->get_audio_sources() )
+    // setup audio sources
+    for (const auto &audioSource : m_settings->get_audio_sources())
     {
-        add_audio_source( audioSource );
+        add_audio_source(audioSource);
     }
 
-    if ( m_audio_sources.size() < 1 )
+    if (m_audio_sources.size() < 1)
     {
-        throw std::exception( );
+        throw std::exception();
     }
 
     m_current_audio_source = m_audio_sources[0].get();
 
-    AudioSource * audioSource = get_current_audio_source();
-    while ( !should_shutdown() && audioSource->read( m_pcm_buffer, k_pcm_buffer_size ) )
+    AudioSource *audioSource = get_current_audio_source();
+    while (!should_shutdown() && audioSource->read(m_pcm_buffer, k_pcm_buffer_size))
     {
         audioSource = get_current_audio_source();
     }
@@ -48,4 +49,3 @@ void vis::Visualizer::run()
 vis::Visualizer::~Visualizer()
 {
 }
-

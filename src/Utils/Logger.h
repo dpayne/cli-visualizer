@@ -10,7 +10,13 @@
 
 #include "Domain/Settings.h"
 
-#define VIS_LOG(log_level, message, args...) {if (vis::Logger::level() <= log_level) { vis::Logger::log(log_level, __FILE__, __LINE__, message, ## args);}}
+#define VIS_LOG(log_level, message, args...)                                                                           \
+    {                                                                                                                  \
+        if (vis::Logger::level() <= log_level)                                                                         \
+        {                                                                                                              \
+            vis::Logger::log(log_level, __FILE__, __LINE__, message, ##args);                                          \
+        }                                                                                                              \
+    }
 
 namespace vis
 {
@@ -25,25 +31,21 @@ enum class LogLevel
 
 class Logger
 {
-    public:
-        explicit Logger( const vis::Settings * const settings );
+  public:
+    explicit Logger();
 
-        virtual ~Logger();
+    virtual ~Logger();
 
-        static void log( vis::LogLevel level, const char * message, ... );
+    static void log(vis::LogLevel level, const char *message, ...);
 
-        static vis::LogLevel level()
-        {
+    static vis::LogLevel level()
+    {
 #ifdef VIS_LOG_LEVEL
-            return static_cast<vis::LogLevel>( VIS_LOG_LEVEL );
+        return static_cast<vis::LogLevel>(VIS_LOG_LEVEL);
 #endif
-            return LogLevel::ERROR;
-        }
-
-    private:
-        const vis::Settings * const m_settings;
+        return LogLevel::ERROR;
+    }
 };
-
 }
 
 #endif

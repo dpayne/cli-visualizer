@@ -10,10 +10,10 @@
 
 class GenericWriter
 {
-    public:
-        explicit GenericWriter();
+  public:
+    explicit GenericWriter();
 
-        ~GenericWriter();
+    ~GenericWriter();
 };
 
 #endif

@@ -12,7 +12,7 @@
 
 namespace VisConstants
 {
-    const std::string kMpdAudioSourceName{ "mpd" };
+const std::string kMpdAudioSourceName{"mpd"};
 }
 
 #endif

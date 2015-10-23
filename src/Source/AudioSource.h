@@ -15,14 +15,13 @@ namespace vis
 
 class AudioSource
 {
-    public:
-        explicit AudioSource();
+  public:
+    explicit AudioSource();
 
-        virtual ~AudioSource();
+    virtual ~AudioSource();
 
-        virtual bool read( char * buffer, uint32_t buffer_size ) = 0;
+    virtual bool read(char *buffer, uint32_t buffer_size) = 0;
 };
-
 }
 
 #endif

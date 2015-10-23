@@ -10,10 +10,10 @@
 
 class GenericTransformer
 {
-    public:
-        explicit GenericTransformer();
+  public:
+    explicit GenericTransformer();
 
-        ~GenericTransformer();
+    ~GenericTransformer();
 };
 
 #endif

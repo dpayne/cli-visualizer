@@ -13,9 +13,9 @@
 int main()
 {
     vis::Settings settings;
-    settings.set_mpd_fifo_path( "/tmp/mpd.fifo" );
-    settings.set_audio_sources( { "mpd" } );
+    settings.set_mpd_fifo_path("/tmp/mpd.fifo");
+    settings.set_audio_sources({"mpd"});
 
-    std::unique_ptr<vis::Visualizer> visualizer{ new vis::Visualizer{ &settings } };
+    std::unique_ptr<vis::Visualizer> visualizer{new vis::Visualizer{&settings}};
     visualizer->run();
 }

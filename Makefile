@@ -8,7 +8,7 @@ TARGET= vis
 ##  SETTINGS                                                                 ##
 ###############################################################################
 
-CC = g++
+CC = clang++
 DIR=$(shell pwd)
 BUILD_DIR = $(DIR)/build
 
@@ -18,7 +18,7 @@ OPT_LEVEL = 3
 # Make-local Compiler Flags
 CC_FLAGS = -std=c++14 -Wall -Werror -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
-CC_FLAGS += -fno-common -fno-strict-aliasing -fno-omit-frame-pointer -finline-functions
+CC_FLAGS += -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 CC_FLAGS += -D_OS_OSX

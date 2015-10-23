@@ -18,18 +18,17 @@ namespace vis
 
 class MpdAudioSource : public vis::AudioSource
 {
-    public:
-        explicit MpdAudioSource( const vis::Settings * const settings );
+  public:
+    explicit MpdAudioSource(const vis::Settings *const settings);
 
-        virtual ~MpdAudioSource();
+    virtual ~MpdAudioSource();
 
-        virtual bool read( char * buffer, uint32_t buffer_size );
+    virtual bool read(char *buffer, uint32_t buffer_size);
 
-    private:
-        const vis::Settings * const m_settings;
-        std::ifstream m_fifo_stream;
+  private:
+    const vis::Settings *const m_settings;
+    std::ifstream m_fifo_stream;
 };
-
 }
 
 #endif

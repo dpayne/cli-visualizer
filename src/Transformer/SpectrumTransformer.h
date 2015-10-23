@@ -12,11 +12,10 @@
 
 class SpectrumTransformer : public GenericTransformer
 {
-    public:
-        explicit SpectrumTransformer();
+  public:
+    explicit SpectrumTransformer();
 
-        ~SpectrumTransformer();
+    ~SpectrumTransformer();
 };
 
 #endif
-

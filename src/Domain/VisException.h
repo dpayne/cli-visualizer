@@ -16,19 +16,18 @@ namespace vis
 
 class VisException : public std::exception
 {
-    public:
-        VisException( const char * format, ... ) throw ();
-        ~VisException() throw ();
+  public:
+    VisException(const char *format, ...) throw();
+    ~VisException() throw();
 
-        virtual const char* what() const throw () override
-        {
-            return m_message.c_str();
-        }
+    virtual const char *what() const throw() override
+    {
+        return m_message.c_str();
+    }
 
-    private:
-        std::string m_message;
+  private:
+    std::string m_message;
 };
-
 }
 
 #endif
