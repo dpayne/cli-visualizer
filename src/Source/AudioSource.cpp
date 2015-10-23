@@ -7,10 +7,10 @@
 
 #include "Source/AudioSource.h"
 
-AudioSource::AudioSource()
+vis::AudioSource::AudioSource()
 {
 }
 
-AudioSource::~AudioSource()
+vis::AudioSource::~AudioSource()
 {
 }

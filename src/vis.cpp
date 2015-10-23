@@ -7,11 +7,15 @@
 
 #include <iostream>
 #include <memory>
-#include "Source/AudioSource.h"
-#include "Source/MpdAudioSource.h"
+#include "Domain/Settings.h"
+#include "Visualizer.h"
 
 int main()
 {
-    std::cout << "hello world" << std::endl;
-    std::unique_ptr<AudioSource> audioSource( new MpdAudioSource() );
+    vis::Settings settings;
+    settings.set_mpd_fifo_path( "/tmp/mpd.fifo" );
+    settings.set_audio_sources( { "mpd" } );
+
+    std::unique_ptr<vis::Visualizer> visualizer{ new vis::Visualizer{ &settings } };
+    visualizer->run();
 }

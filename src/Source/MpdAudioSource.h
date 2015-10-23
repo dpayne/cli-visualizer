@@ -5,17 +5,31 @@
  *     Author: dpayne
  */
 
-#ifndef _MPD_AUDIO_SOURCE_H
-#define _MPD_AUDIO_SOURCE_H
+#ifndef _VIS_MPD_AUDIO_SOURCE_H
+#define _VIS_MPD_AUDIO_SOURCE_H
+
+#include <fstream>
 
 #include "Source/AudioSource.h"
+#include "Domain/Settings.h"
 
-class MpdAudioSource : public AudioSource
+namespace vis
+{
+
+class MpdAudioSource : public vis::AudioSource
 {
     public:
-        explicit MpdAudioSource();
+        explicit MpdAudioSource( const vis::Settings * const settings );
 
-        ~MpdAudioSource();
+        virtual ~MpdAudioSource();
+
+        virtual bool read( char * buffer, uint32_t buffer_size );
+
+    private:
+        const vis::Settings * const m_settings;
+        std::ifstream m_fifo_stream;
 };
+
+}
 
 #endif
