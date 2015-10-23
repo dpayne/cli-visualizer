@@ -23,7 +23,7 @@ class MpdAudioSource : public vis::AudioSource
 
     virtual ~MpdAudioSource();
 
-    virtual bool read(char *buffer, uint32_t buffer_size);
+    virtual bool read(char *buffer, uint32_t buffer_size) override;
 
   private:
     const vis::Settings *const m_settings;

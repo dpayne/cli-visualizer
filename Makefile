@@ -86,3 +86,9 @@ install:
 
 $(TARGET): $(SOURCES)
 	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(SOURCES) $(LIBS)
+
+clang_modernize: $(HEADERS) $(SOURCES)
+	clang-modernize $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
+
+clang_format: $(HEADERS) $(SOURCES)
+	clang-format -i $?
