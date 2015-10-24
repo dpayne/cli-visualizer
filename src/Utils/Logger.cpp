@@ -19,10 +19,13 @@ vis::Logger::Logger()
 
 void vis::Logger::log(vis::LogLevel level, const char *message, ...)
 {
-    char message_text_buf[k_max_log_line];
-    std::va_list args;
-    va_start(args, message);
-    vsnprintf(message_text_buf, k_max_log_line, message, args);
+    if ( level < vis::Logger::level() )
+    {
+        char message_text_buf[k_max_log_line];
+        std::va_list args;
+        va_start(args, message);
+        vsnprintf(message_text_buf, k_max_log_line, message, args);
+    }
 }
 
 vis::Logger::~Logger()

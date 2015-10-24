@@ -16,7 +16,7 @@ BUILD_DIR = $(DIR)/build
 OPT_LEVEL = 3
 
 # Make-local Compiler Flags
-CC_FLAGS = -std=c++14 -Wall -Werror -O$(OPT_LEVEL)
+CC_FLAGS = -std=c++14 -Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
 CC_FLAGS += -fno-omit-frame-pointer
 

@@ -2,7 +2,7 @@
 
 #include <cstdarg>
 
-vis::VisException::VisException(const char *format, ...) throw()
+vis::VisException::VisException(const char *format, ...) noexcept
 {
     char buffer[1024];
 
@@ -14,6 +14,6 @@ vis::VisException::VisException(const char *format, ...) throw()
     m_message = std::string{buffer};
 }
 
-vis::VisException::~VisException() throw()
+vis::VisException::~VisException() noexcept
 {
 }

@@ -15,7 +15,7 @@ vis::MpdAudioSource::MpdAudioSource(const Settings *const settings) : m_settings
     {
         m_fifo_stream.open(m_settings->get_mpd_fifo_path(), std::ifstream::in);
     }
-    catch (std::exception &e)
+    catch ( ... )
     {
         VIS_LOG(vis::LogLevel::ERROR, "Could not open mpd fifo file: \"%s\"", m_settings->get_mpd_fifo_path().c_str());
     }

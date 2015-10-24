@@ -51,7 +51,7 @@ class Visualizer
     AudioSource *get_current_audio_source()
     {
         return m_current_audio_source;
-    };
+    }
 };
 }
 
