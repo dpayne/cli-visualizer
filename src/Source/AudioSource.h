@@ -9,6 +9,7 @@
 #define _VIS_AUDIO_SOURCE_H
 
 #include <cstdint>
+#include "Domain/VisTypes.h"
 
 namespace vis
 {
@@ -20,7 +21,7 @@ class AudioSource
 
     virtual ~AudioSource();
 
-    virtual bool read(char *buffer, uint32_t buffer_size) = 0;
+    virtual bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) = 0;
 };
 }
 

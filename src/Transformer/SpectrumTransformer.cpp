@@ -7,10 +7,11 @@
 
 #include "Transformer/SpectrumTransformer.h"
 
-SpectrumTransformer::SpectrumTransformer()
+vis::SpectrumTransformer::SpectrumTransformer(const Settings * const settings) : m_settings{ settings }
 {
+    m_settings->get_mpd_fifo_path();
 }
 
-SpectrumTransformer::~SpectrumTransformer()
+vis::SpectrumTransformer::~SpectrumTransformer()
 {
 }

@@ -8,7 +8,7 @@
 #include "Source/MpdAudioSource.h"
 #include "Utils/Logger.h"
 
-vis::MpdAudioSource::MpdAudioSource(const Settings *const settings) : m_settings(settings)
+vis::MpdAudioSource::MpdAudioSource(const Settings *const settings) : m_settings{settings}
 {
     // open mpd file
     try
@@ -21,12 +21,12 @@ vis::MpdAudioSource::MpdAudioSource(const Settings *const settings) : m_settings
     }
 }
 
-bool vis::MpdAudioSource::read(char *buffer, uint32_t buffer_size)
+bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer, uint32_t buffer_size)
 {
     if (m_fifo_stream.is_open() && m_fifo_stream.good() && !m_fifo_stream.eof())
     {
         // read buffer
-        m_fifo_stream.read(buffer, buffer_size);
+        m_fifo_stream.read(reinterpret_cast<char *>(buffer), buffer_size * sizeof(pcm_stereo_sample));
 
         if (m_fifo_stream.good() && !m_fifo_stream.eof())
         {

@@ -5,15 +5,19 @@
  *     Author: dpayne
  */
 
-#ifndef _GENERIC_TRANSFORMER_H
-#define _GENERIC_TRANSFORMER_H
+#ifndef _VIS_GENERIC_TRANSFORMER_H
+#define _VIS_GENERIC_TRANSFORMER_H
+
+namespace vis
+{
 
 class GenericTransformer
 {
   public:
     explicit GenericTransformer();
 
-    ~GenericTransformer();
+    virtual ~GenericTransformer();
 };
+}
 
 #endif

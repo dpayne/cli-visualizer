@@ -2,6 +2,11 @@
 
 #include <cstdarg>
 
+vis::VisException::VisException(const VisException &other) noexcept
+{
+    this->m_message = other.m_message;
+}
+
 vis::VisException::VisException(const char *format, ...) noexcept
 {
     char buffer[1024];

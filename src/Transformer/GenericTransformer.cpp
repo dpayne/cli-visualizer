@@ -7,10 +7,10 @@
 
 #include "Transformer/GenericTransformer.h"
 
-GenericTransformer::GenericTransformer()
+vis::GenericTransformer::GenericTransformer()
 {
 }
 
-GenericTransformer::~GenericTransformer()
+vis::GenericTransformer::~GenericTransformer()
 {
 }

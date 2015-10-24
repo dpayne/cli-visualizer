@@ -18,6 +18,9 @@ class VisException : public std::exception
 {
   public:
     VisException(const char *format, ...) noexcept;
+
+    VisException(const VisException &other) noexcept;
+
     ~VisException() noexcept;
 
     virtual const char *what() const noexcept override
