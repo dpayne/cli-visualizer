@@ -19,7 +19,7 @@ vis::Logger::Logger()
 
 void vis::Logger::log(vis::LogLevel level, const char *message, ...)
 {
-    if ( level < vis::Logger::level() )
+    if (level < vis::Logger::level())
     {
         char message_text_buf[k_max_log_line];
         std::va_list args;

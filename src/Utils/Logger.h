@@ -10,12 +10,12 @@
 
 #include "Domain/Settings.h"
 
-#define VIS_LOG(log_level, message, args...)                                                                           \
-    {                                                                                                                  \
-        if (vis::Logger::level() <= log_level)                                                                         \
-        {                                                                                                              \
-            vis::Logger::log(log_level, __FILE__, __LINE__, message, ##args);                                          \
-        }                                                                                                              \
+#define VIS_LOG(log_level, message, args...)                                   \
+    {                                                                          \
+        if (vis::Logger::level() <= log_level)                                 \
+        {                                                                      \
+            vis::Logger::log(log_level, __FILE__, __LINE__, message, ##args);  \
+        }                                                                      \
     }
 
 namespace vis

@@ -13,6 +13,8 @@
 namespace VisConstants
 {
 const std::string kMpdAudioSourceName{"mpd"};
+const uint32_t kDefaultFps = 25;
+const uint32_t kDefaultSamplingFrequency = 44100;
 }
 
 #endif

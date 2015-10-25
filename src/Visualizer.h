@@ -51,8 +51,7 @@ class Visualizer
 
     void add_audio_source(const std::string &audio_source);
 
-    static const int32_t k_pcm_buffer_size = 1024;
-    pcm_stereo_sample m_pcm_buffer[k_pcm_buffer_size];
+    pcm_stereo_sample *m_pcm_buffer;
 
     inline AudioSource *get_current_audio_source()
     {

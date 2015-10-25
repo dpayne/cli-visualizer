@@ -8,6 +8,8 @@
 #ifndef _VIS_GENERIC_TRANSFORMER_H
 #define _VIS_GENERIC_TRANSFORMER_H
 
+#include "Domain/VisTypes.h"
+
 namespace vis
 {
 
@@ -17,6 +19,8 @@ class GenericTransformer
     explicit GenericTransformer();
 
     virtual ~GenericTransformer();
+
+    virtual void execute(pcm_stereo_sample *buffer) = 0;
 };
 }
 

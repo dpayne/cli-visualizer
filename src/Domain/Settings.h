@@ -21,6 +21,31 @@ class Settings
 
     ~Settings();
 
+    uint32_t get_sampling_frequency() const noexcept
+    {
+        return m_sampling_frequency;
+    }
+
+    void set_sampling_frequency(const uint32_t sampling_frequency)
+    {
+        m_sampling_frequency = sampling_frequency;
+    }
+
+    uint32_t get_fps() const noexcept
+    {
+        return m_fps;
+    }
+
+    void set_fps(const uint32_t fps)
+    {
+        m_fps = fps;
+    }
+
+    uint32_t get_sample_size() const noexcept
+    {
+        return m_sampling_frequency / m_fps;
+    }
+
     std::string get_mpd_fifo_path() const noexcept
     {
         return m_mpd_fifo_path;
@@ -43,6 +68,8 @@ class Settings
 
   private:
     std::string m_mpd_fifo_path;
+    uint32_t m_fps;
+    uint32_t m_sampling_frequency;
     std::vector<std::string> m_audio_sources;
 };
 }

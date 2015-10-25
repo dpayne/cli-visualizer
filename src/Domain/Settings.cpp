@@ -6,8 +6,11 @@
  */
 
 #include "Domain/Settings.h"
+#include "Domain/VisConstants.h"
 
 vis::Settings::Settings()
+    : m_fps{VisConstants::kDefaultFps},
+      m_sampling_frequency{VisConstants::kDefaultSamplingFrequency}
 {
 }
 
