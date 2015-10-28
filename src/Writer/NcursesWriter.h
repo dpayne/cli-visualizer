@@ -21,11 +21,14 @@ class NcursesWriter : public GenericWriter
     virtual ~NcursesWriter();
 
     virtual void write(int32_t height, int32_t width,
-                       const std::string &msg) override;
+                       uint8_t color, const std::string &msg) override;
 
     virtual void clear() override;
 
     virtual void flush() override;
+
+  private:
+    void setup_colors();
 };
 }
 

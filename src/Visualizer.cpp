@@ -37,8 +37,8 @@ void vis::Visualizer::run()
 
     setup_transformers();
 
-    AudioSource *audioSource = get_current_audio_source();
-    GenericTransformer *transformer = get_current_transformer();
+    auto audioSource = get_current_audio_source();
+    auto transformer = get_current_transformer();
     m_writer = std::unique_ptr<GenericWriter>{new NcursesWriter{}};
     while (!should_shutdown() &&
            audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))

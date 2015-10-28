@@ -31,13 +31,13 @@ vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
                                               vis::GenericWriter *writer)
 {
-    const int32_t win_height = get_window_height();
-    const int32_t win_width = get_window_width();
+    const auto win_height = get_window_height();
+    const auto win_width = get_window_width();
 
-    const int32_t half_height = win_height / 2;
+    const auto half_height = win_height / 2;
 
     // copy right channel samples to fftw input array
-    for (uint32_t i = 0; i < m_settings->get_sample_size(); ++i)
+    for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
     {
         m_fftw_input[i] = buffer[i].r;
     }
@@ -49,12 +49,6 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
     draw_spectrum(half_height, win_width, false, writer);
 
     // copy left channel samples to fftw input array
-    for (uint32_t i = 0; i < m_settings->get_sample_size(); ++i)
-    {
-        m_fftw_input[i] = buffer[i].l;
-    }
-
-    execute_fftw_plan(half_height);
     draw_spectrum(half_height, win_width, true, writer);
 
     writer->flush();
@@ -63,11 +57,11 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
                                             vis::GenericWriter *writer)
 {
-    const int32_t win_height = get_window_height();
-    const int32_t win_width = get_window_width();
+    const auto win_height = get_window_height();
+    const auto win_width = get_window_width();
 
     // copy samples to fftw input array
-    for (uint32_t i = 0; i < m_settings->get_sample_size(); ++i)
+    for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
     {
         m_fftw_input[i] = buffer[i].r + buffer[i].l;
     }
@@ -86,14 +80,14 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
                                              vis::GenericWriter *writer)
 {
     // cut bandwidth a little to achieve better look
-    const double bins_per_bar =
+    const auto bins_per_bar =
         (m_fftw_results / static_cast<size_t>(win_width)) * (7.0 / 10);
     double bar_height;
     int32_t bar_bound_height;
-    for (int32_t column_index = 0; column_index < win_width; ++column_index)
+    for (auto column_index = 0; column_index < win_width; ++column_index)
     {
         bar_height = 0;
-        for (int32_t j = 0; j < bins_per_bar; ++j)
+        for (auto j = 0; j < bins_per_bar; ++j)
         {
             bar_height += m_freq_magnitudes[static_cast<size_t>(
                 column_index * bins_per_bar + j)];
@@ -107,13 +101,11 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
         bar_bound_height = std::min(
             static_cast<int32_t>(bar_height / bins_per_bar), win_height);
 
-        // starting index is 1 since we are going from bottom up
-        int32_t increment = flipped ? 1 : -1;
-        bar_bound_height *= increment;
-        for (int32_t row_index = increment; row_index <= bar_bound_height;
-             row_index += increment)
+        auto row_index_sign = flipped ? -1 : 1;
+        for (auto row_index = 0; row_index <= bar_bound_height; ++row_index)
         {
-            writer->write(win_height + row_index, column_index, ".");
+            writer->write(win_height + (row_index_sign * row_index),
+                          column_index, writer->to_color(row_index, win_height), ".");
         }
     }
 }
@@ -124,7 +116,7 @@ void vis::SpectrumTransformer::execute_fftw_plan(int32_t win_height)
     fftw_execute(m_fftw_plan);
 
     // count magnitude of each frequency and scale it to fit the screen
-    for (uint32_t i = 0; i < m_fftw_results; ++i)
+    for (auto i = 0u; i < m_fftw_results; ++i)
     {
         m_freq_magnitudes[i] =
             std::sqrt(m_fftw_output[i][0] * m_fftw_output[i][0] +
