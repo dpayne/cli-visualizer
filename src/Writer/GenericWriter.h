@@ -31,8 +31,8 @@ class GenericWriter
     {
         const auto colors_size = 216;
         const auto index = (number * colors_size) / max;
-        return static_cast<uint8_t>(
-            wrap ? index % colors_size : std::min(index, colors_size - 1));
+        return static_cast<uint8_t>(wrap ? index % colors_size
+                                         : std::min(index, colors_size - 1));
     }
 };
 }

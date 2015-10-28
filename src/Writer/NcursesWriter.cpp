@@ -11,12 +11,12 @@
 vis::NcursesWriter::NcursesWriter()
 {
     initscr();
-    curs_set(0); // sets the cursor to invisible
-    start_color(); // turns on color
+    curs_set(0);          // sets the cursor to invisible
+    start_color();        // turns on color
     use_default_colors(); // uses default colors of terminal, which allows
                           // transparency to work
 
-    //initialize color pairs
+    // initialize color pairs
     setup_colors();
 }
 
@@ -456,8 +456,8 @@ void vis::NcursesWriter::setup_colors()
     init_pair(216, 216, -1);
 }
 
-void vis::NcursesWriter::write(int32_t height, int32_t width,
-                               uint8_t color, const std::string &msg)
+void vis::NcursesWriter::write(int32_t height, int32_t width, uint8_t color,
+                               const std::string &msg)
 {
     attron(COLOR_PAIR(color));
 

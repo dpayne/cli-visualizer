@@ -105,7 +105,8 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
         for (auto row_index = 0; row_index <= bar_bound_height; ++row_index)
         {
             writer->write(win_height + (row_index_sign * row_index),
-                          column_index, writer->to_color(row_index, win_height), ".");
+                          column_index, writer->to_color(row_index, win_height),
+                          ".");
         }
     }
 }

@@ -20,8 +20,8 @@ class NcursesWriter : public GenericWriter
 
     virtual ~NcursesWriter();
 
-    virtual void write(int32_t height, int32_t width,
-                       uint8_t color, const std::string &msg) override;
+    virtual void write(int32_t height, int32_t width, uint8_t color,
+                       const std::string &msg) override;
 
     virtual void clear() override;
 

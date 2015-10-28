@@ -66,7 +66,7 @@ class Settings
         m_audio_sources = audio_sources;
     }
 
-    void set_is_stereo_enabled( bool is_stereo_enabled )
+    void set_is_stereo_enabled(bool is_stereo_enabled)
     {
         m_is_stereo_enabled = is_stereo_enabled;
     }

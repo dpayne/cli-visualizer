@@ -52,7 +52,7 @@ void vis::Visualizer::run()
             transformer->execute_mono(m_pcm_buffer, m_writer.get());
         }
 
-        //update sources and transformers
+        // update sources and transformers
         audioSource = get_current_audio_source();
         transformer = get_current_transformer();
     }
