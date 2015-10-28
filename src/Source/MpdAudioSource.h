@@ -23,7 +23,7 @@ class MpdAudioSource : public vis::AudioSource
 
     virtual ~MpdAudioSource();
 
-    virtual bool read(pcm_stereo_sample *buffer, uint32_t buffer_size);
+    virtual bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 
   private:
     const vis::Settings *const m_settings;
