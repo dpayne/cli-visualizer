@@ -7,10 +7,10 @@
 
 #include "Writer/GenericWriter.h"
 
-GenericWriter::GenericWriter()
+vis::GenericWriter::GenericWriter()
 {
 }
 
-GenericWriter::~GenericWriter()
+vis::GenericWriter::~GenericWriter()
 {
 }

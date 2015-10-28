@@ -8,7 +8,23 @@ TARGET= vis
 ##  SETTINGS                                                                 ##
 ###############################################################################
 
-CC = clang++
+CLANG := $(shell which clang)
+CCACHE := $(shell which ccache)
+
+#prefer clang over g++
+ifneq ($(CLANG),)
+COMPILER=clang++
+else
+COMPILER=g++
+endif
+
+#use ccache if available
+ifneq ($(CCACHE),)
+CC=ccache $(COMPILER)
+else
+CC=$(COMPILER)
+endif
+
 DIR=$(shell pwd)
 BUILD_DIR = $(DIR)/build
 
@@ -30,7 +46,7 @@ CC_FLAGS += -D_LINUX
 endif
 
 # Linker flags
-LD_FLAGS = $(LDFLAGS) -fno-omit-frame-pointer -ljemalloc
+LD_FLAGS = $(LDFLAGS) -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 LD_FLAGS += -undefined dynamic_lookup
@@ -50,7 +66,8 @@ INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
 LIB_PATH = -L/usr/local/lib
 
 # Libs
-LIBS = -lfftw3 -ljemalloc
+LIBS = -lncurses -lfftw3 -ljemalloc
+
 
 
 ###############################################################################
@@ -63,6 +80,8 @@ HEADERS= $(wildcard include/*.h) $(wildcard include/*/*.h) $(wildcard src/*.h) $
 
 OBJECTS= $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.cpp=.o)))
 
+VPATH= $(dir $(wildcard src/*/ src/*/*/))
+
 ###############################################################################
 ##  MAIN TARGETS                                                             ##
 ###############################################################################
@@ -74,7 +93,7 @@ prepare:
 	mkdir -p $(BUILD_DIR)
 
 .PHONY: build
-build: $(TARGET)
+build: $(OBJECTS) $(TARGET)
 
 .PHONY:clean
 clean:
@@ -87,8 +106,11 @@ install:
 ##  BUILD TARGETS                                                            ##
 ###############################################################################
 
-$(TARGET): $(SOURCES)
-	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(SOURCES) $(LIBS)
+$(BUILD_DIR)/%.o: %.cpp
+	$(CC) $(CC_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) -c $< -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(OBJECTS) $(LIBS)
 
 clang_modernize: $(HEADERS) $(SOURCES)
 	clang-modernize $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)

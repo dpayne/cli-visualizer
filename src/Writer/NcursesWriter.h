@@ -10,12 +10,23 @@
 
 #include "Writer/GenericWriter.h"
 
+namespace vis
+{
+
 class NcursesWriter : public GenericWriter
 {
   public:
     explicit NcursesWriter();
 
-    ~NcursesWriter();
+    virtual ~NcursesWriter();
+
+    virtual void write(int32_t height, int32_t width,
+                       const std::string &msg) override;
+
+    virtual void clear() override;
+
+    virtual void flush() override;
 };
+}
 
 #endif

@@ -66,10 +66,21 @@ class Settings
         m_audio_sources = audio_sources;
     }
 
+    void set_is_stereo_enabled( bool is_stereo_enabled )
+    {
+        m_is_stereo_enabled = is_stereo_enabled;
+    }
+
+    bool is_stereo_enabled() const noexcept
+    {
+        return m_is_stereo_enabled;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
     uint32_t m_sampling_frequency;
+    bool m_is_stereo_enabled;
     std::vector<std::string> m_audio_sources;
 };
 }

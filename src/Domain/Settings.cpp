@@ -10,7 +10,8 @@
 
 vis::Settings::Settings()
     : m_fps{VisConstants::kDefaultFps},
-      m_sampling_frequency{VisConstants::kDefaultSamplingFrequency}
+      m_sampling_frequency{VisConstants::kDefaultSamplingFrequency},
+      m_is_stereo_enabled{true}
 {
 }
 
