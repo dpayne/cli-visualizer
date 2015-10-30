@@ -29,10 +29,18 @@ class GenericWriter
 
     inline uint8_t to_color(int32_t number, int32_t max, bool wrap = true) const
     {
-        const auto colors_size = 216;
+        const auto colors_size = 16;
         const auto index = (number * colors_size) / max;
-        return static_cast<uint8_t>(wrap ? index % colors_size
-                                         : std::min(index, colors_size - 1));
+
+        if (!wrap)
+        {
+            return static_cast<uint8_t>(wrap ? index % colors_size
+                                             : std::min(index, colors_size - 1));
+        }
+        else
+        {
+            return 4;
+        }
     }
 };
 }

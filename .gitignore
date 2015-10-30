@@ -28,3 +28,4 @@
 *.app
 
 build
+build_tests

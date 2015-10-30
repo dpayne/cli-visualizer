@@ -3,6 +3,7 @@
 # ====================
 
 TARGET= vis
+TEST_TARGET= run_tests
 
 ###############################################################################
 ##  SETTINGS                                                                 ##
@@ -27,6 +28,7 @@ endif
 
 DIR=$(shell pwd)
 BUILD_DIR = $(DIR)/build
+BUILD_TEST_DIR = $(DIR)/build_tests
 
 # Override optimizations via: make OPT_LEVEL=n
 OPT_LEVEL = 3
@@ -61,13 +63,14 @@ endif
 
 # Include Paths
 INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
+TEST_INCLUDE_PATH = -I/usr/include
 
 # Lib Paths
 LIB_PATH = -L/usr/local/lib
 
 # Libs
 LIBS = -lncurses -lfftw3 -ljemalloc
-
+TEST_LIBS = -lgtest
 
 
 ###############################################################################
@@ -80,7 +83,11 @@ HEADERS= $(wildcard include/*.h) $(wildcard include/*/*.h) $(wildcard src/*.h) $
 
 OBJECTS= $(addprefix $(BUILD_DIR)/,$(notdir $(SOURCES:.cpp=.o)))
 
-VPATH= $(dir $(wildcard src/*/ src/*/*/))
+TEST_SOURCES= $(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp) $(wildcard tests/*/*/*.cpp)
+
+TEST_OBJECTS= $(addprefix $(BUILD_TEST_DIR)/,$(notdir $(TEST_SOURCES:.cpp=.o))) $(filter-out $(BUILD_DIR)/$(TARGET).o,$(OBJECTS))
+
+VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/))
 
 ###############################################################################
 ##  MAIN TARGETS                                                             ##
@@ -88,16 +95,28 @@ VPATH= $(dir $(wildcard src/*/ src/*/*/))
 
 all: prepare build
 
+tests: prepare_tests build_tests
+
 .PHONY: prepare
 prepare:
 	mkdir -p $(BUILD_DIR)
+	rm -f $(BUILD_DIR)/$(TARGET)
+
+.PHONY: prepare_tests
+prepare_tests:
+	mkdir -p $(BUILD_TEST_DIR)
+	rm -f $(BUILD_TEST_DIR)/$(TEST_TARGET)
 
 .PHONY: build
 build: $(OBJECTS) $(TARGET)
 
+.PHONY: build build_tests run_tests
+build_tests: $(TEST_OBJECTS) $(TEST_TARGET)
+
 .PHONY:clean
 clean:
 	@rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_TEST_DIR)
 
 install:
 	cp $(BUILD_DIR)/$(TARGET) /usr/local/bin/
@@ -111,6 +130,13 @@ $(BUILD_DIR)/%.o: %.cpp
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(OBJECTS) $(LIBS)
+
+$(BUILD_TEST_DIR)/%.o: %.cpp
+	$(CC) $(CC_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) -c $< -o $@
+
+$(TEST_TARGET): $(OBJECTS) $(TEST_OBJECTS)
+	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
+	$(BUILD_TEST_DIR)/$(TEST_TARGET)
 
 clang_modernize: $(HEADERS) $(SOURCES)
 	clang-modernize $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)

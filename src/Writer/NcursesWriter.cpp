@@ -12,12 +12,19 @@ vis::NcursesWriter::NcursesWriter()
 {
     initscr();
     curs_set(0);          // sets the cursor to invisible
-    start_color();        // turns on color
-    use_default_colors(); // uses default colors of terminal, which allows
-                          // transparency to work
 
-    // initialize color pairs
-    setup_colors();
+    if(has_colors() == TRUE)
+    {
+        start_color();        // turns on color
+        use_default_colors(); // uses default colors of terminal, which allows
+                              // transparency to work
+
+        if(can_change_color() == FALSE )
+        {
+            // initialize color pairs
+            setup_colors();
+        }
+    }
 }
 
 void vis::NcursesWriter::setup_colors()
@@ -469,6 +476,7 @@ void vis::NcursesWriter::write(int32_t height, int32_t width, uint8_t color,
 
 void vis::NcursesWriter::clear()
 {
+    standend();
     erase();
 }
 
