@@ -29,7 +29,7 @@ vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
 }
 
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
-                                              vis::GenericWriter *writer)
+                                              vis::NcursesWriter *writer)
 {
     const auto win_height = get_window_height();
     const auto win_width = get_window_width();
@@ -55,7 +55,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 }
 
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
-                                            vis::GenericWriter *writer)
+                                            vis::NcursesWriter *writer)
 {
     const auto win_height = get_window_height();
     const auto win_width = get_window_width();
@@ -77,7 +77,7 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
 
 void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
                                              int32_t win_width, bool flipped,
-                                             vis::GenericWriter *writer)
+                                             vis::NcursesWriter *writer)
 {
     // cut bandwidth a little to achieve better look
     const auto bins_per_bar =

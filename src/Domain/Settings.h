@@ -8,6 +8,7 @@
 #ifndef _VIS_SETTINGS_H
 #define _VIS_SETTINGS_H
 
+#include "Domain/ColorDefinition.h"
 #include <string>
 #include <vector>
 
@@ -76,12 +77,45 @@ class Settings
         return m_is_stereo_enabled;
     }
 
+    void set_is_color_enabled(bool is_color_enabled)
+    {
+        m_is_color_enabled = is_color_enabled;
+    }
+
+    bool is_color_enabled() const noexcept
+    {
+        return m_is_color_enabled;
+    }
+
+    std::vector<vis::ColorIndex> get_colors() const noexcept
+    {
+        return m_colors;
+    }
+
+    void set_colors(const std::vector<vis::ColorIndex> & colors)
+    {
+        m_colors = colors;
+    }
+
+    std::vector<vis::ColorDefinition> get_color_definitions() const noexcept
+    {
+        return m_color_definitions;
+    }
+
+    void set_color_definitions(const std::vector<vis::ColorDefinition> & color_definitions)
+    {
+        m_color_definitions = color_definitions;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
     uint32_t m_sampling_frequency;
     bool m_is_stereo_enabled;
+    bool m_is_color_enabled;
     std::vector<std::string> m_audio_sources;
+    std::vector<vis::ColorDefinition> m_color_definitions;
+    std::vector<vis::ColorIndex> m_colors;
 };
 }
 

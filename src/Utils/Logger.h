@@ -18,15 +18,7 @@
  *          some_really_expensive_debug_function() )
  * In this case the, if the log level is ERROR, then the function will not be
  * called.
-#define VIS_LOG(log_level, message, args...)                                   \
-    {                                                                          \
-        if (vis::Logger::level() <= log_level)                                 \
-        {                                                                      \
-            vis::Logger::log(log_level, __FILE__, __LINE__, message, ##args);  \
-        }                                                                      \
-    }
  */
-
 #define VIS_LOG(log_level, message, args...)                                   \
     {                                                                          \
         if (vis::Logger::level() <= log_level)                                 \
@@ -54,17 +46,11 @@ class Logger
 
     constexpr static vis::LogLevel level()
     {
+#ifdef VIS_LOG_DEBUG
+        return LogLevel::DEBUG;
+#endif
         return LogLevel::ERROR;
     }
-
-    //  constexpr static void VIS_LOG(vis::LogLevel log_level, const char
-    //  *message, ...)
-    //  {
-    //      if ( level() <= log_level )
-    //      {
-    //          log( log_level, message );
-    //      }
-    //  }
 
     static void initialize(const std::string log_location);
 

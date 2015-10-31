@@ -19,7 +19,7 @@ static vis::Visualizer *g_vis = nullptr;
 
 static inline void shutdown(int sig)
 {
-    std::cout << "Received signal: " << sig << std::endl;
+    std::cerr << "Received signal: " << sig << std::endl;
 
     if (g_vis != nullptr)
     {
@@ -41,7 +41,7 @@ int main()
     std::unique_ptr<vis::Visualizer> visualizer{new vis::Visualizer{&settings}};
     g_vis = visualizer.get();
 
-    //visualizer->run();
+    visualizer->run();
 
     vis::Logger::uninitialize();
 }

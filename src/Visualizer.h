@@ -13,7 +13,7 @@
 #include "Domain/VisTypes.h"
 #include "Source/AudioSource.h"
 #include "Transformer/GenericTransformer.h"
-#include "Writer/GenericWriter.h"
+#include "Writer/NcursesWriter.h"
 
 namespace vis
 {
@@ -42,7 +42,7 @@ class Visualizer
 
     GenericTransformer *m_current_transformer;
 
-    std::unique_ptr<vis::GenericWriter> m_writer;
+    std::unique_ptr<vis::NcursesWriter> m_writer;
 
     bool m_shutdown;
 

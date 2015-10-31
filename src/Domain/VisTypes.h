@@ -8,6 +8,8 @@
 #ifndef _VIS_TYPES_H
 #define _VIS_TYPES_H
 
+#include <cstdint>
+
 namespace vis
 {
 struct stereo_sample_frame
@@ -17,5 +19,8 @@ struct stereo_sample_frame
 };
 
 using pcm_stereo_sample = struct stereo_sample_frame;
+
+using ColorIndex = int16_t;
+using ColorValue = int16_t;
 }
 #endif

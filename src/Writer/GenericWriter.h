@@ -9,6 +9,7 @@
 #define _GENERIC_WRITER_H
 
 #include <string>
+#include "Domain/Settings.h"
 
 namespace vis
 {
@@ -16,7 +17,7 @@ namespace vis
 class GenericWriter
 {
   public:
-    explicit GenericWriter();
+    explicit GenericWriter(const Settings * const settings);
 
     virtual ~GenericWriter();
 

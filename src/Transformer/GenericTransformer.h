@@ -8,7 +8,7 @@
 #ifndef _VIS_GENERIC_TRANSFORMER_H
 #define _VIS_GENERIC_TRANSFORMER_H
 
-#include "Writer/GenericWriter.h"
+#include "Writer/NcursesWriter.h"
 #include "Domain/VisTypes.h"
 
 namespace vis
@@ -22,9 +22,9 @@ class GenericTransformer
     virtual ~GenericTransformer();
 
     virtual void execute_stereo(pcm_stereo_sample *buffer,
-                                vis::GenericWriter *writer) = 0;
+                                vis::NcursesWriter *writer) = 0;
     virtual void execute_mono(pcm_stereo_sample *buffer,
-                              vis::GenericWriter *writer) = 0;
+                              vis::NcursesWriter *writer) = 0;
 
   protected:
     virtual int32_t get_window_width() const;

@@ -57,8 +57,8 @@ endif
 # DEBUG Settings
 ifdef DEBUG
 OPT_LEVEL=0
-CC_FLAGS += -pg -fprofile-arcs -ftest-coverage -g2
-LD_FLAGS += -pg -fprofile-arcs -lgcov
+CC_FLAGS += -g2 -DVIS_LOG_DEBUG
+LD_FLAGS += -DVIS_LOG_DEBUG
 endif
 
 # Include Paths

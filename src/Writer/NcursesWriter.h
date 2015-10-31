@@ -8,31 +8,34 @@
 #ifndef _NCURSES_WRITER_H
 #define _NCURSES_WRITER_H
 
-#include "Writer/GenericWriter.h"
+#include "Domain/ColorDefinition.h"
+#include "Domain/Settings.h"
 
 namespace vis
 {
 
-class NcursesWriter : public GenericWriter
+class NcursesWriter
 {
   public:
-    explicit NcursesWriter();
+    explicit NcursesWriter(const Settings * const settings);
 
     virtual ~NcursesWriter();
 
-    virtual void write(int32_t height, int32_t width, uint8_t color,
-                       const std::string &msg) override;
+    virtual void write(int32_t height, int32_t width, ColorIndex color,
+                       const std::string &msg);
 
-    virtual void clear() override;
+    virtual void clear();
 
-    virtual uint8_t to_color(int32_t number, int32_t max, bool wrap = true) const override;
+    virtual ColorIndex to_color(int32_t number, int32_t max, bool wrap = true) const;
 
-    virtual void flush() override;
+    virtual void flush();
 
   private:
+    const Settings * const m_settings;
+
     void setup_colors();
 
-    int32_t get_max_color_size() const;
+    void setup_color(const vis::ColorDefinition & color);
 };
 }
 

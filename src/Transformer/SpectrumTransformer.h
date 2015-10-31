@@ -10,7 +10,7 @@
 
 #include <fftw3.h>
 #include "Transformer/GenericTransformer.h"
-#include "Writer/GenericWriter.h"
+#include "Writer/NcursesWriter.h"
 #include "Domain/Settings.h"
 
 namespace vis
@@ -24,15 +24,15 @@ class SpectrumTransformer : public GenericTransformer
     virtual ~SpectrumTransformer();
 
     virtual void execute_mono(pcm_stereo_sample *buffer,
-                              vis::GenericWriter *writer) override;
+                              vis::NcursesWriter *writer) override;
     virtual void execute_stereo(pcm_stereo_sample *buffer,
-                                vis::GenericWriter *writer) override;
+                                vis::NcursesWriter *writer) override;
 
   protected:
     void execute_fftw_plan(int32_t win_height);
 
     void draw_spectrum(int32_t win_height, int32_t win_width, bool flipped,
-                       vis::GenericWriter *writer);
+                       vis::NcursesWriter *writer);
 
   private:
     const Settings *const m_settings;
