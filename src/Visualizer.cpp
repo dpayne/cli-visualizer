@@ -24,7 +24,7 @@ vis::Visualizer::Visualizer(const vis::Settings *const settings)
 
 void vis::Visualizer::add_audio_source(const std::string &audio_source)
 {
-    if (audio_source == VisConstants::kMpdAudioSourceName)
+    if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
         m_audio_sources.emplace_back(std::unique_ptr<vis::MpdAudioSource>{
             new vis::MpdAudioSource{m_settings}});

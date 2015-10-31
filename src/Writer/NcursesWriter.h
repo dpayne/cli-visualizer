@@ -25,10 +25,14 @@ class NcursesWriter : public GenericWriter
 
     virtual void clear() override;
 
+    virtual uint8_t to_color(int32_t number, int32_t max, bool wrap = true) const override;
+
     virtual void flush() override;
 
   private:
     void setup_colors();
+
+    int32_t get_max_color_size() const;
 };
 }
 

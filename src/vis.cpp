@@ -10,6 +10,9 @@
 #include <csignal>
 
 #include "Domain/Settings.h"
+#include "Domain/VisConstants.h"
+#include "Utils/ConfigurationUtils.h"
+#include "Utils/Logger.h"
 #include "Visualizer.h"
 
 static vis::Visualizer *g_vis = nullptr;
@@ -26,16 +29,19 @@ static inline void shutdown(int sig)
 
 int main()
 {
-
     std::signal(SIGINT, shutdown);
     std::signal(SIGTERM, shutdown);
 
+    vis::Logger::initialize(VisConstants::k_default_log_path);
+
     vis::Settings settings;
-    settings.set_mpd_fifo_path("/tmp/mpd.fifo");
-    settings.set_audio_sources({"mpd"});
+
+    vis::ConfigurationUtils::load_settings(settings);
 
     std::unique_ptr<vis::Visualizer> visualizer{new vis::Visualizer{&settings}};
     g_vis = visualizer.get();
 
-    visualizer->run();
+    //visualizer->run();
+
+    vis::Logger::uninitialize();
 }

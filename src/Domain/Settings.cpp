@@ -9,8 +9,8 @@
 #include "Domain/VisConstants.h"
 
 vis::Settings::Settings()
-    : m_fps{VisConstants::kDefaultFps},
-      m_sampling_frequency{VisConstants::kDefaultSamplingFrequency},
+    : m_fps{VisConstants::k_default_fps},
+      m_sampling_frequency{VisConstants::k_default_sampling_frequency},
       m_is_stereo_enabled{true}
 {
 }

@@ -485,6 +485,28 @@ void vis::NcursesWriter::flush()
     refresh();
 }
 
+int32_t vis::NcursesWriter::get_max_color_size() const
+{
+    if(has_colors() == TRUE)
+    {
+        return COLORS;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
+uint8_t vis::NcursesWriter::to_color(int32_t number, int32_t max,
+                                     bool wrap) const
+{
+    const auto colors_size = get_max_color_size();
+    const auto index = (number * colors_size) / max;
+
+    return static_cast<uint8_t>(wrap ? index % colors_size
+                                     : std::min(index, colors_size - 1));
+}
+
 vis::NcursesWriter::~NcursesWriter()
 {
     endwin();

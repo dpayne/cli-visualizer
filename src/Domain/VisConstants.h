@@ -12,9 +12,11 @@
 
 namespace VisConstants
 {
-const std::string kMpdAudioSourceName{"mpd"};
-const uint32_t kDefaultFps = 25;
-const uint32_t kDefaultSamplingFrequency = 44100;
+const std::string k_mpd_audio_source_name{"mpd"};
+const uint32_t k_default_fps = 25;
+const uint32_t k_default_sampling_frequency = 44100;
+const std::string k_default_config_path{"vis/config"};
+const std::string k_default_log_path{"vis/vis.log"};
 }
 
 #endif
