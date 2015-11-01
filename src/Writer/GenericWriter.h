@@ -17,7 +17,7 @@ namespace vis
 class GenericWriter
 {
   public:
-    explicit GenericWriter(const Settings * const settings);
+    explicit GenericWriter(const Settings *const settings);
 
     virtual ~GenericWriter();
 
@@ -28,8 +28,8 @@ class GenericWriter
 
     virtual void flush() = 0;
 
-    virtual uint8_t to_color(int32_t number, int32_t max, bool wrap = true) const = 0;
-
+    virtual uint8_t to_color(int32_t number, int32_t max,
+                             bool wrap = true) const = 0;
 };
 }
 

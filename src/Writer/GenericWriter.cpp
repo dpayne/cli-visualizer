@@ -9,7 +9,7 @@
 
 #pragma clang diagnostic ignored "-Wunused-parameter"
 
-vis::GenericWriter::GenericWriter(const Settings * const settings)
+vis::GenericWriter::GenericWriter(const Settings *const settings)
 {
 }
 

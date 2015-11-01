@@ -17,7 +17,7 @@ namespace vis
 class NcursesWriter
 {
   public:
-    explicit NcursesWriter(const Settings * const settings);
+    explicit NcursesWriter(const Settings *const settings);
 
     virtual ~NcursesWriter();
 
@@ -26,16 +26,17 @@ class NcursesWriter
 
     virtual void clear();
 
-    virtual ColorIndex to_color(int32_t number, int32_t max, bool wrap = true) const;
+    virtual ColorIndex to_color(int32_t number, int32_t max,
+                                bool wrap = true) const;
 
     virtual void flush();
 
   private:
-    const Settings * const m_settings;
+    const Settings *const m_settings;
 
     void setup_colors();
 
-    void setup_color(const vis::ColorDefinition & color);
+    void setup_color(const vis::ColorDefinition &color);
 };
 }
 

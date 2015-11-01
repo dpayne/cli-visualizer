@@ -28,7 +28,7 @@ const static std::string k_fps_setting{"visualizer.fps"};
 
 const static std::string k_colors_setting{"colors"};
 const static std::string k_colors_default{
-    "red"};
+    "black,blue,cyan,green,yellow,red,magenta,white"};
 
 const static std::string k_colors_enabled_setting{"colors.enabled"};
 }

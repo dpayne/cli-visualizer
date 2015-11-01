@@ -21,7 +21,7 @@ class ColorDefinition
     ColorDefinition() = delete;
 
     ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green,
-          ColorValue blue);
+                    ColorValue blue);
 
     ColorDefinition(const ColorDefinition &&other);
 

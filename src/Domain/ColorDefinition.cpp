@@ -8,7 +8,8 @@
 #include "Domain/ColorDefinition.h"
 #include "Domain/VisConstants.h"
 
-vis::ColorDefinition::ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green, ColorValue blue)
+vis::ColorDefinition::ColorDefinition(ColorIndex color_index, ColorValue red,
+                                      ColorValue green, ColorValue blue)
     : m_color_index{color_index}, m_red{red}, m_green{green}, m_blue{blue}
 {
 }
@@ -28,4 +29,3 @@ vis::ColorDefinition::ColorDefinition(const ColorDefinition &c)
 vis::ColorDefinition::~ColorDefinition()
 {
 }
-

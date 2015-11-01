@@ -13,15 +13,16 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     : m_settings{settings}
 {
     initscr();
-    curs_set(0);          // sets the cursor to invisible
+    curs_set(0); // sets the cursor to invisible
 
-    if(true)
+    if (true)
     {
         start_color();        // turns on color
         use_default_colors(); // uses default colors of terminal, which allows
                               // transparency to work
 
-        if(!m_settings->get_color_definitions().empty() && can_change_color() == FALSE )
+        if (!m_settings->get_color_definitions().empty() &&
+            can_change_color() == FALSE)
         {
             // initialize color pairs
             setup_colors();
@@ -29,12 +30,12 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     }
 }
 
-void vis::NcursesWriter::setup_color(const vis::ColorDefinition & color)
+void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
 {
     init_color(color.get_color_index(), color.get_red(), color.get_green(),
                color.get_blue());
 
-    //Set background to -1 to enable transparency
+    // Set background to -1 to enable transparency
     init_pair(color.get_color_index(), color.get_color_index(), -1);
 }
 
@@ -46,8 +47,8 @@ void vis::NcursesWriter::setup_colors()
     }
 }
 
-void vis::NcursesWriter::write(int32_t height, int32_t width, vis::ColorIndex color,
-                               const std::string &msg)
+void vis::NcursesWriter::write(int32_t height, int32_t width,
+                               vis::ColorIndex color, const std::string &msg)
 {
     attron(COLOR_PAIR(color));
 
@@ -69,15 +70,14 @@ void vis::NcursesWriter::flush()
 }
 
 vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
-                                     bool wrap) const
+                                             bool wrap) const
 {
-    const auto colors_size = static_cast<vis::ColorIndex>(m_settings->get_colors().size());
+    const auto colors_size =
+        static_cast<vis::ColorIndex>(m_settings->get_colors().size());
     const auto index = (number * colors_size) / max;
 
-    if ( !wrap)
-        return m_settings->get_colors()[static_cast<size_t>(wrap ? index % colors_size
-                                     : std::min(index, colors_size - 1))];
-    return 5;
+    return m_settings->get_colors()[static_cast<size_t>(
+        wrap ? index % colors_size : std::min(index, colors_size - 1))];
 }
 
 vis::NcursesWriter::~NcursesWriter()

@@ -92,7 +92,7 @@ class Settings
         return m_colors;
     }
 
-    void set_colors(const std::vector<vis::ColorIndex> & colors)
+    void set_colors(const std::vector<vis::ColorIndex> &colors)
     {
         m_colors = colors;
     }
@@ -102,7 +102,8 @@ class Settings
         return m_color_definitions;
     }
 
-    void set_color_definitions(const std::vector<vis::ColorDefinition> & color_definitions)
+    void set_color_definitions(
+        const std::vector<vis::ColorDefinition> &color_definitions)
     {
         m_color_definitions = color_definitions;
     }

@@ -46,7 +46,7 @@ class Utils
     {
         const char *homedir;
 
-        if ((homedir = getenv("HOME")) == NULL)
+        if ((homedir = getenv("HOME")) == nullptr)
         {
             homedir = getpwuid(getuid())->pw_dir;
         }
@@ -164,7 +164,7 @@ class Utils
         if (str.empty())
             return 0;
 
-        return std::atoi( str.c_str() );
+        return std::atoi(str.c_str());
     }
 
     static inline uint32_t to_uint(const std::string &str)
@@ -172,11 +172,11 @@ class Utils
         if (str.empty())
             return 0;
 
-        return static_cast<uint32_t>(std::strtoul(str.c_str(), NULL, 0));
+        return static_cast<uint32_t>(std::strtoul(str.c_str(), nullptr, 0));
     }
 
     static inline std::vector<std::string> split(const std::string &s,
-                                                  char delim)
+                                                 char delim)
     {
         std::vector<std::string> result;
         return split(s, delim, result);
@@ -206,4 +206,3 @@ class Utils
 }
 
 #endif
-
