@@ -8,6 +8,7 @@
 #include <ncurses.h>
 #include "Writer/NcursesWriter.h"
 #include "Utils/Logger.h"
+#include "Utils/NcursesUtils.h"
 
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     : m_settings{settings}
@@ -21,12 +22,8 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
         use_default_colors(); // uses default colors of terminal, which allows
                               // transparency to work
 
-        if (!m_settings->get_color_definitions().empty() &&
-            can_change_color() == FALSE)
-        {
-            // initialize color pairs
-            setup_colors();
-        }
+        // initialize color pairs
+        setup_colors();
     }
 }
 
@@ -41,9 +38,28 @@ void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
 
 void vis::NcursesWriter::setup_colors()
 {
-    for (const auto &c : m_settings->get_color_definitions())
+    // setup basic colors
+    VIS_LOG(vis::LogLevel::DEBUG, "Setting up default colors");
+    for (auto pair : NcursesUtils::get_default_color_map())
     {
-        setup_color(c);
+        init_pair(0, pair.second, -1);
+    }
+
+    if (!m_settings->get_color_definitions().empty())
+    {
+        if (!m_settings->get_color_definitions().empty() &&
+            can_change_color() == FALSE)
+        {
+            for (const auto &c : m_settings->get_color_definitions())
+            {
+                setup_color(c);
+            }
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::WARN, "Terminal does not support change "
+                                         "colors, using default colors.");
+        }
     }
 }
 

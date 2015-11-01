@@ -20,20 +20,9 @@
 #include <sstream>
 #include <vector>
 #include <unordered_map>
-#include <ncurses.h>
 
 #include "Domain/VisConstants.h"
 #include "Domain/VisTypes.h"
-
-namespace
-{
-
-const static std::unordered_map<std::string, short> color_map{
-    {"black", COLOR_BLACK},     {"blue", COLOR_BLUE},     {"cyan", COLOR_CYAN},
-    {"green", COLOR_GREEN},     {"yellow", COLOR_YELLOW}, {"red", COLOR_RED},
-    {"magenta", COLOR_MAGENTA}, {"white", COLOR_WHITE},
-};
-}
 
 namespace vis
 {
@@ -137,26 +126,10 @@ class Utils
         }
         else
         {
-            elems.second = s.substr(index_of_first_elem, std::string::npos);
+            elems.second = s.substr(index_of_first_elem + 1, std::string::npos);
         }
 
         return elems;
-    }
-
-    static inline vis::ColorIndex to_color_index(const std::string &str)
-    {
-        if (str.empty())
-        {
-            return COLOR_BLACK;
-        }
-
-        auto iter = color_map.find(str);
-        if (iter != color_map.end())
-        {
-            return iter->second;
-        }
-
-        return static_cast<vis::ColorIndex>(std::atoi(str.c_str()));
     }
 
     static inline int32_t to_int(const std::string &str)

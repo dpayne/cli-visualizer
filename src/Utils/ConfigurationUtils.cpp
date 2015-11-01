@@ -11,6 +11,7 @@
 
 #include "Utils/ConfigurationUtils.h"
 #include "Utils/Logger.h"
+#include "Utils/NcursesUtils.h"
 #include "Utils/Utils.h"
 
 namespace
@@ -117,7 +118,7 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     for (const auto &str : colors_strs)
     {
-        colors.push_back(Utils::to_color_index(str));
+        colors.push_back(NcursesUtils::to_color_index(str));
     }
 
     settings.set_colors(colors);
