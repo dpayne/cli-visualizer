@@ -138,8 +138,8 @@ $(TEST_TARGET): $(OBJECTS) $(TEST_OBJECTS)
 	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
 	$(BUILD_TEST_DIR)/$(TEST_TARGET)
 
-clang_modernize: $(HEADERS) $(SOURCES)
+clang_modernize: $(HEADERS) $(SOURCES) $(TEST_SOURCES)
 	clang-modernize $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
 
-clang_format: $(HEADERS) $(SOURCES)
+clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES)
 	clang-format -i $?
