@@ -32,6 +32,7 @@ const static std::string k_colors_default{
     "black,blue,cyan,green,yellow,red,magenta,white"};
 
 const static std::string k_colors_enabled_setting{"colors.enabled"};
+const static std::string k_spectrum_character{"visualizer.spectrum.character"};
 }
 
 vis::ConfigurationUtils::ConfigurationUtils()
@@ -140,6 +141,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_sampling_frequency(
         Utils::get(properties, k_sampling_frequency_setting,
                    VisConstants::k_default_sampling_frequency));
+
+    settings.set_spectrum_character(
+        Utils::get(properties, k_spectrum_character,
+                   VisConstants::k_default_spectrum_character));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

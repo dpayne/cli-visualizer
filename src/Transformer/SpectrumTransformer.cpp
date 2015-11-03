@@ -111,7 +111,7 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
         bar_bound_height = std::min(
             static_cast<int32_t>(bar_height / bins_per_bar), win_height);
 
-        std::wstring msg{L'\u2588'};
+        std::wstring msg{m_settings->get_spectrum_character()};
         for (auto row_index = 0; row_index <= bar_bound_height; ++row_index)
         {
             writer->write(win_height + (row_index_sign * row_index),

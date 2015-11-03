@@ -20,6 +20,7 @@ const uint32_t k_default_sampling_frequency = 44100;
 const std::string k_default_config_path{"vis/config"};
 const std::string k_default_colors_path{"vis/colors"};
 const std::string k_default_log_path{"vis/vis.log"};
+const wchar_t k_default_spectrum_character{L'\u2588'};
 }
 
 #endif

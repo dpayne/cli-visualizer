@@ -108,6 +108,16 @@ class Settings
         m_color_definitions = color_definitions;
     }
 
+    wchar_t get_spectrum_character() const noexcept
+    {
+        return m_spectrum_character;
+    }
+
+    void set_spectrum_character(wchar_t spectrum_character)
+    {
+        m_spectrum_character = spectrum_character;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -117,6 +127,7 @@ class Settings
     std::vector<std::string> m_audio_sources;
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
+    wchar_t m_spectrum_character;
 };
 }
 
