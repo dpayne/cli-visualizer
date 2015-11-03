@@ -1,4 +1,4 @@
 - read from alsa
 - fix buffer reader so that it reads into an array or something where the allocation isn't with malloc
-- fix bottom half of spectrum writing one further than it should
 - fix print non-ascii characters
+- writing more unit tests

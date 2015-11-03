@@ -76,6 +76,42 @@ vis::ConfigurationUtils::read_config(const std::string &config_path)
     return properties_map;
 }
 
+
+std::vector<vis::ColorDefinition>
+vis::ConfigurationUtils::read_colors(const std::string &colors_path)
+{
+    std::vector<vis::ColorDefinition> color_definitions;
+
+    std::ifstream file(colors_path.c_str(), std::ifstream::in);
+    std::string line;
+    if (!file.good())
+    {
+        VIS_LOG(vis::LogLevel::WARN, "Colors configuration not found at %s",
+                colors_path.c_str());
+        return color_definitions;
+    }
+
+    std::vector<std::string> split_line;
+
+    while (file.good() && std::getline(file, line))
+    {
+        vis::Utils::split(line, ',', split_line);
+
+        if (split_line.size() == 4)
+        {
+            color_definitions.push_back(vis::ColorDefinition(
+                NcursesUtils::to_color_index(split_line[0]), NcursesUtils::to_color_index(split_line[1]), NcursesUtils::to_color_index(split_line[2]), NcursesUtils::to_color_index(split_line[3])));
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::WARN,
+                    "Configuration line was not valid at %s", line.c_str());
+        }
+    }
+
+    return color_definitions;
+}
+
 void vis::ConfigurationUtils::load_settings(Settings &settings)
 {
     auto config_path = Utils::get_home_directory();
@@ -122,4 +158,9 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     }
 
     settings.set_colors(colors);
+
+    auto colors_path = Utils::get_home_directory();
+    colors_path.append(VisConstants::k_default_colors_path);
+    settings.set_color_definitions(
+        vis::ConfigurationUtils::read_colors(colors_path));
 }

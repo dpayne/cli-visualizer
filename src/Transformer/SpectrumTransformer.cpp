@@ -36,10 +36,10 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     const auto half_height = win_height / 2;
 
-    // copy right channel samples to fftw input array
+    // copy left channel samples to fftw input array
     for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
     {
-        m_fftw_input[i] = buffer[i].r;
+        m_fftw_input[i] = buffer[i].l;
     }
 
     execute_fftw_plan(half_height);
@@ -48,8 +48,17 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
     writer->clear();
     draw_spectrum(half_height, win_width, false, writer);
 
-    // copy left channel samples to fftw input array
-    draw_spectrum(half_height, win_width, true, writer);
+    // copy right channel samples to fftw input array
+    for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
+    {
+        m_fftw_input[i] = buffer[i].r;
+    }
+
+    execute_fftw_plan(half_height);
+
+    // subtract height by (half_height % 2) so that there is not an off by one
+    // error if height is an odd number
+    draw_spectrum(half_height - (half_height % 2), win_width, true, writer);
 
     writer->flush();
 }

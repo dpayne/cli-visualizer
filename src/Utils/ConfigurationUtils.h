@@ -28,6 +28,9 @@ class ConfigurationUtils
     static std::unordered_map<std::string, std::string>
     read_config(const std::string &config_path);
 
+    static std::vector<vis::ColorDefinition>
+    read_colors(const std::string &colors_path);
+
     explicit ConfigurationUtils();
 
     virtual ~ConfigurationUtils();
