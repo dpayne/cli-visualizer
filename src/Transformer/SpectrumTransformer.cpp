@@ -46,7 +46,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // clear screen before writing
     writer->clear();
-    draw_spectrum(half_height, win_width, false, writer);
+    draw_spectrum(half_height, win_width, true, writer);
 
     // copy right channel samples to fftw input array
     for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
@@ -58,7 +58,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // subtract height by (half_height % 2) so that there is not an off by one
     // error if height is an odd number
-    draw_spectrum(half_height - (half_height % 2), win_width, true, writer);
+    draw_spectrum(half_height, win_width, false, writer);
 
     writer->flush();
 }
@@ -107,15 +107,16 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
         // moderately normalize the heights
         bar_height = std::pow(bar_height, 0.5);
 
+        auto row_index_sign = flipped ? -1 : 1;
         bar_bound_height = std::min(
             static_cast<int32_t>(bar_height / bins_per_bar), win_height);
 
-        auto row_index_sign = flipped ? -1 : 1;
+        std::wstring msg{L'\u2588'};
         for (auto row_index = 0; row_index <= bar_bound_height; ++row_index)
         {
             writer->write(win_height + (row_index_sign * row_index),
                           column_index, writer->to_color(row_index, win_height),
-                          "#");
+                          msg);
         }
     }
 }

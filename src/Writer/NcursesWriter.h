@@ -22,7 +22,7 @@ class NcursesWriter
     virtual ~NcursesWriter();
 
     virtual void write(int32_t height, int32_t width, ColorIndex color,
-                       const std::string &msg);
+                       const std::wstring &msg);
 
     virtual void clear();
 

@@ -61,6 +61,12 @@ CC_FLAGS += -g2 -DVIS_LOG_DEBUG
 LD_FLAGS += -DVIS_LOG_DEBUG
 endif
 
+# Clang sanitize options
+ifdef SANITIZE
+CC_FLAGS += -fsanitize=$(SANITIZE)
+LD_FLAGS += -fsanitize=$(SANITIZE)
+endif
+
 # Include Paths
 INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
 TEST_INCLUDE_PATH = -I/usr/include

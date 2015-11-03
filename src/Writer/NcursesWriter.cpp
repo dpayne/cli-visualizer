@@ -15,6 +15,7 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
 {
     initscr();
     curs_set(0); // sets the cursor to invisible
+    setlocale(LC_ALL, "");
 
     if (has_colors() == TRUE)
     {
@@ -64,12 +65,12 @@ void vis::NcursesWriter::setup_colors()
 }
 
 void vis::NcursesWriter::write(int32_t height, int32_t width,
-                               vis::ColorIndex color, const std::string &msg)
+                               vis::ColorIndex color, const std::wstring &msg)
 {
     attron(COLOR_PAIR(color));
 
     move(height, width);
-    addstr(msg.c_str());
+    addwstr(msg.c_str());
 
     attroff(COLOR_PAIR(color));
 }
@@ -90,7 +91,7 @@ vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
 {
     const auto colors_size =
         static_cast<vis::ColorIndex>(m_settings->get_colors().size());
-    const auto index = (number * colors_size) / max;
+    const auto index = (number * colors_size) / (max + 1);
 
     return m_settings->get_colors()[static_cast<size_t>(
         wrap ? index % colors_size : std::min(index, colors_size - 1))];
