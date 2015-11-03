@@ -16,7 +16,7 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     initscr();
     curs_set(0); // sets the cursor to invisible
 
-    if (true)
+    if (has_colors() == TRUE)
     {
         start_color();        // turns on color
         use_default_colors(); // uses default colors of terminal, which allows
@@ -42,7 +42,7 @@ void vis::NcursesWriter::setup_colors()
     VIS_LOG(vis::LogLevel::DEBUG, "Setting up default colors");
     for (auto pair : NcursesUtils::get_default_color_map())
     {
-        init_pair(0, pair.second, -1);
+        init_pair(pair.second, pair.second, -1);
     }
 
     if (!m_settings->get_color_definitions().empty())
@@ -69,7 +69,7 @@ void vis::NcursesWriter::write(int32_t height, int32_t width,
     attron(COLOR_PAIR(color));
 
     move(height, width);
-    addnstr(msg.c_str(), static_cast<int>(msg.size()));
+    addstr(msg.c_str());
 
     attroff(COLOR_PAIR(color));
 }
