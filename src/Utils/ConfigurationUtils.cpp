@@ -77,7 +77,6 @@ vis::ConfigurationUtils::read_config(const std::string &config_path)
     return properties_map;
 }
 
-
 std::vector<vis::ColorDefinition>
 vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 {
@@ -101,7 +100,10 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         if (split_line.size() == 4)
         {
             color_definitions.push_back(vis::ColorDefinition(
-                NcursesUtils::to_color_index(split_line[0]), NcursesUtils::to_color_index(split_line[1]), NcursesUtils::to_color_index(split_line[2]), NcursesUtils::to_color_index(split_line[3])));
+                NcursesUtils::to_color_index(split_line[0]),
+                NcursesUtils::to_color_index(split_line[1]),
+                NcursesUtils::to_color_index(split_line[2]),
+                NcursesUtils::to_color_index(split_line[3])));
         }
         else
         {

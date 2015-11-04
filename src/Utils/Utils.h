@@ -116,14 +116,14 @@ class Utils
     }
 
     template <class E>
-    static inline wchar_t get(const std::unordered_map<E, std::string> &map, const E &key,
-                           const wchar_t default_value)
+    static inline wchar_t get(const std::unordered_map<E, std::string> &map,
+                              const E &key, const wchar_t default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
         {
             std::wstring wstr{iter->second.begin(), iter->second.end()};
-            if ( wstr.empty() )
+            if (wstr.empty())
             {
                 return '\0';
             }

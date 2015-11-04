@@ -52,14 +52,16 @@ void vis::NcursesWriter::setup_colors()
         {
             for (const auto &c : m_settings->get_color_definitions())
             {
-                VIS_LOG(vis::LogLevel::DEBUG, "Setting up color %d %d %d %d", c.get_color_index(), c.get_red(), c.get_green(), c.get_blue() );
+                VIS_LOG(vis::LogLevel::DEBUG, "Setting up color %d %d %d %d",
+                        c.get_color_index(), c.get_red(), c.get_green(),
+                        c.get_blue());
                 setup_color(c);
             }
         }
         else
         {
             VIS_LOG(vis::LogLevel::ERROR, "Terminal does not support change "
-                                         "colors, using default colors.");
+                                          "colors, using default colors.");
         }
     }
 }
