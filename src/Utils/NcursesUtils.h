@@ -8,26 +8,24 @@
 #ifndef _VIS_NCURSES_UTILS_H
 #define _VIS_NCURSES_UTILS_H
 
-#include <map>
-#include <ncurses.h>
-
 #include "Domain/VisConstants.h"
 #include "Domain/VisTypes.h"
 #include "Utils/Logger.h"
 #include "Utils/Utils.h"
 
-namespace
+#include <map>
+
+#include <ncurses.h>
+
+namespace vis
 {
 
-const static std::map<std::string, short> color_map{
+const static std::map<std::string, int16_t> g_vis_color_map{
     {"black", COLOR_BLACK},     {"blue", COLOR_BLUE},     {"cyan", COLOR_CYAN},
     {"green", COLOR_GREEN},     {"yellow", COLOR_YELLOW}, {"red", COLOR_RED},
     {"magenta", COLOR_MAGENTA}, {"white", COLOR_WHITE},
 };
-}
 
-namespace vis
-{
 
 class NcursesUtils
 {
@@ -44,9 +42,9 @@ class NcursesUtils
      * cyan    6
      * white   7
      */
-    static inline const std::map<std::string, short> &get_default_color_map()
+    static inline const std::map<std::string, int16_t> &get_default_color_map()
     {
-        return color_map;
+        return g_vis_color_map;
     }
 
     /**
@@ -65,8 +63,8 @@ class NcursesUtils
             return COLOR_BLACK;
         }
 
-        auto iter = color_map.find(vis::Utils::lowercase(str));
-        if (iter != color_map.end())
+        auto iter = g_vis_color_map.find(vis::Utils::lowercase(str));
+        if (iter != g_vis_color_map.end())
         {
             return iter->second;
         }
@@ -83,6 +81,7 @@ class NcursesUtils
     explicit NcursesUtils();
 
     virtual ~NcursesUtils();
+
 };
 }
 

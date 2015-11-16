@@ -17,13 +17,13 @@ namespace vis
 class VisException : public std::exception
 {
   public:
-    VisException(const char *format, ...) noexcept;
+    explicit VisException(const char *format, ...) noexcept;
 
     VisException(const VisException &other) noexcept;
 
-    ~VisException() noexcept;
+    ~VisException() noexcept override;
 
-    virtual const char *what() const noexcept override
+    const char *what() const noexcept override
     {
         return m_message.c_str();
     }

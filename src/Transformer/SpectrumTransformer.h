@@ -21,11 +21,11 @@ class SpectrumTransformer : public GenericTransformer
   public:
     explicit SpectrumTransformer(const Settings *const settings);
 
-    virtual ~SpectrumTransformer();
+    ~SpectrumTransformer() override;
 
-    virtual void execute_mono(pcm_stereo_sample *buffer,
+    void execute_mono(pcm_stereo_sample *buffer,
                               vis::NcursesWriter *writer) override;
-    virtual void execute_stereo(pcm_stereo_sample *buffer,
+    void execute_stereo(pcm_stereo_sample *buffer,
                                 vis::NcursesWriter *writer) override;
 
   protected:
@@ -42,6 +42,7 @@ class SpectrumTransformer : public GenericTransformer
     fftw_plan m_fftw_plan;
 
     std::vector<double> m_freq_magnitudes;
+    std::vector<double> m_freq_magnitudes_previous;
 };
 }
 

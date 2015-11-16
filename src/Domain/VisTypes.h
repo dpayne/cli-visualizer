@@ -14,8 +14,8 @@ namespace vis
 {
 struct stereo_sample_frame
 {
-    short l;
-    short r;
+    int16_t l;
+    int16_t r;
 };
 
 using pcm_stereo_sample = struct stereo_sample_frame;

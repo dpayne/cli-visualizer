@@ -1,4 +1,9 @@
 - read from alsa
 - fix buffer reader so that it reads into an array or something where the allocation isn't with malloc
-- fix print non-ascii characters
 - writing more unit tests
+- make circle transformer possibly make it rotate
+- make spectrum's top char fall slowly
+- figure out font to match cava
+- figure out better color spectrum
+- make color schemes instead of a file
+- restore colors

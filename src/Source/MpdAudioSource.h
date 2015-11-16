@@ -21,9 +21,9 @@ class MpdAudioSource : public vis::AudioSource
   public:
     explicit MpdAudioSource(const vis::Settings *const settings);
 
-    virtual ~MpdAudioSource();
+    ~MpdAudioSource() override;
 
-    virtual bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
+    bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 
   private:
     const vis::Settings *const m_settings;

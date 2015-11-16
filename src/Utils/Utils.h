@@ -8,21 +8,21 @@
 #ifndef _VIS_UTILS_H
 #define _VIS_UTILS_H
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
+#include "Domain/VisConstants.h"
+#include "Domain/VisTypes.h"
+
+#include <vector>
 #include <iostream>
 #include <cstdlib>
 #include <cctype>
 #include <string>
 #include <algorithm>
-#include <string>
 #include <sstream>
-#include <vector>
 #include <unordered_map>
 
-#include "Domain/VisConstants.h"
-#include "Domain/VisTypes.h"
+#include <unistd.h>
+#include <pwd.h>
+#include <sys/types.h>
 
 namespace vis
 {
@@ -69,10 +69,8 @@ class Utils
             homedir_str.push_back('/');
             return homedir_str;
         }
-        else
-        {
-            return std::string{};
-        }
+
+        return std::string{};
     }
 
     /**
@@ -109,10 +107,8 @@ class Utils
         {
             return iter->second;
         }
-        else
-        {
-            return default_value;
-        }
+
+        return default_value;
     }
 
     template <class E>
@@ -130,10 +126,8 @@ class Utils
 
             return wstr.c_str()[0];
         }
-        else
-        {
-            return default_value;
-        }
+
+        return default_value;
     }
 
     /**
@@ -149,10 +143,8 @@ class Utils
         {
             return to_bool(iter->second);
         }
-        else
-        {
-            return default_value;
-        }
+
+        return default_value;
     }
 
     /**
@@ -167,10 +159,8 @@ class Utils
         {
             return to_uint(iter->second);
         }
-        else
-        {
-            return default_value;
-        }
+
+        return default_value;
     }
 
     /**
@@ -185,10 +175,8 @@ class Utils
         {
             return to_int(iter->second);
         }
-        else
-        {
-            return default_value;
-        }
+
+        return default_value;
     }
 
     /**
@@ -227,7 +215,9 @@ class Utils
     static inline int32_t to_int(const std::string &str)
     {
         if (str.empty())
+        {
             return 0;
+        }
 
         return std::atoi(str.c_str());
     }
@@ -235,7 +225,9 @@ class Utils
     static inline uint32_t to_uint(const std::string &str)
     {
         if (str.empty())
+        {
             return 0;
+        }
 
         return static_cast<uint32_t>(std::strtoul(str.c_str(), nullptr, 0));
     }

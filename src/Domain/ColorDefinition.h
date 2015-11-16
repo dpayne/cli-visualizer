@@ -23,9 +23,9 @@ class ColorDefinition
     ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green,
                     ColorValue blue);
 
-    ColorDefinition(const ColorDefinition &&other);
+    ColorDefinition(const ColorDefinition &&other) noexcept;
 
-    ColorDefinition(const ColorDefinition &other);
+    ColorDefinition(const ColorDefinition &other) noexcept;
 
     virtual ~ColorDefinition();
 
@@ -49,7 +49,7 @@ class ColorDefinition
         return m_blue;
     }
 
-    ColorDefinition operator=(const ColorDefinition other) noexcept
+    ColorDefinition &operator=(const ColorDefinition other) noexcept
     {
         this->m_color_index = other.get_color_index();
         this->m_red = other.get_red();
@@ -58,7 +58,7 @@ class ColorDefinition
         return *this;
     }
 
-    ColorDefinition operator=(const ColorDefinition &&other) noexcept
+    ColorDefinition &operator=(ColorDefinition &&other) noexcept
     {
         this->m_color_index = other.get_color_index();
         this->m_red = other.get_red();
