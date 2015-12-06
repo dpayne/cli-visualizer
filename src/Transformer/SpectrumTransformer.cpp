@@ -13,11 +13,6 @@
 #include <iostream>
 #include <stdio.h>
 
-namespace
-{
-static const double k_top_row_decay_rate = 9.5 / 10.0;
-}
-
 vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
     : m_settings{settings}
 {
@@ -51,7 +46,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // clear screen before writing
     writer->clear();
-    draw_spectrum(half_height, win_width, true, writer);
+    draw(half_height, win_width, true, writer);
 
     // copy right channel samples to fftw input array
     for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
@@ -63,7 +58,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // subtract height by (half_height % 2) so that there is not an off by one
     // error if height is an odd number
-    draw_spectrum(half_height, win_width, false, writer);
+    draw(half_height, win_width, false, writer);
 
     writer->flush();
 }
@@ -84,12 +79,12 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
 
     // clear screen before writing
     writer->clear();
-    draw_spectrum(win_height, win_width, false, writer);
+    draw(win_height, win_width, false, writer);
 
     writer->flush();
 }
 
-void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
+void vis::SpectrumTransformer::draw(int32_t win_height,
                                              int32_t win_width, bool flipped,
                                              vis::NcursesWriter *writer)
 {
@@ -128,11 +123,11 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
 
         top_row_bar_height = std::max(top_row_bar_height, bar_height);
 
-        bar_bound_height = normalizeHeight(win_width, win_height, column_index,
+        bar_bound_height = normalize_height(win_width, win_height, column_index,
                                            bins_per_bar, bar_height);
 
         top_row_bar_bound_height =
-            normalizeHeight(win_width, win_height, column_index, bins_per_bar,
+            normalize_height(win_width, win_height, column_index, bins_per_bar,
                             top_row_bar_height);
 
         auto row_index_sign = flipped ? -1 : 1;
@@ -152,7 +147,7 @@ void vis::SpectrumTransformer::draw_spectrum(int32_t win_height,
     }
 }
 
-int32_t vis::SpectrumTransformer::normalizeHeight(const int32_t win_width,
+int32_t vis::SpectrumTransformer::normalize_height(const int32_t win_width,
                                                   const int32_t win_height,
                                                   const int32_t column_index,
                                                   const double bins_per_bar,
