@@ -43,7 +43,7 @@ CC_FLAGS += -ffast-math
 CC_FLAGS += -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
-CC_FLAGS += -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
+CC_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 else
 CC_FLAGS += -D_LINUX -Werror
 endif
@@ -78,8 +78,12 @@ TEST_INCLUDE_PATH = -I/usr/include
 LIB_PATH = -L/usr/local/lib
 
 # Libs
-LIBS = -lncurses -lfftw3 -ljemalloc
+LIBS = -lncurses -lfftw3
 TEST_LIBS = -lgtest
+
+ifneq ($(OS),Darwin)
+LIBS += -ljemalloc
+endif
 
 #clang tidy checks
 CLANG_TIDY_CHECKS=clang-analyzer-*,modernize-*,readability-*,misc-*,cppcoreguidelines-*,google-*,-google-readability-namespace-comments
