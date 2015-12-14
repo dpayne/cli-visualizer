@@ -8,6 +8,7 @@
 #ifndef _VIS_VIS_EXCEPTION_H
 #define _VIS_VIS_EXCEPTION_H
 
+#include <string>
 #include <exception>
 #include <stdexcept>
 

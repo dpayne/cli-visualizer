@@ -11,6 +11,7 @@ TEST_TARGET= run_tests
 
 CLANG := $(shell which clang)
 CCACHE := $(shell which ccache)
+OS= $(shell uname)
 
 #prefer clang over g++
 ifneq ($(CLANG),)
@@ -35,23 +36,25 @@ OPT_LEVEL = 3
 
 # Make-local Compiler Flags
 CC_FLAGS = -std=c++14
-CC_FLAGS += -Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
+CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 CC_FLAGS += -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
 CC_FLAGS += -ffast-math
 CC_FLAGS += -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
-CC_FLAGS += -D_OS_OSX
+CC_FLAGS += -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 else
-CC_FLAGS += -D_LINUX
+CC_FLAGS += -D_LINUX -Werror
 endif
 
 # Linker flags
 LD_FLAGS = $(LDFLAGS) -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
-LD_FLAGS += -undefined dynamic_lookup
+LD_FLAGS += -D_XOPEN_SOURCE_EXTENDED
+else
+LD_FLAGS += -Werror
 endif
 
 # DEBUG Settings
