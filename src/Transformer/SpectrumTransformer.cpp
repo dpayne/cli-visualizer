@@ -18,7 +18,6 @@ vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
-    m_freq_magnitudes.resize(m_fftw_results);
     m_fftw_input = static_cast<double *>(
         fftw_malloc(sizeof(double) * m_settings->get_sample_size()));
     m_fftw_output = static_cast<fftw_complex *>(
@@ -26,6 +25,7 @@ vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
     m_fftw_plan =
         fftw_plan_dft_r2c_1d(static_cast<int>(m_settings->get_sample_size()),
                              m_fftw_input, m_fftw_output, FFTW_ESTIMATE);
+    m_freq_magnitudes.resize(m_fftw_results);
 }
 
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
@@ -56,8 +56,6 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     execute_fftw_plan(half_height);
 
-    // subtract height by (half_height % 2) so that there is not an off by one
-    // error if height is an odd number
     draw(half_height, win_width, false, writer);
 
     writer->flush();
@@ -69,17 +67,17 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
     const auto win_height = get_window_height();
     const auto win_width = get_window_width();
 
-    // copy samples to fftw input array
+    // copy left channel samples to fftw input array
     for (auto i = 0u; i < m_settings->get_sample_size(); ++i)
     {
-        m_fftw_input[i] = buffer[i].r + buffer[i].l;
+        m_fftw_input[i] = buffer[i].l + buffer[i].r;
     }
 
     execute_fftw_plan(win_height);
 
     // clear screen before writing
     writer->clear();
-    draw(win_height, win_width, false, writer);
+    draw(win_height, win_width, true, writer);
 
     writer->flush();
 }
@@ -93,6 +91,7 @@ void vis::SpectrumTransformer::draw(int32_t win_height,
         (m_fftw_results / static_cast<size_t>(win_width)) * (7.0 / 10);
     double bar_height, top_row_bar_height;
     int32_t bar_bound_height, top_row_bar_bound_height;
+
     m_freq_magnitudes_top_row.reserve(m_freq_magnitudes.size());
     for (auto column_index = 0; column_index < win_width; ++column_index)
     {
@@ -165,15 +164,14 @@ int32_t vis::SpectrumTransformer::normalize_height(const int32_t win_width,
 
 void vis::SpectrumTransformer::execute_fftw_plan(int32_t win_height)
 {
-
     fftw_execute(m_fftw_plan);
 
     // count magnitude of each frequency and scale it to fit the screen
     for (auto i = 0u; i < m_fftw_results; ++i)
     {
         m_freq_magnitudes[i] =
-            std::sqrt(m_fftw_output[i][0] * m_fftw_output[i][0] +
-                      m_fftw_output[i][1] * m_fftw_output[i][1]) /
+            std::sqrt((m_fftw_output[i][0] * m_fftw_output[i][0]) +
+                      (m_fftw_output[i][1] * m_fftw_output[i][1])) /
             2e4 * win_height;
     }
 }

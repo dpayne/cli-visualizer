@@ -77,6 +77,26 @@ class NcursesUtils
         return static_cast<vis::ColorIndex>(std::atoi(str.c_str()));
     }
 
+    static inline int32_t get_window_height()
+    {
+        int32_t width, height;
+
+        //getmaxyx is actually a macro, not a function, so pass it two integers
+        getmaxyx( stdscr, height, width );
+
+        return height;
+    }
+
+    static inline int32_t get_window_width()
+    {
+        int32_t width, height;
+
+        //getmaxyx is actually a macro, not a function, so pass it two integers
+        getmaxyx( stdscr, height, width );
+
+        return width;
+    }
+
   private:
     explicit NcursesUtils();
 

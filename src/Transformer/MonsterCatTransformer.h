@@ -29,6 +29,10 @@ class MonsterCatTransformer : public SpectrumTransformer
                        vis::NcursesWriter *writer) override;
 
     std::vector<double> smooth(const std::vector<double> & frequencies);
+
+    int32_t normalize_height(const int32_t win_height,
+                             const double bins_per_bar,
+                             const double bar_height);
 };
 }
 
