@@ -32,6 +32,26 @@ class Settings
         m_sampling_frequency = sampling_frequency;
     }
 
+    uint32_t get_low_cutoff_frequency() const noexcept
+    {
+        return m_low_cutoff_frequency;
+    }
+
+    void set_low_cutoff_frequency(const uint32_t low_cutoff_frequency)
+    {
+        m_low_cutoff_frequency = low_cutoff_frequency;
+    }
+
+    uint32_t get_high_cutoff_frequency() const noexcept
+    {
+        return m_high_cutoff_frequency;
+    }
+
+    void set_high_cutoff_frequency(const uint32_t high_cutoff_frequency)
+    {
+        m_high_cutoff_frequency = high_cutoff_frequency;
+    }
+
     uint32_t get_fps() const noexcept
     {
         return m_fps;
@@ -122,6 +142,8 @@ class Settings
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
     uint32_t m_sampling_frequency;
+    uint32_t m_low_cutoff_frequency;
+    uint32_t m_high_cutoff_frequency;
     bool m_is_stereo_enabled;
     bool m_is_color_enabled;
     std::vector<std::string> m_audio_sources;

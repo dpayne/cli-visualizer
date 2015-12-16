@@ -17,7 +17,9 @@ static const std::string k_false{"false"};
 
 static const std::string k_mpd_audio_source_name{"mpd"};
 static const uint32_t k_default_fps = 25;
-static const uint32_t k_default_sampling_frequency = 22050;
+static const uint32_t k_default_sampling_frequency = 44100;
+static const uint32_t k_default_low_cutoff_frequency = 50;
+static const uint32_t k_default_high_cutoff_frequency = 22050;
 static const std::string k_default_config_path{"vis/config"};
 static const std::string k_default_colors_path{"vis/colors"};
 static const std::string k_default_log_path{"vis/vis.log"};

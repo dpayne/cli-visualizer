@@ -25,6 +25,10 @@ const static std::string k_audio_sources_default{"mpd"};
 const static std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 const static std::string k_sampling_frequency_setting{
     "audio.sampling.frequency"};
+const static std::string k_low_cutoff_frequency_setting{
+    "audio.low.cutoff.frequency"};
+const static std::string k_high_cutoff_frequency_setting{
+    "audio.high.cutoff.frequency"};
 const static std::string k_fps_setting{"visualizer.fps"};
 
 const static std::string k_colors_setting{"colors"};
@@ -143,6 +147,14 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_sampling_frequency(
         Utils::get(properties, k_sampling_frequency_setting,
                    VisConstants::k_default_sampling_frequency));
+
+    settings.set_low_cutoff_frequency(
+        Utils::get(properties, k_low_cutoff_frequency_setting,
+                   VisConstants::k_default_low_cutoff_frequency));
+
+    settings.set_high_cutoff_frequency(
+        Utils::get(properties, k_high_cutoff_frequency_setting,
+                   VisConstants::k_default_high_cutoff_frequency));
 
     settings.set_spectrum_character(
         Utils::get(properties, k_spectrum_character,

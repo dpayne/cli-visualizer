@@ -11,6 +11,8 @@
 vis::Settings::Settings()
     : m_fps{VisConstants::k_default_fps},
       m_sampling_frequency{VisConstants::k_default_sampling_frequency},
+      m_low_cutoff_frequency{VisConstants::k_default_low_cutoff_frequency},
+      m_high_cutoff_frequency{VisConstants::k_default_high_cutoff_frequency},
       m_is_stereo_enabled{true}, m_is_color_enabled{true},
       m_spectrum_character{VisConstants::k_default_spectrum_character}
 {
