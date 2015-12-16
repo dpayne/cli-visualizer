@@ -60,12 +60,12 @@ class MonsterCatTransformer : public GenericTransformer
                   const std::vector<uint32_t> &high_cutoff_frequencies) const;
 
     void recalculate_cutoff_frequencies(
-        int32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
+        uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
         std::vector<uint32_t> *high_cutoff_frequencies);
 
     void draw_bars(const std::vector<double> &bars, int32_t win_height,
-                   int32_t win_width, const bool flipped,
-                   vis::NcursesWriter *writer);
+                   uint32_t number_of_bars, const bool flipped,
+                   const std::wstring &bar_row_msg, vis::NcursesWriter *writer);
 
     std::vector<double>
     smooth_bars_pre_falloff(const std::vector<double> &bars) const;
@@ -77,6 +77,8 @@ class MonsterCatTransformer : public GenericTransformer
 
     std::vector<double> scale_bars(const std::vector<double> &bars,
                                    const int32_t height) const;
+
+    std::wstring create_bar_row_msg( const wchar_t character, uint32_t bar_width, uint32_t bar_spacing);
 };
 }
 

@@ -14,7 +14,10 @@ vis::Settings::Settings()
       m_low_cutoff_frequency{VisConstants::k_default_low_cutoff_frequency},
       m_high_cutoff_frequency{VisConstants::k_default_high_cutoff_frequency},
       m_is_stereo_enabled{true}, m_is_color_enabled{true},
-      m_spectrum_character{VisConstants::k_default_spectrum_character}
+      m_spectrum_character{VisConstants::k_default_spectrum_character},
+      m_monstercat_character{VisConstants::k_default_monstercat_character},
+      m_monstercat_bar_width{VisConstants::k_default_monstercat_bar_width},
+      m_monstercat_bar_spacing{VisConstants::k_default_monstercat_bar_spacing}
 {
 }
 

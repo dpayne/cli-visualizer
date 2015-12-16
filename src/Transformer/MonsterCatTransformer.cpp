@@ -18,6 +18,7 @@
 
 namespace
 {
+static const double kMinimumBarHeight = 0.125;
 static const uint64_t kSilentSleepMilliSeconds = 100;
 static const uint64_t kMaxSilentRunsBeforeSleep =
     3000ul / kSilentSleepMilliSeconds; // silent for 3 seconds
@@ -126,18 +127,18 @@ std::vector<double> vis::MonsterCatTransformer::smooth_bars_pre_falloff(
     std::vector<double> smoothed_bars = bars;
     for (auto i = 0u; i < bars.size(); ++i)
     {
-        if (smoothed_bars[i] < 0.125)
+        if (smoothed_bars[i] < kMinimumBarHeight)
         {
-            smoothed_bars[i] = 0.125;
+            smoothed_bars[i] = kMinimumBarHeight;
         }
 
-        for (int32_t j = (i - 1); j >= 0; --j)
+        for (auto j = (i - 1); i != 0u && j != 0u; --j)
         {
             smoothed_bars[j] = std::max(
                 smoothed_bars[i] / std::pow(1.5, (i - j)), smoothed_bars[j]);
         }
 
-        for (int32_t j = (i + 1); j < bars.size(); ++j)
+        for ( auto j = (i + 1); j < bars.size(); ++j)
         {
             smoothed_bars[j] = std::max(
                 smoothed_bars[i] / std::pow(1.5, (i - j)), smoothed_bars[j]);
@@ -178,14 +179,35 @@ vis::MonsterCatTransformer::scale_bars(const std::vector<double> &bars,
     return scaled_bars;
 }
 
+std::wstring vis::MonsterCatTransformer::create_bar_row_msg(
+    const wchar_t character, uint32_t bar_width, uint32_t bar_spacing)
+{
+    std::wstring bar_row_msg;
+
+    for ( auto i = 0u; i < bar_width; ++i )
+    {
+       bar_row_msg.push_back(character);
+    }
+
+    for ( auto i = 0u; i < bar_spacing; ++i )
+    {
+       bar_row_msg.push_back(' ');
+    }
+
+    return bar_row_msg;
+}
+
 void vis::MonsterCatTransformer::draw(int32_t win_height, int32_t win_width,
                                       bool flipped, vis::NcursesWriter *writer)
 {
+    std::wstring bar_row_msg = create_bar_row_msg(m_settings->get_monstercat_character(), m_settings->get_monstercat_bar_width(), m_settings->get_monstercat_bar_spacing());
+    uint32_t number_of_bars = static_cast<uint32_t>(std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
+
     // cut off frequencies only have to be re-calculated if number of bars
     // change
     if (m_previous_win_width != win_width)
     {
-        recalculate_cutoff_frequencies(win_width / 4, &m_low_cutoff_frequencies,
+        recalculate_cutoff_frequencies(number_of_bars, &m_low_cutoff_frequencies,
                                        &m_high_cutoff_frequencies);
         m_previous_win_width = win_width;
     }
@@ -193,7 +215,7 @@ void vis::MonsterCatTransformer::draw(int32_t win_height, int32_t win_width,
     // Separate the frequency spectrum into bars, the number of bars is based on
     // screen width
     auto raw_bars =
-        generate_bars(win_width / 4, m_fftw_output, m_fftw_results,
+        generate_bars(number_of_bars, m_fftw_output, m_fftw_results,
                       m_low_cutoff_frequencies, m_high_cutoff_frequencies);
 
     // pre-falloff smoothing
@@ -208,23 +230,19 @@ void vis::MonsterCatTransformer::draw(int32_t win_height, int32_t win_width,
     // scale bars
     auto scaled_bars = scale_bars(post_falloff_smoothed_bars, win_height);
 
-    draw_bars(scaled_bars, win_height, win_width / 4, flipped, writer);
+    draw_bars(scaled_bars, win_height, number_of_bars, flipped, bar_row_msg, writer);
 }
 
 void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                                            int32_t win_height,
-                                           int32_t win_width,
+                                           uint32_t number_of_bars,
                                            const bool flipped,
+                                           const std::wstring &bar_row_msg,
                                            vis::NcursesWriter *writer)
 {
-    std::wstring msg{m_settings->get_spectrum_character()};
-    msg.push_back(m_settings->get_spectrum_character());
-    msg.push_back(m_settings->get_spectrum_character());
-    msg.push_back(' ');
-
-    for (auto column_index = 0u; column_index < win_width; ++column_index)
+    for (auto column_index = 0u; column_index < number_of_bars; ++column_index)
     {
-        for (auto row_index = 0u; row_index <= bars[column_index]; ++row_index)
+        for (auto row_index = 0; row_index <= static_cast<int32_t>(bars[column_index]); ++row_index)
         {
             int32_t row_height;
             if (flipped)
@@ -235,14 +253,14 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
             {
                 row_height = win_height + row_index - 1;
             }
-            writer->write(row_height, column_index * msg.size(),
-                          writer->to_color(row_index, win_height), msg);
+            writer->write(row_height, static_cast<int32_t>(column_index) * static_cast<int32_t>(bar_row_msg.size()),
+                          writer->to_color(row_index, win_height), bar_row_msg);
         }
     }
 }
 
 void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
-    int32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
+    uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
     std::vector<uint32_t> *high_cutoff_frequencies)
 {
     auto freqconst =
@@ -268,8 +286,8 @@ void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
             freqconst_per_bin[i] / (m_settings->get_sampling_frequency() / 2.0);
 
         (*low_cutoff_frequencies)[i] =
-            frequency *
-            (static_cast<double>(m_settings->get_sample_size()) / 4.0);
+            static_cast<uint32_t>(std::floor(frequency *
+            (static_cast<double>(m_settings->get_sample_size()) / 4.0)));
 
         if (i > 0)
         {

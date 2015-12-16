@@ -138,6 +138,36 @@ class Settings
         m_spectrum_character = spectrum_character;
     }
 
+    wchar_t get_monstercat_character() const noexcept
+    {
+        return m_monstercat_character;
+    }
+
+    void set_monstercat_character(wchar_t monstercat_character)
+    {
+        m_monstercat_character = monstercat_character;
+    }
+
+    uint32_t get_monstercat_bar_width() const noexcept
+    {
+        return m_monstercat_bar_width;
+    }
+
+    void set_monstercat_bar_width(const uint32_t monstercat_bar_width)
+    {
+        m_monstercat_bar_width = monstercat_bar_width;
+    }
+
+    uint32_t get_monstercat_bar_spacing() const noexcept
+    {
+        return m_monstercat_bar_spacing;
+    }
+
+    void set_monstercat_bar_spacing(const uint32_t monstercat_bar_spacing)
+    {
+        m_monstercat_bar_spacing = monstercat_bar_spacing;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -150,6 +180,9 @@ class Settings
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;
+    wchar_t m_monstercat_character;
+    uint32_t m_monstercat_bar_width;
+    uint32_t m_monstercat_bar_spacing;
 };
 }
 
