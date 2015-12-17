@@ -13,7 +13,10 @@
 #include "Domain/VisConstants.h"
 #include "Utils/ConfigurationUtils.h"
 #include "Utils/Logger.h"
+#include "Utils/NcursesUtils.h"
 #include "Visualizer.h"
+
+#include <ncurses.h>
 
 static vis::Visualizer *g_vis = nullptr;
 
@@ -44,4 +47,6 @@ int main()
     visualizer->run();
 
     vis::Logger::uninitialize();
+    system("setterm -blank 10");
+    system("clear");
 }

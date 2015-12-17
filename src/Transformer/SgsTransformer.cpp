@@ -56,7 +56,7 @@ void vis::SgsTransformer::draw(int32_t win_height, int32_t win_width,
                     m_freq_magnitudes[freq_magnitude_index];
                 m_freq_magnitudes_top_row[freq_magnitude_index] =
                     std::max(m_freq_magnitudes_top_row[freq_magnitude_index] *
-                                 std::pow(0.9999, difference),
+                                 std::pow(0.9995, difference),
                              m_freq_magnitudes[freq_magnitude_index]);
 
                 top_row_bar_height +=

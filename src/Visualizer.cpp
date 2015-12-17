@@ -10,13 +10,16 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
+#include "Transformer/SgsTransformer.h"
 #include "Transformer/MonsterCatTransformer.h"
 #include "Writer/NcursesWriter.h"
+#include "Utils/NcursesUtils.h"
 
 #include <iostream>
+#include <ncurses.h>
 
 vis::Visualizer::Visualizer(const vis::Settings *const settings)
-    : m_current_audio_source{nullptr}, m_current_transformer{nullptr},
+    : m_current_audio_source_index{0}, m_current_transformer_index{0},
       m_shutdown{false}, m_settings{settings}, m_pcm_buffer{nullptr}
 {
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
@@ -44,6 +47,7 @@ void vis::Visualizer::run()
     while (!should_shutdown() &&
            audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
     {
+        process_user_input();
         if (m_settings->is_stereo_enabled())
         {
             transformer->execute_stereo(m_pcm_buffer, m_writer.get());
@@ -59,6 +63,22 @@ void vis::Visualizer::run()
     }
 }
 
+void vis::Visualizer::process_user_input()
+{
+    const int32_t user_input = NcursesUtils::get_user_input();
+    switch (user_input)
+    {
+    case ' ':
+        // switch visualizer
+        m_current_transformer_index =
+            (m_current_transformer_index + 1) % m_transformers.size();
+        break;
+    default:
+        // do nothing
+        break;
+    }
+}
+
 void vis::Visualizer::setup_audio_sources()
 {
     for (const auto &audioSource : m_settings->get_audio_sources())
@@ -71,18 +91,16 @@ void vis::Visualizer::setup_audio_sources()
     {
         throw vis::VisException{"No audio sources defined"};
     }
-
-    m_current_audio_source = m_audio_sources[0].get();
 }
 
 void vis::Visualizer::setup_transformers()
 {
     m_transformers.emplace_back(std::unique_ptr<vis::MonsterCatTransformer>{
         new vis::MonsterCatTransformer{m_settings}});
-  //m_transformers.emplace_back(std::unique_ptr<vis::SpectrumTransformer>{
-  //    new vis::SpectrumTransformer{m_settings}});
-
-    m_current_transformer = m_transformers[0].get();
+    m_transformers.emplace_back(std::unique_ptr<vis::SpectrumTransformer>{
+        new vis::SpectrumTransformer{m_settings}});
+    m_transformers.emplace_back(std::unique_ptr<vis::SgsTransformer>{
+        new vis::SgsTransformer{m_settings}});
 }
 
 vis::Visualizer::~Visualizer()

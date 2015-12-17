@@ -1,7 +1,5 @@
 - scale better with larger fonts
     - look more like cava with large font
-- decay better, current there are "towers" take just get worse as decay happens
-    match cava
 - fix bug where there is an extra char printed???
 - make things more configurable
     smoothing params
@@ -14,7 +12,6 @@
 - make color schemes instead of a file
 - figure out better color spectrum
 - read from alsa
-- fix buffer reader so that it reads into an array or something where the allocation isn't with malloc
-- use make_shared instead
+- use make_unique instead
 - get rid of direct member variable access in Spectrum transformer and children
 - writing more unit tests

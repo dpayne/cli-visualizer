@@ -37,10 +37,12 @@ class Visualizer
         m_shutdown = true;
     }
 
-  private:
-    AudioSource *m_current_audio_source;
+    void process_user_input();
 
-    GenericTransformer *m_current_transformer;
+  private:
+    size_t m_current_audio_source_index;
+
+    size_t m_current_transformer_index;
 
     std::unique_ptr<vis::NcursesWriter> m_writer;
 
@@ -58,12 +60,12 @@ class Visualizer
 
     inline AudioSource *get_current_audio_source()
     {
-        return m_current_audio_source;
+        return m_audio_sources[m_current_audio_source_index].get();
     }
 
     inline GenericTransformer *get_current_transformer()
     {
-        return m_current_transformer;
+        return m_transformers[m_current_transformer_index].get();
     }
 
     void setup_audio_sources();

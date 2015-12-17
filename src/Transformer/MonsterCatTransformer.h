@@ -9,6 +9,7 @@
 #define _MONSTER_CAT_TRANSFORMER_H
 
 #include <fftw3.h>
+#include <functional>
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
 #include "Domain/Settings.h"
@@ -28,30 +29,55 @@ class MonsterCatTransformer : public GenericTransformer
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
 
-  protected:
-    virtual void draw(int32_t win_height, int32_t win_width, bool flipped,
-                      vis::NcursesWriter *writer);
-
   private:
     const Settings *const m_settings;
 
+    /** --- BEGIN MEMBER VARIABLES --- */
+
+    /** --- BEGIN --- fft calculations vars **/
     size_t m_fftw_results;
 
-    double *m_fftw_input;
+    double *m_fftw_input_left;
+    double *m_fftw_input_right;
 
-    fftw_complex *m_fftw_output;
+    fftw_complex *m_fftw_output_left;
+    fftw_complex *m_fftw_output_right;
 
-    fftw_plan m_fftw_plan;
+    fftw_plan m_fftw_plan_left;
+    fftw_plan m_fftw_plan_right;
+    /** --- END --- fft calculations vars **/
 
-    uint64_t m_silent_runs;
-
+    /** --- BEGIN --- frequency cutoff calculations vars **/
     std::vector<uint32_t> m_low_cutoff_frequencies;
 
     std::vector<uint32_t> m_high_cutoff_frequencies;
 
-    int32_t m_previous_win_width;
+    int32_t m_previous_win_width; // Used to determine if freq cutoffs need to
+                                  // be re-calculated
+    /** --- END --- frequency cutoff calculations vars **/
 
-    void execute_fftw_plan();
+    uint64_t m_silent_runs; // Used to determine if the transformer should sleep
+                            // and wait for input
+
+    std::vector<double> m_previous_falloff_values; // Holds the previous runs
+                                                   // values, this is used to to
+                                                   // apply falloff effect for
+                                                   // the current run
+
+    std::vector<double> m_previous_max_heights; // Holds the previous runs max
+                                                // heights, this is used for
+                                                // auto-scaling
+
+    /** --- END MEMBER VARIABLES --- */
+
+    /** --- BEGIN MEMBER FUNCTIONS --- */
+    bool prepare_fft_input(pcm_stereo_sample *buffer, uint32_t sample_size,
+                           double *fftw_input, std::function<double (pcm_stereo_sample)> channel_func);
+
+    virtual std::vector<double>
+    create_spectrum_bars(fftw_complex *fftw_output, const size_t fftw_results,
+                         const int32_t win_height, const int32_t win_width,
+                         const uint32_t number_of_bars);
 
     std::vector<double>
     generate_bars(const uint32_t number_of_bars,
@@ -64,21 +90,24 @@ class MonsterCatTransformer : public GenericTransformer
         std::vector<uint32_t> *high_cutoff_frequencies);
 
     void draw_bars(const std::vector<double> &bars, int32_t win_height,
-                   uint32_t number_of_bars, const bool flipped,
-                   const std::wstring &bar_row_msg, vis::NcursesWriter *writer);
+                   const bool flipped, const std::wstring &bar_row_msg,
+                   vis::NcursesWriter *writer);
 
-    std::vector<double>
-    smooth_bars_pre_falloff(const std::vector<double> &bars) const;
+    std::vector<double> smooth_bars(const std::vector<double> &bars) const;
 
-    std::vector<double>
-    smooth_bars_post_falloff(const std::vector<double> &bars) const;
+    std::vector<double> apply_falloff(const std::vector<double> &bars,
+                                      std::vector<double> &previous_bars) const;
 
-    std::vector<double> apply_falloff(const std::vector<double> &bars) const;
+    double calculate_moving_average(const double new_value,
+                                    const size_t max_number_of_elements,
+                                    std::vector<double> &old_values) const;
 
     std::vector<double> scale_bars(const std::vector<double> &bars,
-                                   const int32_t height) const;
+                                   const int32_t height);
 
-    std::wstring create_bar_row_msg( const wchar_t character, uint32_t bar_width, uint32_t bar_spacing);
+    std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width,
+                                    uint32_t bar_spacing);
+    /** --- END MEMBER FUNCTIONS --- */
 };
 }
 

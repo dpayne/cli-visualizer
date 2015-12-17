@@ -97,6 +97,12 @@ class NcursesUtils
         return width;
     }
 
+    static inline int32_t get_user_input()
+    {
+        timeout(0);
+        return getch();
+    }
+
   private:
     explicit NcursesUtils();
 
