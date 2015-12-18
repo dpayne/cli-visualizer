@@ -176,9 +176,12 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
             create_bar_row_msg(m_settings->get_monstercat_character(),
                                m_settings->get_monstercat_bar_width(),
                                m_settings->get_monstercat_bar_spacing());
+
         uint32_t number_of_bars = static_cast<uint32_t>(
             std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
+
         fftw_execute(m_fftw_plan_left);
+
         const auto bars =
             create_spectrum_bars(m_fftw_output_left, m_fftw_results, win_height,
                                  win_width, number_of_bars);
@@ -212,7 +215,7 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
     }
 
     // apply monstercat sytle smoothing
-    for (int64_t i = 1; i < bars_length; ++i)
+    for (auto i = 1l; i < bars_length; ++i)
     {
         auto outer_index = static_cast<size_t>(i);
 
@@ -487,17 +490,17 @@ std::vector<double> vis::MonsterCatTransformer::generate_bars(
     const std::vector<uint32_t> &low_cutoff_frequencies,
     const std::vector<uint32_t> &high_cutoff_frequencies) const
 {
-    std::vector<double> result_freq_magnitudes(fftw_results);
+    std::vector<double> result_freq_magnitudes(number_of_bars);
 
     for (auto i = 0u; i < number_of_bars; ++i)
     {
         double freq_magnitude = 0.0;
         for (auto cutoff_freq = low_cutoff_frequencies[i];
-             cutoff_freq <= high_cutoff_frequencies[i]; ++cutoff_freq)
+             cutoff_freq <= high_cutoff_frequencies[i] && cutoff_freq < fftw_results; ++cutoff_freq)
         {
             freq_magnitude +=
-                std::sqrt((fftw_output[i][0] * fftw_output[i][0]) +
-                          (fftw_output[i][1] * fftw_output[i][1]));
+                std::sqrt((fftw_output[cutoff_freq][0] * fftw_output[cutoff_freq][0]) +
+                          (fftw_output[cutoff_freq][1] * fftw_output[cutoff_freq][1]));
         }
 
         result_freq_magnitudes[i] =
