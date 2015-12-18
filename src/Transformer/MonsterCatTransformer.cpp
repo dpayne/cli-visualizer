@@ -209,7 +209,7 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
             bars[static_cast<size_t>(i)] = kMinimumBarHeight;
         }
 
-        for (int64_t j = std::max((i - 100), 0l);
+        for (int64_t j = std::max((i - static_cast<int64_t>(100)), static_cast<int64_t>(0));
              j < std::min(bars_length, i + 100); ++j)
         {
             if (i != j)
