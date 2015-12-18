@@ -413,6 +413,14 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                                            const std::wstring &bar_row_msg,
                                            vis::NcursesWriter *writer)
 {
+    if ( static_cast<size_t>(win_height) != m_precomputed_colors.size() )
+    {
+        m_precomputed_colors.reserve(static_cast<size_t>(win_height));
+        for (auto i = 0; i < win_height; ++i)
+        {
+            m_precomputed_colors[static_cast<size_t>(i)] = writer->to_color(i, win_height);
+        }
+    }
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)
     {
         for (auto row_index = 0;
@@ -435,7 +443,7 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                 writer->write(
                     row_height, static_cast<int32_t>(column_index) *
                                     static_cast<int32_t>(bar_row_msg.size()),
-                    writer->to_color(row_index, win_height), bar_row_msg);
+                    m_precomputed_colors[static_cast<size_t>(row_index)], bar_row_msg);
             }
         }
     }

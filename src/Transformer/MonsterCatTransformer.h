@@ -77,6 +77,8 @@ class MonsterCatTransformer : public GenericTransformer
                                                 // auto-scaling
 
     std::vector<double> m_monstercat_smoothing_weights;
+
+    std::vector<vis::ColorIndex> m_precomputed_colors;   //precompute coloring calculations to avoid duplicate work
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
