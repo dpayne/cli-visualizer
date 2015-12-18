@@ -383,7 +383,8 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
     {
         recalculate_cutoff_frequencies(number_of_bars,
                                        &m_low_cutoff_frequencies,
-                                       &m_high_cutoff_frequencies);
+                                       &m_high_cutoff_frequencies,
+                                       &m_frequency_constants_per_bin);
         m_previous_win_width = win_width;
     }
 
@@ -442,7 +443,8 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
 
 void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
     uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
-    std::vector<uint32_t> *high_cutoff_frequencies)
+    std::vector<uint32_t> *high_cutoff_frequencies,
+    std::vector<double> *freqconst_per_bin)
 {
     auto freqconst =
         std::log10(
@@ -450,21 +452,20 @@ void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
             static_cast<double>(m_settings->get_high_cutoff_frequency())) /
         ((1.0 / (static_cast<double>(number_of_bars) + 1.0)) - 1.0);
 
-    std::vector<double> freqconst_per_bin(number_of_bars);
-
     (*low_cutoff_frequencies) = std::vector<uint32_t>(number_of_bars + 1);
     (*high_cutoff_frequencies) = std::vector<uint32_t>(number_of_bars + 1);
+    (*freqconst_per_bin) = std::vector<double>(number_of_bars + 1);
 
     for (auto i = 0u; i < number_of_bars; ++i)
     {
-        freqconst_per_bin[i] =
+        (*freqconst_per_bin)[i] =
             static_cast<double>(m_settings->get_high_cutoff_frequency()) *
             std::pow(10.0,
                      (freqconst * -1) +
                          (((i + 1.0) / (number_of_bars + 1.0)) * freqconst));
 
         auto frequency =
-            freqconst_per_bin[i] / (m_settings->get_sampling_frequency() / 2.0);
+            (*freqconst_per_bin)[i] / (m_settings->get_sampling_frequency() / 2.0);
 
         (*low_cutoff_frequencies)[i] = static_cast<uint32_t>(std::floor(
             frequency *
@@ -506,6 +507,11 @@ std::vector<double> vis::MonsterCatTransformer::generate_bars(
         result_freq_magnitudes[i] =
             freq_magnitude /
             (high_cutoff_frequencies[i] - low_cutoff_frequencies[i] + 1);
+
+        //boost high frequencies
+        result_freq_magnitudes[i] *=
+            (std::log2(2 + i) * (100.0 / number_of_bars));
+        result_freq_magnitudes[i] = std::pow(result_freq_magnitudes[i], 0.5);
     }
 
     return result_freq_magnitudes;

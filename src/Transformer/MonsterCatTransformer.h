@@ -58,6 +58,8 @@ class MonsterCatTransformer : public GenericTransformer
 
     std::vector<uint32_t> m_high_cutoff_frequencies;
 
+    std::vector<double> m_frequency_constants_per_bin;
+
     int32_t m_previous_win_width; // Used to determine if freq cutoffs need to
                                   // be re-calculated
     /** --- END --- frequency cutoff calculations vars **/
@@ -94,7 +96,8 @@ class MonsterCatTransformer : public GenericTransformer
 
     void recalculate_cutoff_frequencies(
         uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
-        std::vector<uint32_t> *high_cutoff_frequencies);
+        std::vector<uint32_t> *high_cutoff_frequencies,
+        std::vector<double> *freqconst_per_bin);
 
     void draw_bars(const std::vector<double> &bars, int32_t win_height,
                    const bool flipped, const std::wstring &bar_row_msg,
