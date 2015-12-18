@@ -4,6 +4,7 @@
 
 TARGET= vis
 TEST_TARGET= run_tests
+PERF_TEST_TARGET= run_perf_tests
 
 ###############################################################################
 ##  SETTINGS                                                                 ##
@@ -30,6 +31,7 @@ endif
 DIR=$(shell pwd)
 BUILD_DIR = $(DIR)/build
 BUILD_TEST_DIR = $(DIR)/build_tests
+BUILD_PERF_TEST_DIR = $(DIR)/build_perf_tests
 
 # Override optimizations via: make OPT_LEVEL=n
 OPT_LEVEL = 3
@@ -40,7 +42,16 @@ CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global
 CC_FLAGS += -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
 CC_FLAGS += -ffast-math
-CC_FLAGS += -fno-omit-frame-pointer -ggdb -g2
+CC_FLAGS += -fno-omit-frame-pointer
+CC_FLAGS += -ggdb -g2
+
+#perf tests should not have many warnings or error out on warning
+PERF_TEST_CC_FLAGS = -std=c++14
+PERF_TEST_CC_FLAGS += -O$(OPT_LEVEL)
+PERF_TEST_CC_FLAGS += -march=native
+PERF_TEST_CC_FLAGS += -ffast-math
+PERF_TEST_CC_FLAGS += -fno-omit-frame-pointer
+PERF_TEST_CC_FLAGS += -ggdb -g2
 
 ifeq ($(OS),Darwin)
 CC_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
@@ -50,6 +61,7 @@ endif
 
 # Linker flags
 LD_FLAGS = $(LDFLAGS) -fno-omit-frame-pointer
+PERF_TEST_LD_FLAGS = -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 LD_FLAGS += -D_XOPEN_SOURCE_EXTENDED
@@ -73,6 +85,7 @@ endif
 # Include Paths
 INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
 TEST_INCLUDE_PATH = -I/usr/include
+PERF_TEST_INCLUDE_PATH = -I/usr/include
 
 # Lib Paths
 LIB_PATH = -L/usr/local/lib
@@ -80,6 +93,7 @@ LIB_PATH = -L/usr/local/lib
 # Libs
 LIBS = -lncurses -lfftw3
 TEST_LIBS = -lgtest
+PERF_TEST_LIBS = -lbenchmark -lpthread
 
 ifneq ($(OS),Darwin)
 LIBS += -ljemalloc
@@ -102,7 +116,11 @@ TEST_SOURCES= $(wildcard tests/*.cpp) $(wildcard tests/*/*.cpp) $(wildcard tests
 
 TEST_OBJECTS= $(addprefix $(BUILD_TEST_DIR)/,$(notdir $(TEST_SOURCES:.cpp=.o))) $(filter-out $(BUILD_DIR)/$(TARGET).o,$(OBJECTS))
 
-VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/))
+PERF_TEST_SOURCES= $(wildcard perf_tests/*.cpp) $(wildcard perf_tests/*/*.cpp) $(wildcard perf_tests/*/*/*.cpp)
+
+PERF_TEST_OBJECTS= $(addprefix $(BUILD_PERF_TEST_DIR)/,$(notdir $(PERF_TEST_SOURCES:.cpp=.o))) $(filter-out $(BUILD_DIR)/$(TARGET).o,$(OBJECTS))
+
+VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/)) $(dir $(wildcard perf_tests/*/ perf_tests/*/*/))
 
 ###############################################################################
 ##  MAIN TARGETS                                                             ##
@@ -111,6 +129,8 @@ VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/))
 all: prepare build
 
 tests: prepare_tests build_tests
+
+perf_tests: prepare_perf_tests build_perf_tests
 
 .PHONY: prepare
 prepare:
@@ -122,16 +142,25 @@ prepare_tests:
 	mkdir -p $(BUILD_TEST_DIR)
 	rm -f $(BUILD_TEST_DIR)/$(TEST_TARGET)
 
+.PHONY: prepare_perf_tests
+prepare_perf_tests:
+	mkdir -p $(BUILD_PERF_TEST_DIR)
+	rm -f $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
+
 .PHONY: build
 build: $(OBJECTS) $(TARGET)
 
 .PHONY: build build_tests run_tests
 build_tests: $(TEST_OBJECTS) $(TEST_TARGET)
 
+.PHONY: build build_perf_tests run_perf_tests
+build_perf_tests: $(PERF_TEST_OBJECTS) $(PERF_TEST_TARGET)
+
 .PHONY:clean
 clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(BUILD_TEST_DIR)
+	@rm -rf $(BUILD_PERF_TEST_DIR)
 
 install:
 	cp $(BUILD_DIR)/$(TARGET) /usr/local/bin/
@@ -153,8 +182,15 @@ $(TEST_TARGET): $(OBJECTS) $(TEST_OBJECTS)
 	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
 	$(BUILD_TEST_DIR)/$(TEST_TARGET)
 
-clang_tidy: $(HEADERS) $(SOURCES) $(TEST_SOURCES)
+$(BUILD_PERF_TEST_DIR)/%.o: %.cpp
+	$(CC) $(PERF_TEST_CC_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) -c $< -o $@
+
+$(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
+	$(CC) $(PERF_TEST_CC_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
+	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
+
+clang_tidy: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
 	clang-tidy -checks=${CLANG_TIDY_CHECKS} $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
 
-clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES)
+clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
 	clang-format -i $?

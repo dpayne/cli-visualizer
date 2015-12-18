@@ -143,6 +143,16 @@ class Settings
         return m_monstercat_character;
     }
 
+    void set_monstercat_smoothing_factor(double monstercat_smoothing_factor)
+    {
+        m_monstercat_smoothing_factor = monstercat_smoothing_factor;
+    }
+
+    double get_monstercat_smoothing_factor() const noexcept
+    {
+        return m_monstercat_smoothing_factor;
+    }
+
     void set_monstercat_character(wchar_t monstercat_character)
     {
         m_monstercat_character = monstercat_character;
@@ -183,6 +193,7 @@ class Settings
     wchar_t m_monstercat_character;
     uint32_t m_monstercat_bar_width;
     uint32_t m_monstercat_bar_spacing;
+    double m_monstercat_smoothing_factor;
 };
 }
 

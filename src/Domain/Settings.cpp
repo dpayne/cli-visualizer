@@ -17,7 +17,8 @@ vis::Settings::Settings()
       m_spectrum_character{VisConstants::k_default_spectrum_character},
       m_monstercat_character{VisConstants::k_default_monstercat_character},
       m_monstercat_bar_width{VisConstants::k_default_monstercat_bar_width},
-      m_monstercat_bar_spacing{VisConstants::k_default_monstercat_bar_spacing}
+      m_monstercat_bar_spacing{VisConstants::k_default_monstercat_bar_spacing},
+      m_monstercat_smoothing_factor{VisConstants::k_default_monstercat_smoothing_factor}
 {
 }
 

@@ -148,6 +148,23 @@ class Utils
     }
 
     /**
+     * Helper method for getting a double value from a unordered map with a
+     * default.
+     */
+    template <class E, class V>
+    static inline double get(const std::unordered_map<E, V> &map, const E &key,
+                           const double default_value)
+    {
+        auto iter = map.find(key);
+        if (iter != map.end())
+        {
+            return std::stod(iter->second);
+        }
+
+        return default_value;
+    }
+
+    /**
      * Helper method for getting a uint32_t from a unordered map with a default.
      */
     template <class E, class V>

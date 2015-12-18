@@ -35,7 +35,6 @@ class MonsterCatTransformer : public GenericTransformer
                       vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
-
   private:
     const Settings *const m_settings;
 

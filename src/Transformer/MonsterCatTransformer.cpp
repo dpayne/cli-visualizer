@@ -200,34 +200,48 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
 void
 vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
 {
-    // apply monstercat sytle smoothing
     int64_t bars_length = static_cast<int64_t>(bars.size());
-
     static std::vector<double> precomputed_weights;
 
-    //re-compute weights if needed
-    if ( precomputed_weights.size() != bars.size() )
+    // re-compute weights if needed
+    if (precomputed_weights.size() != bars.size())
     {
-        precomputed_weights = std::vector<double>( bars.size() );
-        for ( auto i = 0u; i < bars.size(); ++i )
+        precomputed_weights = std::vector<double>(bars.size());
+        for (auto i = 0u; i < bars.size(); ++i)
         {
-            precomputed_weights[i] = std::pow(1.5, i);
+            precomputed_weights[i] = std::pow(m_settings->get_monstercat_smoothing_factor(), i);
         }
     }
 
+    // apply monstercat sytle smoothing
     for (int64_t i = 1; i < bars_length; ++i)
     {
-        if (bars[static_cast<size_t>(i)] < kMinimumBarHeight)
-        {
-            bars[static_cast<size_t>(i)] = kMinimumBarHeight;
-        }
+        auto outer_index = static_cast<size_t>(i);
 
-        for (int64_t j = 0; j < bars_length; ++j)
+        if (bars[outer_index] < kMinimumBarHeight)
         {
-            if (i != j)
+            bars[outer_index] = kMinimumBarHeight;
+        }
+        else
+        {
+            for (int64_t j = 0; j < bars_length; ++j)
             {
-                const size_t index = static_cast<size_t>(j);
-                bars[index] = std::max(bars[index] / precomputed_weights[static_cast<size_t>(std::abs(i-j))], bars[index]);
+                if (i != j)
+                {
+                    const size_t index = static_cast<size_t>(j);
+                    const auto weighted_value =
+                        bars[outer_index] /
+                        precomputed_weights[static_cast<size_t>(
+                            std::abs(i - j))];
+
+                    // Note: do not use max here, since it's actually slower.
+                    // Separating the assignment from the comparison avoids an
+                    // unneeded assignment when bars[index] is the largest
+                    if (bars[index] < weighted_value)
+                    {
+                        bars[index] = weighted_value;
+                    }
+                }
             }
         }
     }
