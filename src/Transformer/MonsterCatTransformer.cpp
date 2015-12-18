@@ -12,6 +12,7 @@
 
 #include "Utils/Logger.h"
 #include "Transformer/MonsterCatTransformer.h"
+#include <algorithm>
 #include <climits>
 #include <cmath>
 #include <iostream>
@@ -21,7 +22,13 @@
 
 namespace
 {
-static const size_t kSecsForAutoscaling = 10;
+static const size_t kSecsForAutoscaling = 30;
+static const double kAutoScalingResetWindowPercent = 0.10;
+static const double kAutoScalingErasePercentOnReset = 0.75;
+static const double kDeviationAmountToReset =
+    1.0; // amount of deviation needed between short term and long term moving
+         // max height averages to trigger an auto scaling reset
+
 static const double kMinimumBarHeight = 0.125;
 static const uint64_t kSilentSleepMilliSeconds = 100;
 static const uint64_t kMaxSilentRunsBeforeSleep =
@@ -53,15 +60,26 @@ vis::MonsterCatTransformer::MonsterCatTransformer(
         m_fftw_output_right, FFTW_ESTIMATE);
 }
 
-bool vis::MonsterCatTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
-                                                   uint32_t sample_size,
-                                                   double *fftw_input, std::function<double (pcm_stereo_sample)> channel_func)
+bool vis::MonsterCatTransformer::prepare_fft_input(
+    pcm_stereo_sample *buffer, uint32_t sample_size, double *fftw_input,
+    ChannelMode channel_mode)
 {
     bool is_silent = true;
 
     for (auto i = 0u; i < sample_size; ++i)
     {
-        fftw_input[i] = channel_func( buffer[i] );
+        switch (channel_mode)
+        {
+        case ChannelMode::Left:
+            fftw_input[i] = buffer[i].l;
+            break;
+        case ChannelMode::Right:
+            fftw_input[i] = buffer[i].r;
+            break;
+        case ChannelMode::Both:
+            fftw_input[i] = buffer[i].l + buffer[i].r;
+            break;
+        }
 
         if (is_silent && fftw_input[i] > 0)
         {
@@ -78,10 +96,12 @@ void vis::MonsterCatTransformer::execute_stereo(pcm_stereo_sample *buffer,
     const auto win_height = get_window_height();
     const auto win_width = get_window_width();
 
-    bool is_silent_left = prepare_fft_input(
-        buffer, m_settings->get_sample_size(), m_fftw_input_left, [](pcm_stereo_sample buf) { return buf.l; } );
-    bool is_silent_right = prepare_fft_input(
-        buffer, m_settings->get_sample_size(), m_fftw_input_right, [](pcm_stereo_sample buf) { return buf.r; });
+    bool is_silent_left =
+        prepare_fft_input(buffer, m_settings->get_sample_size(),
+                          m_fftw_input_left, vis::ChannelMode::Left);
+    bool is_silent_right =
+        prepare_fft_input(buffer, m_settings->get_sample_size(),
+                          m_fftw_input_right, vis::ChannelMode::Right);
 
     if (!(is_silent_left && is_silent_right))
     {
@@ -115,8 +135,9 @@ void vis::MonsterCatTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
         // clear screen before writing
         writer->clear();
-        draw_bars(bars_left, half_height, true, bar_row_msg, writer);
-        draw_bars(bars_right, half_height, false, bar_row_msg, writer);
+
+        draw_bars(bars_left, half_height + 1, true, bar_row_msg, writer);
+        draw_bars(bars_right, half_height + 1, false, bar_row_msg, writer);
 
         writer->flush();
     }
@@ -135,8 +156,9 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
     const auto win_height = get_window_height();
     const auto win_width = get_window_width();
 
-    bool is_silent = prepare_fft_input(
-        buffer, m_settings->get_sample_size(), m_fftw_input_left, [](pcm_stereo_sample buf) { return buf.r + buf.l; });
+    bool is_silent =
+        prepare_fft_input(buffer, m_settings->get_sample_size(),
+                          m_fftw_input_left, vis::ChannelMode::Both);
 
     if (!is_silent)
     {
@@ -175,32 +197,29 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
     }
 }
 
-std::vector<double>
-vis::MonsterCatTransformer::smooth_bars(const std::vector<double> &bars) const
+void
+vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
 {
     // apply monstercat sytle smoothing
-    std::vector<double> smoothed_bars = bars;
-    for (auto i = 0u; i < bars.size(); ++i)
+    int64_t bars_length = static_cast<int64_t>(bars.size());
+    for (int64_t i = 1; i < bars_length; ++i)
     {
-        if (smoothed_bars[i] < kMinimumBarHeight)
+        if (bars[static_cast<size_t>(i)] < kMinimumBarHeight)
         {
-            smoothed_bars[i] = kMinimumBarHeight;
+            bars[static_cast<size_t>(i)] = kMinimumBarHeight;
         }
 
-        for (auto j = (i - 1); i != 0u && j != 0u; --j)
+        for (int64_t j = std::max((i - 100), 0l);
+             j < std::min(bars_length, i + 100); ++j)
         {
-            smoothed_bars[j] = std::max(
-                smoothed_bars[i] / std::pow(1.5, (i - j)), smoothed_bars[j]);
-        }
-
-        for (auto j = (i + 1); j < bars.size(); ++j)
-        {
-            smoothed_bars[j] = std::max(
-                smoothed_bars[i] / std::pow(1.5, (i - j)), smoothed_bars[j]);
+            if (i != j)
+            {
+                const double weight = std::pow(1.5, std::abs(i-j));
+                const size_t index = static_cast<size_t>(j);
+                bars[index] = std::max(bars[index] / weight, bars[index]);
+            }
         }
     }
-
-    return smoothed_bars;
 }
 
 std::vector<double> vis::MonsterCatTransformer::apply_falloff(
@@ -224,9 +243,10 @@ std::vector<double> vis::MonsterCatTransformer::apply_falloff(
     }
 }
 
-double vis::MonsterCatTransformer::calculate_moving_average(
+void vis::MonsterCatTransformer::calculate_moving_average_and_std_dev(
     const double new_value, const size_t max_number_of_elements,
-    std::vector<double> &old_values) const
+    std::vector<double> &old_values, double *moving_average,
+    double *std_dev) const
 {
     if (old_values.size() > max_number_of_elements)
     {
@@ -235,17 +255,18 @@ double vis::MonsterCatTransformer::calculate_moving_average(
 
     old_values.push_back(new_value);
 
-    return static_cast<double>(
-               std::accumulate(old_values.begin(), old_values.end(), 0u)) /
-           static_cast<double>(old_values.size());
+    auto sum = std::accumulate(old_values.begin(), old_values.end(), 0.0);
+    *moving_average = sum / old_values.size();
+
+    auto squared_summation = std::inner_product(
+        old_values.begin(), old_values.end(), old_values.begin(), 0.0);
+    *std_dev = std::sqrt((squared_summation / old_values.size()) -
+                         std::pow(*moving_average, 2));
 }
 
-std::vector<double>
-vis::MonsterCatTransformer::scale_bars(const std::vector<double> &bars,
+void vis::MonsterCatTransformer::scale_bars(std::vector<double> &bars,
                                        const int32_t height)
 {
-    std::vector<double> scaled_bars(bars.size());
-
     const auto max_height_iter = std::max_element(bars.begin(), bars.end());
 
     // max number of elements to calculate for moving average
@@ -254,18 +275,57 @@ vis::MonsterCatTransformer::scale_bars(const std::vector<double> &bars,
          (static_cast<double>(m_settings->get_sample_size()))) *
         2.0);
 
-    const auto moving_average = calculate_moving_average(
-        *max_height_iter, max_number_of_elements, m_previous_max_heights);
+    double std_dev = 0.0;
+    double moving_average = 0.0;
+    calculate_moving_average_and_std_dev(
+        *max_height_iter, max_number_of_elements, m_previous_max_heights,
+        &moving_average, &std_dev);
 
-    const auto max_height = std::max(*max_height_iter, moving_average);
+    maybe_reset_scaling_window(
+        *max_height_iter, max_number_of_elements, &m_previous_max_heights,
+        &moving_average, &std_dev);
+
+    auto max_height = moving_average + (2 * std_dev);
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
-        scaled_bars[i] = std::min(static_cast<double>(height - 1),
+        bars[i] = std::min(static_cast<double>(height - 1),
                                   ((bars[i] / max_height) * height) - 1);
     }
+}
 
-    return scaled_bars;
+void vis::MonsterCatTransformer::maybe_reset_scaling_window(
+    const double current_max_height, const size_t max_number_of_elements,
+    std::vector<double> *values, double *moving_average, double *std_dev)
+{
+    const auto reset_window_size =
+        (kAutoScalingResetWindowPercent * max_number_of_elements);
+    // Current max height is much larger than moving average, so throw away most
+    // values re-calculate
+    if (static_cast<double>(values->size()) > reset_window_size)
+    {
+        // get average over scaling window
+        auto average_over_reset_window =
+            std::accumulate(values->begin(),
+                            values->begin() + static_cast<int64_t>(reset_window_size), 0.0) /
+            reset_window_size;
+
+        // if short term average very different from long term moving average,
+        // reset window and re-calculate
+        if (std::abs(average_over_reset_window - *moving_average) >
+            (kDeviationAmountToReset * (*std_dev)))
+        {
+            values->erase(
+                values->begin(),
+                values->begin() +
+                    static_cast<long>((static_cast<double>(values->size()) *
+                                       kAutoScalingErasePercentOnReset)));
+
+            calculate_moving_average_and_std_dev(
+                current_max_height, max_number_of_elements, *values,
+                moving_average, std_dev);
+        }
+    }
 }
 
 std::wstring vis::MonsterCatTransformer::create_bar_row_msg(
@@ -303,19 +363,19 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
 
     // Separate the frequency spectrum into bars, the number of bars is based on
     // screen width
-    auto raw_bars =
+    auto bars =
         generate_bars(number_of_bars, fftw_output, fftw_results,
                       m_low_cutoff_frequencies, m_high_cutoff_frequencies);
 
     // smoothing
-    auto smoothed_bars = smooth_bars(raw_bars);
+    smooth_bars(bars);
 
     // scale bars
-    auto scaled_bars = scale_bars(smoothed_bars, win_height);
+    scale_bars(bars, win_height);
 
     // falloff, save values for next falloff run
     m_previous_falloff_values =
-        apply_falloff(scaled_bars, m_previous_falloff_values);
+        apply_falloff(bars, m_previous_falloff_values);
 
     return m_previous_falloff_values;
 }
@@ -335,7 +395,7 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
             {
                 int32_t row_height;
 
-                //left channel grows up, right channel grows down
+                // left channel grows up, right channel grows down
                 if (flipped)
                 {
                     row_height = win_height - row_index - 1;
@@ -345,10 +405,10 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                     row_height = win_height + row_index - 1;
                 }
 
-                writer->write(row_height,
-                              static_cast<int32_t>(column_index) *
-                                  static_cast<int32_t>(bar_row_msg.size()),
-                              writer->to_color(row_index, win_height), bar_row_msg);
+                writer->write(
+                    row_height, static_cast<int32_t>(column_index) *
+                                    static_cast<int32_t>(bar_row_msg.size()),
+                    writer->to_color(row_index, win_height), bar_row_msg);
             }
         }
     }

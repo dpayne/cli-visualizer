@@ -40,7 +40,7 @@ CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global
 CC_FLAGS += -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
 CC_FLAGS += -ffast-math
-CC_FLAGS += -fno-omit-frame-pointer
+CC_FLAGS += -fno-omit-frame-pointer -ggdb -g2
 
 ifeq ($(OS),Darwin)
 CC_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED

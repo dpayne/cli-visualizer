@@ -24,7 +24,7 @@ static const std::string k_default_config_path{"vis/config"};
 static const std::string k_default_colors_path{"vis/colors"};
 static const std::string k_default_log_path{"vis/vis.log"};
 static const wchar_t k_default_spectrum_character{'#'};
-static const wchar_t k_default_monstercat_character{'#'};
+static const wchar_t k_default_monstercat_character{L'\u2588'};
 static const uint32_t k_default_monstercat_bar_width = 2;
 static const uint32_t k_default_monstercat_bar_spacing = 1;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;

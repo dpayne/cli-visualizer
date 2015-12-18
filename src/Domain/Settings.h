@@ -107,7 +107,7 @@ class Settings
         return m_is_color_enabled;
     }
 
-    std::vector<vis::ColorIndex> get_colors() const noexcept
+    const std::vector<vis::ColorIndex> &get_colors() const noexcept
     {
         return m_colors;
     }
@@ -117,7 +117,7 @@ class Settings
         m_colors = colors;
     }
 
-    std::vector<vis::ColorDefinition> get_color_definitions() const noexcept
+    const std::vector<vis::ColorDefinition> & get_color_definitions() const noexcept
     {
         return m_color_definitions;
     }

@@ -17,6 +17,13 @@
 namespace vis
 {
 
+enum class ChannelMode
+{
+    Left = 0,
+    Right,
+    Both
+};
+
 class MonsterCatTransformer : public GenericTransformer
 {
   public:
@@ -72,7 +79,7 @@ class MonsterCatTransformer : public GenericTransformer
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
     bool prepare_fft_input(pcm_stereo_sample *buffer, uint32_t sample_size,
-                           double *fftw_input, std::function<double (pcm_stereo_sample)> channel_func);
+                           double *fftw_input, ChannelMode channel_mode);
 
     virtual std::vector<double>
     create_spectrum_bars(fftw_complex *fftw_output, const size_t fftw_results,
@@ -93,16 +100,22 @@ class MonsterCatTransformer : public GenericTransformer
                    const bool flipped, const std::wstring &bar_row_msg,
                    vis::NcursesWriter *writer);
 
-    std::vector<double> smooth_bars(const std::vector<double> &bars) const;
+    void smooth_bars(std::vector<double> &bars) const;
 
     std::vector<double> apply_falloff(const std::vector<double> &bars,
                                       std::vector<double> &previous_bars) const;
 
-    double calculate_moving_average(const double new_value,
-                                    const size_t max_number_of_elements,
-                                    std::vector<double> &old_values) const;
+    void calculate_moving_average_and_std_dev(
+        const double new_value, const size_t max_number_of_elements,
+        std::vector<double> &old_values, double *moving_average,
+        double *std_dev) const;
 
-    std::vector<double> scale_bars(const std::vector<double> &bars,
+    void maybe_reset_scaling_window(const double current_max_height,
+                                    const size_t max_number_of_elements,
+                                    std::vector<double> *values,
+                                    double *moving_average, double *std_dev);
+
+    void scale_bars(std::vector<double> &bars,
                                    const int32_t height);
 
     std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width,
