@@ -202,6 +202,19 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
 {
     // apply monstercat sytle smoothing
     int64_t bars_length = static_cast<int64_t>(bars.size());
+
+    static std::vector<double> precomputed_weights;
+
+    //re-compute weights if needed
+    if ( precomputed_weights.size() != bars.size() )
+    {
+        precomputed_weights = std::vector<double>( bars.size() );
+        for ( auto i = 0u; i < bars.size(); ++i )
+        {
+            precomputed_weights[i] = std::pow(1.5, i);
+        }
+    }
+
     for (int64_t i = 1; i < bars_length; ++i)
     {
         if (bars[static_cast<size_t>(i)] < kMinimumBarHeight)
@@ -209,14 +222,12 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
             bars[static_cast<size_t>(i)] = kMinimumBarHeight;
         }
 
-        for (int64_t j = std::max((i - static_cast<int64_t>(100)), static_cast<int64_t>(0));
-             j < std::min(bars_length, i + 100); ++j)
+        for (int64_t j = 0; j < bars_length; ++j)
         {
             if (i != j)
             {
-                const double weight = std::pow(1.5, std::abs(i-j));
                 const size_t index = static_cast<size_t>(j);
-                bars[index] = std::max(bars[index] / weight, bars[index]);
+                bars[index] = std::max(bars[index] / precomputed_weights[static_cast<size_t>(std::abs(i-j))], bars[index]);
             }
         }
     }
