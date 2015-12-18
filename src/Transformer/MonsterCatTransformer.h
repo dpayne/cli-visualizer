@@ -74,6 +74,7 @@ class MonsterCatTransformer : public GenericTransformer
                                                 // heights, this is used for
                                                 // auto-scaling
 
+    std::vector<double> m_monstercat_smoothing_weights;
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
@@ -99,7 +100,7 @@ class MonsterCatTransformer : public GenericTransformer
                    const bool flipped, const std::wstring &bar_row_msg,
                    vis::NcursesWriter *writer);
 
-    void smooth_bars(std::vector<double> &bars) const;
+    void smooth_bars(std::vector<double> &bars);
 
     std::vector<double> apply_falloff(const std::vector<double> &bars,
                                       std::vector<double> &previous_bars) const;

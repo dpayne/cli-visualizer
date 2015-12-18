@@ -198,18 +198,16 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
 }
 
 void
-vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
+vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
 {
     int64_t bars_length = static_cast<int64_t>(bars.size());
-    static std::vector<double> precomputed_weights;
-
     // re-compute weights if needed
-    if (precomputed_weights.size() != bars.size())
+    if (m_monstercat_smoothing_weights.size() != bars.size())
     {
-        precomputed_weights = std::vector<double>(bars.size());
+        m_monstercat_smoothing_weights.reserve(bars.size());
         for (auto i = 0u; i < bars.size(); ++i)
         {
-            precomputed_weights[i] = std::pow(m_settings->get_monstercat_smoothing_factor(), i);
+            m_monstercat_smoothing_weights[i] = std::pow(m_settings->get_monstercat_smoothing_factor(), i);
         }
     }
 
@@ -231,7 +229,7 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars) const
                     const size_t index = static_cast<size_t>(j);
                     const auto weighted_value =
                         bars[outer_index] /
-                        precomputed_weights[static_cast<size_t>(
+                        m_monstercat_smoothing_weights[static_cast<size_t>(
                             std::abs(i - j))];
 
                     // Note: do not use max here, since it's actually slower.
