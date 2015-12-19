@@ -219,11 +219,10 @@ void vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
 
 void vis::MonsterCatTransformer::sgs_smoothing(std::vector<double> &bars)
 {
-    std::vector<double> original_bars = bars;
+    auto original_bars = bars;
 
-    // TODO: make this configurable
-    uint32_t smoothing_passes = 1;
-    uint32_t smoothing_points = 3;
+    auto smoothing_passes = m_settings->get_sgs_smoothing_passes();
+    auto smoothing_points = m_settings->get_sgs_smoothing_points();
 
     for (auto pass = 0u; pass < smoothing_passes; ++pass)
     {
@@ -236,7 +235,7 @@ void vis::MonsterCatTransformer::sgs_smoothing(std::vector<double> &bars)
                 original_bars[original_bars.size() - i - 1];
         }
 
-        double smoothing_constant = 1.0 / (2.0 * pivot + 1.0);
+        auto smoothing_constant = 1.0 / (2.0 * pivot + 1.0);
         for (auto i = pivot; i < (original_bars.size() - pivot); ++i)
         {
             auto sum = 0.0;

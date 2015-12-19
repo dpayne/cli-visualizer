@@ -42,8 +42,14 @@ const static std::string k_spectrum_bar_spacing{
     "visualizer.spectrum.bar.spacing"};
 const static std::string k_spectrum_smoothing_mode{
     "visualizer.spectrum.smoothing.mode"};
+
 const static std::string k_monstercat_smoothing_factor{
     "visualizer.monstercat.smoothing.factor"};
+
+const static std::string k_sgs_smoothing_points{
+    "visualizer.sgs.smoothing.points"};
+const static std::string k_sgs_smoothing_passes{
+    "visualizer.sgs.smoothing.passes"};
 }
 
 vis::ConfigurationUtils::ConfigurationUtils()
@@ -219,6 +225,14 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,
                    VisConstants::k_default_monstercat_smoothing_factor));
+
+    settings.set_sgs_smoothing_points(
+        Utils::get(properties, k_sgs_smoothing_points,
+                   VisConstants::k_default_sgs_smoothing_points));
+
+    settings.set_sgs_smoothing_passes(
+        Utils::get(properties, k_sgs_smoothing_passes,
+                   VisConstants::k_default_sgs_smoothing_passes));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

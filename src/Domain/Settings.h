@@ -149,6 +149,26 @@ class Settings
         return m_monstercat_smoothing_factor;
     }
 
+    void set_sgs_smoothing_points(uint32_t sgs_smoothing_points)
+    {
+        m_sgs_smoothing_points = sgs_smoothing_points;
+    }
+
+    uint32_t get_sgs_smoothing_points() const noexcept
+    {
+        return m_sgs_smoothing_points;
+    }
+
+    void set_sgs_smoothing_passes(uint32_t sgs_smoothing_passes)
+    {
+        m_sgs_smoothing_passes = sgs_smoothing_passes;
+    }
+
+    uint32_t get_sgs_smoothing_passes() const noexcept
+    {
+        return m_sgs_smoothing_passes;
+    }
+
     uint32_t get_spectrum_bar_width() const noexcept
     {
         return m_spectrum_bar_width;
@@ -194,6 +214,8 @@ class Settings
     uint32_t m_spectrum_bar_width;
     uint32_t m_spectrum_bar_spacing;
     double m_monstercat_smoothing_factor;
+    uint32_t m_sgs_smoothing_points;
+    uint32_t m_sgs_smoothing_passes;
     SmoothingMode m_spectrum_smoothing_mode;
 };
 }
