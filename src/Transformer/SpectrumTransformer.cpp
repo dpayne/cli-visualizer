@@ -8,6 +8,7 @@
  * git@github.com:karlstav/cava.git
  */
 
+#include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Transformer/SpectrumTransformer.h"
 #include <algorithm>
@@ -28,9 +29,8 @@ static const double kDeviationAmountToReset =
          // max height averages to trigger an auto scaling reset
 
 static const double kMinimumBarHeight = 0.125;
-static const uint64_t kSilentSleepMilliSeconds = 100;
 static const uint64_t kMaxSilentRunsBeforeSleep =
-    3000ul / kSilentSleepMilliSeconds; // silent for 3 seconds
+    3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(
@@ -145,9 +145,9 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
     else
     {
         VIS_LOG(vis::LogLevel::DEBUG, "No input, Sleeping for %d milliseconds",
-                kSilentSleepMilliSeconds);
+                VisConstants::k_silent_sleep_milliseconds);
         std::this_thread::sleep_for(
-            std::chrono::milliseconds(kSilentSleepMilliSeconds));
+            std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
     }
 }
 
@@ -196,9 +196,9 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
     else
     {
         VIS_LOG(vis::LogLevel::DEBUG, "No input, Sleeping for %d milliseconds",
-                kSilentSleepMilliSeconds);
+                VisConstants::k_silent_sleep_milliseconds);
         std::this_thread::sleep_for(
-            std::chrono::milliseconds(kSilentSleepMilliSeconds));
+            std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
     }
 }
 

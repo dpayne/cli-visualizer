@@ -18,6 +18,12 @@ vis::MpdAudioSource::MpdAudioSource(const Settings *const settings)
 
 bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer, uint32_t buffer_size)
 {
+    //try to re-open the stream if it has been closed
+    if (!m_fifo_stream.is_open())
+    {
+        m_fifo_stream.open(m_settings->get_mpd_fifo_path(), std::ifstream::in);
+    }
+
     if (m_fifo_stream.is_open() && m_fifo_stream.good() && !m_fifo_stream.eof())
     {
         // read buffer
@@ -36,6 +42,11 @@ bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer, uint32_t buffer_size)
         {
             return true;
         }
+    }
+    else
+    {
+        //close the stream and try re-opening on next run
+        m_fifo_stream.close();
     }
 
     return false;
