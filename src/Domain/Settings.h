@@ -199,6 +199,16 @@ class Settings
         m_spectrum_smoothing_mode = spectrum_smoothing_mode;
     }
 
+    void set_spectrum_falloff_mode(const vis::FalloffMode falloff_mode)
+    {
+        m_spectrum_falloff_mode = falloff_mode;
+    }
+
+    vis::FalloffMode get_spectrum_falloff_mode() const noexcept
+    {
+        return m_spectrum_falloff_mode;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -217,6 +227,7 @@ class Settings
     uint32_t m_sgs_smoothing_points;
     uint32_t m_sgs_smoothing_passes;
     SmoothingMode m_spectrum_smoothing_mode;
+    FalloffMode m_spectrum_falloff_mode;
 };
 }
 

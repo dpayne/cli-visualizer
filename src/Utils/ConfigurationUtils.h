@@ -33,6 +33,11 @@ class ConfigurationUtils
         const std::string &config_param,
         const vis::SmoothingMode default_smoothing_mode);
 
+    static vis::FalloffMode read_falloff_mode(
+        const std::unordered_map<std::string, std::string> properties,
+        const std::string &config_param,
+        const vis::FalloffMode default_falloff_mode);
+
     static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);
 

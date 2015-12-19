@@ -29,5 +29,12 @@ enum class SmoothingMode
     MonsterCat,
     Sgs
 };
+
+enum class FalloffMode
+{
+    None = 0,
+    Fill,
+    Top
+};
 }
 #endif

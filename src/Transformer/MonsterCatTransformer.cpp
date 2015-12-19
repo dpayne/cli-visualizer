@@ -127,18 +127,20 @@ void vis::MonsterCatTransformer::execute_stereo(pcm_stereo_sample *buffer,
         fftw_execute(m_fftw_plan_right);
 
         const auto half_height = win_height / 2;
-        const auto bars_left =
-            create_spectrum_bars(m_fftw_output_left, m_fftw_results,
-                                 half_height, win_width, number_of_bars);
-        const auto bars_right =
-            create_spectrum_bars(m_fftw_output_right, m_fftw_results,
-                                 half_height, win_width, number_of_bars);
+        create_spectrum_bars(m_fftw_output_left, m_fftw_results, half_height,
+                             win_width, number_of_bars, m_bars_left,
+                             m_bars_falloff_left);
+        create_spectrum_bars(m_fftw_output_right, m_fftw_results, half_height,
+                             win_width, number_of_bars, m_bars_right,
+                             m_bars_falloff_right);
 
         // clear screen before writing
         writer->clear();
 
-        draw_bars(bars_left, half_height + 1, true, bar_row_msg, writer);
-        draw_bars(bars_right, half_height + 1, false, bar_row_msg, writer);
+        draw_bars(m_bars_left, m_bars_falloff_left, half_height + 1, true,
+                  bar_row_msg, writer);
+        draw_bars(m_bars_right, m_bars_falloff_right, half_height + 1, false,
+                  bar_row_msg, writer);
 
         writer->flush();
     }
@@ -183,13 +185,14 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
 
         fftw_execute(m_fftw_plan_left);
 
-        const auto bars =
-            create_spectrum_bars(m_fftw_output_left, m_fftw_results, win_height,
-                                 win_width, number_of_bars);
+        create_spectrum_bars(m_fftw_output_left, m_fftw_results, win_height,
+                             win_width, number_of_bars, m_bars_left,
+                             m_bars_falloff_left);
 
         // clear screen before writing
         writer->clear();
-        draw_bars(bars, win_height, true, bar_row_msg, writer);
+        draw_bars(m_bars_left, m_bars_falloff_left, win_height, true,
+                  bar_row_msg, writer);
         writer->flush();
     }
     else
@@ -348,6 +351,11 @@ void vis::MonsterCatTransformer::calculate_moving_average_and_std_dev(
 void vis::MonsterCatTransformer::scale_bars(std::vector<double> &bars,
                                             const int32_t height)
 {
+    if (bars.empty())
+    {
+        return;
+    }
+
     const auto max_height_iter = std::max_element(bars.begin(), bars.end());
 
     // max number of elements to calculate for moving average
@@ -429,10 +437,11 @@ std::wstring vis::MonsterCatTransformer::create_bar_row_msg(
     return bar_row_msg;
 }
 
-std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
+void vis::MonsterCatTransformer::create_spectrum_bars(
     fftw_complex *fftw_output, const size_t fftw_results,
     const int32_t win_height, const int32_t win_width,
-    const uint32_t number_of_bars)
+    const uint32_t number_of_bars, std::vector<double> &bars,
+    std::vector<double> &bars_falloff)
 {
     // cut off frequencies only have to be re-calculated if number of bars
     // change
@@ -446,9 +455,8 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
 
     // Separate the frequency spectrum into bars, the number of bars is based on
     // screen width
-    auto bars =
-        generate_bars(number_of_bars, fftw_output, fftw_results,
-                      m_low_cutoff_frequencies, m_high_cutoff_frequencies);
+    generate_bars(bars, number_of_bars, fftw_output, fftw_results,
+                  m_low_cutoff_frequencies, m_high_cutoff_frequencies);
 
     // smoothing
     smooth_bars(bars);
@@ -457,16 +465,13 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
     scale_bars(bars, win_height);
 
     // falloff, save values for next falloff run
-    m_previous_falloff_values = apply_falloff(bars, m_previous_falloff_values);
-
-    return m_previous_falloff_values;
+    bars_falloff = apply_falloff(bars, bars_falloff);
 }
 
-void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
-                                           int32_t win_height,
-                                           const bool flipped,
-                                           const std::wstring &bar_row_msg,
-                                           vis::NcursesWriter *writer)
+void vis::MonsterCatTransformer::draw_bars(
+    const std::vector<double> &bars, const std::vector<double> &bars_falloff,
+    int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
+    vis::NcursesWriter *writer)
 {
     if (static_cast<size_t>(win_height) != m_precomputed_colors.size())
     {
@@ -477,10 +482,26 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                 writer->to_color(i, win_height);
         }
     }
+
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)
     {
+        auto bar_height = 0.0;
+
+        switch (m_settings->get_spectrum_falloff_mode())
+        {
+            case vis::FalloffMode::None:
+                bar_height = bars[column_index];
+                break;
+            case vis::FalloffMode::Fill:
+                bar_height = bars_falloff[column_index];
+                break;
+            case vis::FalloffMode::Top:
+                bar_height = bars[column_index];
+                break;
+        }
+
         for (auto row_index = 0;
-             row_index <= static_cast<int32_t>(bars[column_index]); ++row_index)
+             row_index <= static_cast<int32_t>(bar_height); ++row_index)
         {
             if (bars[column_index] > 0)
             {
@@ -498,6 +519,31 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
 
                 writer->write(
                     row_height, static_cast<int32_t>(column_index) *
+                                    static_cast<int32_t>(bar_row_msg.size()),
+                    m_precomputed_colors[static_cast<size_t>(row_index)],
+                    bar_row_msg);
+            }
+        }
+
+        if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
+        {
+            int32_t row_index = static_cast<int32_t>(bars_falloff[column_index]);
+            int32_t top_row_height;
+
+            // left channel grows up, right channel grows down
+            if (flipped)
+            {
+                top_row_height = win_height - row_index - 1;
+            }
+            else
+            {
+                top_row_height = win_height + row_index - 1;
+            }
+
+            if ( top_row_height > 0 )
+            {
+                writer->write(
+                    top_row_height, static_cast<int32_t>(column_index) *
                                     static_cast<int32_t>(bar_row_msg.size()),
                     m_precomputed_colors[static_cast<size_t>(row_index)],
                     bar_row_msg);
@@ -550,13 +596,16 @@ void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
     }
 }
 
-std::vector<double> vis::MonsterCatTransformer::generate_bars(
-    const uint32_t number_of_bars, const fftw_complex *fftw_output,
-    const size_t fftw_results,
+void vis::MonsterCatTransformer::generate_bars(
+    std::vector<double> &bars, const uint32_t number_of_bars,
+    const fftw_complex *fftw_output, const size_t fftw_results,
     const std::vector<uint32_t> &low_cutoff_frequencies,
     const std::vector<uint32_t> &high_cutoff_frequencies) const
 {
-    std::vector<double> result_freq_magnitudes(number_of_bars);
+    if (bars.size() != number_of_bars)
+    {
+        bars.resize(number_of_bars, 0.0);
+    }
 
     for (auto i = 0u; i < number_of_bars; ++i)
     {
@@ -571,17 +620,13 @@ std::vector<double> vis::MonsterCatTransformer::generate_bars(
                 (fftw_output[cutoff_freq][1] * fftw_output[cutoff_freq][1]));
         }
 
-        result_freq_magnitudes[i] =
-            freq_magnitude /
-            (high_cutoff_frequencies[i] - low_cutoff_frequencies[i] + 1);
+        bars[i] = freq_magnitude /
+                  (high_cutoff_frequencies[i] - low_cutoff_frequencies[i] + 1);
 
         // boost high frequencies
-        result_freq_magnitudes[i] *=
-            (std::log2(2 + i) * (100.0 / number_of_bars));
-        result_freq_magnitudes[i] = std::pow(result_freq_magnitudes[i], 0.5);
+        bars[i] *= (std::log2(2 + i) * (100.0 / number_of_bars));
+        bars[i] = std::pow(bars[i], 0.5);
     }
-
-    return result_freq_magnitudes;
 }
 
 vis::MonsterCatTransformer::~MonsterCatTransformer()

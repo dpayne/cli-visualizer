@@ -68,33 +68,50 @@ class MonsterCatTransformer : public GenericTransformer
     uint64_t m_silent_runs; // Used to determine if the transformer should sleep
                             // and wait for input
 
-    std::vector<double> m_previous_falloff_values; // Holds the previous runs
-                                                   // values, this is used to to
-                                                   // apply falloff effect for
-                                                   // the current run
+    // Holds the current bar heights after processing, this is done as a member
+    // function to avoid memory allocations on every run
+    std::vector<double> m_bars_left;
+    std::vector<double> m_bars_right;
 
-    std::vector<double> m_previous_max_heights; // Holds the previous runs max
-                                                // heights, this is used for
-                                                // auto-scaling
+    // falloff vectors hold the previous runs values, this is used to to apply
+    // falloff effect for the current run
+    std::vector<double> m_bars_falloff_left;
+    std::vector<double> m_bars_falloff_right;
 
+    std::vector<double> m_previous_max_heights;
+
+    //Used by monstercat smoothing to apply weights to a bar's height as determined by it's frequency range
+    //Note: this is only re-computed when screen width changes
     std::vector<double> m_monstercat_smoothing_weights;
 
-    std::vector<vis::ColorIndex> m_precomputed_colors; // precompute coloring
-                                                       // calculations to avoid
-                                                       // duplicate work
+    // Pre-compute colors calculations to avoid duplicate work
+    //Note: this is only re-computed when screen height changes
+    std::vector<vis::ColorIndex> m_precomputed_colors;
+
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
+
+    /**
+     * Copies the channel given by "channel_mode" to the fftw_input buffer
+     */
     bool prepare_fft_input(pcm_stereo_sample *buffer, uint32_t sample_size,
                            double *fftw_input, ChannelMode channel_mode);
 
-    virtual std::vector<double>
+    /**
+     * Populates "bars" and "bars_falloff" with the bar heights to be displayed
+     */
+    virtual void
     create_spectrum_bars(fftw_complex *fftw_output, const size_t fftw_results,
                          const int32_t win_height, const int32_t win_width,
-                         const uint32_t number_of_bars);
+                         const uint32_t number_of_bars,
+                         std::vector<double> &bars, std::vector<double> &bars_falloff
+                         );
 
-    std::vector<double>
-    generate_bars(const uint32_t number_of_bars,
+    void
+    generate_bars(
+    std::vector<double> &bars,
+            const uint32_t number_of_bars,
                   const fftw_complex *fftw_output, const size_t fftw_results,
                   const std::vector<uint32_t> &low_cutoff_frequencies,
                   const std::vector<uint32_t> &high_cutoff_frequencies) const;
@@ -104,7 +121,7 @@ class MonsterCatTransformer : public GenericTransformer
         std::vector<uint32_t> *high_cutoff_frequencies,
         std::vector<double> *freqconst_per_bin);
 
-    void draw_bars(const std::vector<double> &bars, int32_t win_height,
+    void draw_bars(const std::vector<double> &bars, const std::vector<double> &bars_falloff, int32_t win_height,
                    const bool flipped, const std::wstring &bar_row_msg,
                    vis::NcursesWriter *writer);
 

@@ -42,6 +42,8 @@ const static std::string k_spectrum_bar_spacing{
     "visualizer.spectrum.bar.spacing"};
 const static std::string k_spectrum_smoothing_mode{
     "visualizer.spectrum.smoothing.mode"};
+const static std::string k_spectrum_falloff_mode{
+    "visualizer.spectrum.falloff.mode"};
 
 const static std::string k_monstercat_smoothing_factor{
     "visualizer.monstercat.smoothing.factor"};
@@ -130,6 +132,43 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     }
 
     return color_definitions;
+}
+
+vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
+    const std::unordered_map<std::string, std::string> properties,
+    const std::string &config_param,
+    const vis::FalloffMode default_falloff_mode)
+{
+    auto falloff_mode_str =
+        vis::Utils::get(properties, k_spectrum_falloff_mode, std::string{""});
+
+    vis::FalloffMode falloff_mode = default_falloff_mode;
+
+    if (!falloff_mode_str.empty())
+    {
+        std::transform(falloff_mode_str.begin(), falloff_mode_str.end(),
+                       falloff_mode_str.begin(), ::tolower);
+
+        if (falloff_mode_str == "none")
+        {
+            falloff_mode = vis::FalloffMode::None;
+        }
+        else if (falloff_mode_str == "fill")
+        {
+            falloff_mode = vis::FalloffMode::Fill;
+        }
+        else if (falloff_mode_str == "top")
+        {
+            falloff_mode = vis::FalloffMode::Top;
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::ERROR, "Invalid falloff mode %s for %s",
+                    falloff_mode_str.c_str(), config_param.c_str());
+        }
+    }
+
+    return falloff_mode;
 }
 
 vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
@@ -221,6 +260,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_spectrum_smoothing_mode(
         read_smoothing_mode(properties, k_spectrum_smoothing_mode,
                             VisConstants::k_default_spectrum_smoothing_mode));
+
+    settings.set_spectrum_falloff_mode(
+        read_falloff_mode(properties, k_spectrum_falloff_mode,
+                            VisConstants::k_default_spectrum_falloff_mode));
 
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,
