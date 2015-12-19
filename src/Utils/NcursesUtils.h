@@ -26,7 +26,6 @@ const static std::map<std::string, int16_t> g_vis_color_map{
     {"magenta", COLOR_MAGENTA}, {"white", COLOR_WHITE},
 };
 
-
 class NcursesUtils
 {
 
@@ -81,8 +80,8 @@ class NcursesUtils
     {
         int32_t width, height;
 
-        //getmaxyx is actually a macro, not a function, so pass it two integers
-        getmaxyx( stdscr, height, width );
+        // getmaxyx is actually a macro, not a function, so pass it two integers
+        getmaxyx(stdscr, height, width);
 
         return height;
     }
@@ -91,8 +90,8 @@ class NcursesUtils
     {
         int32_t width, height;
 
-        //getmaxyx is actually a macro, not a function, so pass it two integers
-        getmaxyx( stdscr, height, width );
+        // getmaxyx is actually a macro, not a function, so pass it two integers
+        getmaxyx(stdscr, height, width);
 
         return width;
     }
@@ -107,7 +106,6 @@ class NcursesUtils
     explicit NcursesUtils();
 
     virtual ~NcursesUtils();
-
 };
 }
 

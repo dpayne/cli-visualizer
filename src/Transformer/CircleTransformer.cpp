@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 vis::CircleTransformer::CircleTransformer(const Settings *const settings)
-    : SpectrumTransformer( settings )
+    : SpectrumTransformer(settings)
 {
 }
 
@@ -19,9 +19,8 @@ vis::CircleTransformer::~CircleTransformer()
 {
 }
 
-void vis::CircleTransformer::draw(int32_t win_height,
-                                             int32_t win_width, bool flipped,
-                                             vis::NcursesWriter *writer)
+void vis::CircleTransformer::draw(int32_t win_height, int32_t win_width,
+                                  bool flipped, vis::NcursesWriter *writer)
 {
     // cut bandwidth a little to achieve better look
     const auto bins_per_bar =
@@ -62,11 +61,11 @@ void vis::CircleTransformer::draw(int32_t win_height,
         top_row_bar_height = std::max(top_row_bar_height, bar_height);
 
         bar_bound_height = normalize_height(win_width, win_height, column_index,
-                                           bins_per_bar, bar_height);
+                                            bins_per_bar, bar_height);
 
         top_row_bar_bound_height =
             normalize_height(win_width, win_height, column_index, bins_per_bar,
-                            top_row_bar_height);
+                             top_row_bar_height);
 
         auto row_index_sign = flipped ? -1 : 1;
         std::wstring msg{m_settings->get_spectrum_character()};

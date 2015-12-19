@@ -26,9 +26,8 @@ class CircleTransformer : public SpectrumTransformer
 
   protected:
     void draw(int32_t win_height, int32_t win_width, bool flipped,
-                       vis::NcursesWriter *writer) override;
+              vis::NcursesWriter *writer) override;
 };
 }
 
 #endif
-

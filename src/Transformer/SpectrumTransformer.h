@@ -24,9 +24,9 @@ class SpectrumTransformer : public GenericTransformer
     ~SpectrumTransformer() override;
 
     void execute_mono(pcm_stereo_sample *buffer,
-                              vis::NcursesWriter *writer) override;
+                      vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
-                                vis::NcursesWriter *writer) override;
+                        vis::NcursesWriter *writer) override;
 
   protected:
     const Settings *const m_settings;
@@ -46,14 +46,14 @@ class SpectrumTransformer : public GenericTransformer
     std::vector<double> m_freq_magnitudes_top_row;
 
     virtual void draw(int32_t win_height, int32_t win_width, bool flipped,
-                       vis::NcursesWriter *writer);
+                      vis::NcursesWriter *writer);
 
     int32_t normalize_height(const int32_t win_width, const int32_t win_height,
-                           const int32_t column_index,
-                           const double bins_per_bar, const double bar_height);
+                             const int32_t column_index,
+                             const double bins_per_bar,
+                             const double bar_height);
 
   private:
-
     void execute_fftw_plan(int32_t win_height);
 };
 }

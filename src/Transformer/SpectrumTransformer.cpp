@@ -82,9 +82,8 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
     writer->flush();
 }
 
-void vis::SpectrumTransformer::draw(int32_t win_height,
-                                             int32_t win_width, bool flipped,
-                                             vis::NcursesWriter *writer)
+void vis::SpectrumTransformer::draw(int32_t win_height, int32_t win_width,
+                                    bool flipped, vis::NcursesWriter *writer)
 {
     // cut bandwidth a little to achieve better look
     const auto bins_per_bar =
@@ -123,11 +122,11 @@ void vis::SpectrumTransformer::draw(int32_t win_height,
         top_row_bar_height = std::max(top_row_bar_height, bar_height);
 
         bar_bound_height = normalize_height(win_width, win_height, column_index,
-                                           bins_per_bar, bar_height);
+                                            bins_per_bar, bar_height);
 
         top_row_bar_bound_height =
             normalize_height(win_width, win_height, column_index, bins_per_bar,
-                            top_row_bar_height);
+                             top_row_bar_height);
 
         auto row_index_sign = flipped ? -1 : 1;
         std::wstring msg{m_settings->get_spectrum_character()};
@@ -147,10 +146,10 @@ void vis::SpectrumTransformer::draw(int32_t win_height,
 }
 
 int32_t vis::SpectrumTransformer::normalize_height(const int32_t win_width,
-                                                  const int32_t win_height,
-                                                  const int32_t column_index,
-                                                  const double bins_per_bar,
-                                                  const double bar_height)
+                                                   const int32_t win_height,
+                                                   const int32_t column_index,
+                                                   const double bins_per_bar,
+                                                   const double bar_height)
 {
     // buff higher frequencies
     double normalized_bar_height =
@@ -158,8 +157,9 @@ int32_t vis::SpectrumTransformer::normalize_height(const int32_t win_width,
     // moderately normalize the heights
     normalized_bar_height = std::pow(normalized_bar_height, 0.5);
 
-    return std::min(static_cast<int32_t>((normalized_bar_height / bins_per_bar)/1.75),
-                    win_height);
+    return std::min(
+        static_cast<int32_t>((normalized_bar_height / bins_per_bar) / 1.75),
+        win_height);
 }
 
 void vis::SpectrumTransformer::execute_fftw_plan(int32_t win_height)

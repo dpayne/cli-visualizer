@@ -26,9 +26,9 @@ class SgsTransformer : public SpectrumTransformer
 
   protected:
     void draw(int32_t win_height, int32_t win_width, bool flipped,
-                       vis::NcursesWriter *writer) override;
+              vis::NcursesWriter *writer) override;
 
-    std::vector<double> smooth_sgs(const std::vector<double> & frequencies);
+    std::vector<double> smooth_sgs(const std::vector<double> &frequencies);
 
     int32_t normalize_height(const int32_t win_height,
                              const double bins_per_bar,
@@ -37,5 +37,3 @@ class SgsTransformer : public SpectrumTransformer
 }
 
 #endif
-
-
