@@ -34,6 +34,7 @@ static const vis::SmoothingMode k_default_spectrum_smoothing_mode =
     vis::SmoothingMode::MonsterCat;
 static const vis::FalloffMode k_default_spectrum_falloff_mode =
     vis::FalloffMode::Fill;
+static const double k_default_spectrum_falloff_weight = 0.99;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 }
 

@@ -44,6 +44,8 @@ const static std::string k_spectrum_smoothing_mode{
     "visualizer.spectrum.smoothing.mode"};
 const static std::string k_spectrum_falloff_mode{
     "visualizer.spectrum.falloff.mode"};
+const static std::string k_spectrum_falloff_weight{
+    "visualizer.spectrum.falloff.weight"};
 
 const static std::string k_monstercat_smoothing_factor{
     "visualizer.monstercat.smoothing.factor"};
@@ -264,6 +266,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_spectrum_falloff_mode(
         read_falloff_mode(properties, k_spectrum_falloff_mode,
                             VisConstants::k_default_spectrum_falloff_mode));
+
+    settings.set_spectrum_falloff_weight(
+        Utils::get(properties, k_spectrum_falloff_weight,
+                            VisConstants::k_default_spectrum_falloff_weight));
 
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,

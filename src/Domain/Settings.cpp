@@ -24,7 +24,8 @@ vis::Settings::Settings()
       m_sgs_smoothing_passes{
           VisConstants::k_default_sgs_smoothing_passes},
       m_spectrum_smoothing_mode{VisConstants::k_default_spectrum_smoothing_mode},
-      m_spectrum_falloff_mode{VisConstants::k_default_spectrum_falloff_mode}
+      m_spectrum_falloff_mode{VisConstants::k_default_spectrum_falloff_mode},
+      m_spectrum_falloff_weight{VisConstants::k_default_spectrum_falloff_weight}
 {
 }
 

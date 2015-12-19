@@ -320,7 +320,7 @@ std::vector<double> vis::MonsterCatTransformer::apply_falloff(
         {
             auto difference = std::abs(previous_bars[i] - bars[i]);
             previous_bars[i] = std::max(
-                previous_bars[i] * std::pow(0.99, difference), bars[i]);
+                previous_bars[i] * std::pow(m_settings->get_spectrum_falloff_weight(), difference), bars[i]);
         }
 
         return previous_bars;

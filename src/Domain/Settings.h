@@ -209,6 +209,16 @@ class Settings
         return m_spectrum_falloff_mode;
     }
 
+    void set_spectrum_falloff_weight(const double spectrum_falloff_weight)
+    {
+        m_spectrum_falloff_weight = spectrum_falloff_weight;
+    }
+
+    double get_spectrum_falloff_weight() const noexcept
+    {
+        return m_spectrum_falloff_weight;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -228,6 +238,7 @@ class Settings
     uint32_t m_sgs_smoothing_passes;
     SmoothingMode m_spectrum_smoothing_mode;
     FalloffMode m_spectrum_falloff_mode;
+    double m_spectrum_falloff_weight;
 };
 }
 
