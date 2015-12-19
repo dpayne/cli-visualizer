@@ -9,6 +9,7 @@
 #define _VIS_CONSTANTS_H
 
 #include <string>
+#include "Domain/VisTypes.h"
 
 namespace VisConstants
 {
@@ -23,11 +24,11 @@ static const uint32_t k_default_high_cutoff_frequency = 22050;
 static const std::string k_default_config_path{"vis/config"};
 static const std::string k_default_colors_path{"vis/colors"};
 static const std::string k_default_log_path{"vis/vis.log"};
-static const wchar_t k_default_spectrum_character{'#'};
-static const wchar_t k_default_monstercat_character{L'\u2588'};
+static const wchar_t k_default_spectrum_character{L'\u2588'};
 static const double k_default_monstercat_smoothing_factor{1.5};
-static const uint32_t k_default_monstercat_bar_width = 2;
-static const uint32_t k_default_monstercat_bar_spacing = 1;
+static const uint32_t k_default_spectrum_bar_width = 2;
+static const uint32_t k_default_spectrum_bar_spacing = 1;
+static const vis::SmoothingMode k_default_spectrum_smoothing_mode = vis::SmoothingMode::MonsterCat;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 }
 

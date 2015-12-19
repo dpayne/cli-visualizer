@@ -1,11 +1,11 @@
-- scale better with larger fonts
-    - look more like cava with large font
-- fix bug where there is an extra char printed???
+- move spectrum stuff into one visualizer
+    - three different smoothing modes sgs, monster, none
+    - add fall off effect
+        - make it configurable
 - make things more configurable
-    smoothing params
-    frequency range
-    min freq
-- figure top row bug where a blue char is printed
+    - monster cat smoothing params
+    - auto sensing sensitivity
+- fix shutdown so that when mpd stops ctrl-C works, when mpd is stopped it should just wait for input
 - make ellipse
 - make simple wave matching ncmcpcpp
 - make circle transformer possibly make it rotate

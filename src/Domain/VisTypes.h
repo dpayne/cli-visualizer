@@ -22,5 +22,12 @@ using pcm_stereo_sample = struct stereo_sample_frame;
 
 using ColorIndex = int16_t;
 using ColorValue = int16_t;
+
+enum class SmoothingMode
+{
+    None = 0,
+    MonsterCat,
+    Sgs
+};
 }
 #endif

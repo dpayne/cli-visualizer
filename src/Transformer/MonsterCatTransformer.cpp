@@ -60,9 +60,10 @@ vis::MonsterCatTransformer::MonsterCatTransformer(
         m_fftw_output_right, FFTW_ESTIMATE);
 }
 
-bool vis::MonsterCatTransformer::prepare_fft_input(
-    pcm_stereo_sample *buffer, uint32_t sample_size, double *fftw_input,
-    ChannelMode channel_mode)
+bool vis::MonsterCatTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
+                                                   uint32_t sample_size,
+                                                   double *fftw_input,
+                                                   ChannelMode channel_mode)
 {
     bool is_silent = true;
 
@@ -116,9 +117,9 @@ void vis::MonsterCatTransformer::execute_stereo(pcm_stereo_sample *buffer,
     if (m_silent_runs < kMaxSilentRunsBeforeSleep)
     {
         std::wstring bar_row_msg =
-            create_bar_row_msg(m_settings->get_monstercat_character(),
-                               m_settings->get_monstercat_bar_width(),
-                               m_settings->get_monstercat_bar_spacing());
+            create_bar_row_msg(m_settings->get_spectrum_character(),
+                               m_settings->get_spectrum_bar_width(),
+                               m_settings->get_spectrum_bar_spacing());
         uint32_t number_of_bars = static_cast<uint32_t>(
             std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
 
@@ -173,9 +174,9 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
     if (m_silent_runs < kMaxSilentRunsBeforeSleep)
     {
         std::wstring bar_row_msg =
-            create_bar_row_msg(m_settings->get_monstercat_character(),
-                               m_settings->get_monstercat_bar_width(),
-                               m_settings->get_monstercat_bar_spacing());
+            create_bar_row_msg(m_settings->get_spectrum_character(),
+                               m_settings->get_spectrum_bar_width(),
+                               m_settings->get_spectrum_bar_spacing());
 
         uint32_t number_of_bars = static_cast<uint32_t>(
             std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
@@ -200,8 +201,62 @@ void vis::MonsterCatTransformer::execute_mono(pcm_stereo_sample *buffer,
     }
 }
 
-void
-vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
+void vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
+{
+    switch (m_settings->get_spectrum_smoothing_mode())
+    {
+    case vis::SmoothingMode::None:
+        // Do nothing
+        break;
+    case vis::SmoothingMode::MonsterCat:
+        monstercat_smoothing(bars);
+        break;
+    case vis::SmoothingMode::Sgs:
+        sgs_smoothing(bars);
+        break;
+    }
+}
+
+void vis::MonsterCatTransformer::sgs_smoothing(std::vector<double> &bars)
+{
+    std::vector<double> original_bars = bars;
+
+    // TODO: make this configurable
+    uint32_t smoothing_passes = 1;
+    uint32_t smoothing_points = 3;
+
+    for (auto pass = 0u; pass < smoothing_passes; ++pass)
+    {
+        auto pivot = static_cast<uint32_t>(std::floor(smoothing_points / 2.0));
+
+        for (auto i = 0u; i < pivot; ++i)
+        {
+            bars[i] = original_bars[i];
+            bars[original_bars.size() - i - 1] =
+                original_bars[original_bars.size() - i - 1];
+        }
+
+        double smoothing_constant = 1.0 / (2.0 * pivot + 1.0);
+        for (auto i = pivot; i < (original_bars.size() - pivot); ++i)
+        {
+            auto sum = 0.0;
+            for (auto j = 0u; j <= (2 * pivot); ++j)
+            {
+                sum += (smoothing_constant * original_bars[i + j - pivot]) + j -
+                       pivot;
+            }
+            bars[i] = sum;
+        }
+
+        // prepare for next pass
+        if (pass < (smoothing_passes - 1))
+        {
+            original_bars = bars;
+        }
+    }
+}
+
+void vis::MonsterCatTransformer::monstercat_smoothing(std::vector<double> &bars)
 {
     int64_t bars_length = static_cast<int64_t>(bars.size());
     // re-compute weights if needed
@@ -210,7 +265,8 @@ vis::MonsterCatTransformer::smooth_bars(std::vector<double> &bars)
         m_monstercat_smoothing_weights.reserve(bars.size());
         for (auto i = 0u; i < bars.size(); ++i)
         {
-            m_monstercat_smoothing_weights[i] = std::pow(m_settings->get_monstercat_smoothing_factor(), i);
+            m_monstercat_smoothing_weights[i] =
+                std::pow(m_settings->get_monstercat_smoothing_factor(), i);
         }
     }
 
@@ -291,7 +347,7 @@ void vis::MonsterCatTransformer::calculate_moving_average_and_std_dev(
 }
 
 void vis::MonsterCatTransformer::scale_bars(std::vector<double> &bars,
-                                       const int32_t height)
+                                            const int32_t height)
 {
     const auto max_height_iter = std::max_element(bars.begin(), bars.end());
 
@@ -307,16 +363,16 @@ void vis::MonsterCatTransformer::scale_bars(std::vector<double> &bars,
         *max_height_iter, max_number_of_elements, m_previous_max_heights,
         &moving_average, &std_dev);
 
-    maybe_reset_scaling_window(
-        *max_height_iter, max_number_of_elements, &m_previous_max_heights,
-        &moving_average, &std_dev);
+    maybe_reset_scaling_window(*max_height_iter, max_number_of_elements,
+                               &m_previous_max_heights, &moving_average,
+                               &std_dev);
 
     auto max_height = moving_average + (2 * std_dev);
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
         bars[i] = std::min(static_cast<double>(height - 1),
-                                  ((bars[i] / max_height) * height) - 1);
+                           ((bars[i] / max_height) * height) - 1);
     }
 }
 
@@ -333,7 +389,9 @@ void vis::MonsterCatTransformer::maybe_reset_scaling_window(
         // get average over scaling window
         auto average_over_reset_window =
             std::accumulate(values->begin(),
-                            values->begin() + static_cast<int64_t>(reset_window_size), 0.0) /
+                            values->begin() +
+                                static_cast<int64_t>(reset_window_size),
+                            0.0) /
             reset_window_size;
 
         // if short term average very different from long term moving average,
@@ -381,10 +439,9 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
     // change
     if (m_previous_win_width != win_width)
     {
-        recalculate_cutoff_frequencies(number_of_bars,
-                                       &m_low_cutoff_frequencies,
-                                       &m_high_cutoff_frequencies,
-                                       &m_frequency_constants_per_bin);
+        recalculate_cutoff_frequencies(
+            number_of_bars, &m_low_cutoff_frequencies,
+            &m_high_cutoff_frequencies, &m_frequency_constants_per_bin);
         m_previous_win_width = win_width;
     }
 
@@ -401,8 +458,7 @@ std::vector<double> vis::MonsterCatTransformer::create_spectrum_bars(
     scale_bars(bars, win_height);
 
     // falloff, save values for next falloff run
-    m_previous_falloff_values =
-        apply_falloff(bars, m_previous_falloff_values);
+    m_previous_falloff_values = apply_falloff(bars, m_previous_falloff_values);
 
     return m_previous_falloff_values;
 }
@@ -413,12 +469,13 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                                            const std::wstring &bar_row_msg,
                                            vis::NcursesWriter *writer)
 {
-    if ( static_cast<size_t>(win_height) != m_precomputed_colors.size() )
+    if (static_cast<size_t>(win_height) != m_precomputed_colors.size())
     {
         m_precomputed_colors.reserve(static_cast<size_t>(win_height));
         for (auto i = 0; i < win_height; ++i)
         {
-            m_precomputed_colors[static_cast<size_t>(i)] = writer->to_color(i, win_height);
+            m_precomputed_colors[static_cast<size_t>(i)] =
+                writer->to_color(i, win_height);
         }
     }
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)
@@ -443,7 +500,8 @@ void vis::MonsterCatTransformer::draw_bars(const std::vector<double> &bars,
                 writer->write(
                     row_height, static_cast<int32_t>(column_index) *
                                     static_cast<int32_t>(bar_row_msg.size()),
-                    m_precomputed_colors[static_cast<size_t>(row_index)], bar_row_msg);
+                    m_precomputed_colors[static_cast<size_t>(row_index)],
+                    bar_row_msg);
             }
         }
     }
@@ -472,8 +530,8 @@ void vis::MonsterCatTransformer::recalculate_cutoff_frequencies(
                      (freqconst * -1) +
                          (((i + 1.0) / (number_of_bars + 1.0)) * freqconst));
 
-        auto frequency =
-            (*freqconst_per_bin)[i] / (m_settings->get_sampling_frequency() / 2.0);
+        auto frequency = (*freqconst_per_bin)[i] /
+                         (m_settings->get_sampling_frequency() / 2.0);
 
         (*low_cutoff_frequencies)[i] = static_cast<uint32_t>(std::floor(
             frequency *
@@ -505,18 +563,20 @@ std::vector<double> vis::MonsterCatTransformer::generate_bars(
     {
         double freq_magnitude = 0.0;
         for (auto cutoff_freq = low_cutoff_frequencies[i];
-             cutoff_freq <= high_cutoff_frequencies[i] && cutoff_freq < fftw_results; ++cutoff_freq)
+             cutoff_freq <= high_cutoff_frequencies[i] &&
+             cutoff_freq < fftw_results;
+             ++cutoff_freq)
         {
-            freq_magnitude +=
-                std::sqrt((fftw_output[cutoff_freq][0] * fftw_output[cutoff_freq][0]) +
-                          (fftw_output[cutoff_freq][1] * fftw_output[cutoff_freq][1]));
+            freq_magnitude += std::sqrt(
+                (fftw_output[cutoff_freq][0] * fftw_output[cutoff_freq][0]) +
+                (fftw_output[cutoff_freq][1] * fftw_output[cutoff_freq][1]));
         }
 
         result_freq_magnitudes[i] =
             freq_magnitude /
             (high_cutoff_frequencies[i] - low_cutoff_frequencies[i] + 1);
 
-        //boost high frequencies
+        // boost high frequencies
         result_freq_magnitudes[i] *=
             (std::log2(2 + i) * (100.0 / number_of_bars));
         result_freq_magnitudes[i] = std::pow(result_freq_magnitudes[i], 0.5);

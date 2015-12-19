@@ -35,6 +35,7 @@ class MonsterCatTransformer : public GenericTransformer
                       vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
+
   private:
     const Settings *const m_settings;
 
@@ -78,7 +79,9 @@ class MonsterCatTransformer : public GenericTransformer
 
     std::vector<double> m_monstercat_smoothing_weights;
 
-    std::vector<vis::ColorIndex> m_precomputed_colors;   //precompute coloring calculations to avoid duplicate work
+    std::vector<vis::ColorIndex> m_precomputed_colors; // precompute coloring
+                                                       // calculations to avoid
+                                                       // duplicate work
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
@@ -120,11 +123,13 @@ class MonsterCatTransformer : public GenericTransformer
                                     std::vector<double> *values,
                                     double *moving_average, double *std_dev);
 
-    void scale_bars(std::vector<double> &bars,
-                                   const int32_t height);
+    void scale_bars(std::vector<double> &bars, const int32_t height);
 
     std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width,
                                     uint32_t bar_spacing);
+
+    void sgs_smoothing(std::vector<double> &bars);
+    void monstercat_smoothing(std::vector<double> &bars);
     /** --- END MEMBER FUNCTIONS --- */
 };
 }
