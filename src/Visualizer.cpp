@@ -10,8 +10,6 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
-#include "Transformer/SgsTransformer.h"
-#include "Transformer/MonsterCatTransformer.h"
 #include "Writer/NcursesWriter.h"
 #include "Utils/NcursesUtils.h"
 
@@ -95,12 +93,8 @@ void vis::Visualizer::setup_audio_sources()
 
 void vis::Visualizer::setup_transformers()
 {
-    m_transformers.emplace_back(std::unique_ptr<vis::MonsterCatTransformer>{
-        new vis::MonsterCatTransformer{m_settings}});
     m_transformers.emplace_back(std::unique_ptr<vis::SpectrumTransformer>{
         new vis::SpectrumTransformer{m_settings}});
-    m_transformers.emplace_back(std::unique_ptr<vis::SgsTransformer>{
-        new vis::SgsTransformer{m_settings}});
 }
 
 vis::Visualizer::~Visualizer()
