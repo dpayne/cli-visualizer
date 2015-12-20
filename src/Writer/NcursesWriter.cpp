@@ -23,10 +23,11 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
                               // transparency to work
 
         // initialize color pairs
-        //setup_colors();
+        setup_colors();
     }
 
     //Setup window
+    getmaxyx(stdscr, m_window_height, m_window_width);
     m_window = newwin(0, 0, 0, 0);
 }
 
@@ -36,7 +37,7 @@ void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
                color.get_blue());
 
     // Set background to -1 to enable transparency
-    init_pair(color.get_color_index(), color.get_color_index(), -1);
+    init_pair(color.get_color_index(), color.get_color_index(), color.get_color_index());
 }
 
 void vis::NcursesWriter::setup_colors()
@@ -44,7 +45,7 @@ void vis::NcursesWriter::setup_colors()
     // setup basic colors
     for (auto pair : NcursesUtils::get_default_color_map())
     {
-        init_pair(pair.second, pair.second, -1);
+        init_pair(pair.second, pair.second, pair.second);
     }
 
     if (!m_settings->get_color_definitions().empty())
