@@ -51,12 +51,6 @@ vis::SpectrumTransformer::SpectrumTransformer(
     m_fftw_output_right = static_cast<fftw_complex *>(
         fftw_malloc(sizeof(fftw_complex) * m_fftw_results));
 
-    m_fftw_plan_left = fftw_plan_dft_r2c_1d(
-        static_cast<int>(m_settings->get_sample_size()), m_fftw_input_left,
-        m_fftw_output_left, FFTW_ESTIMATE);
-    m_fftw_plan_right = fftw_plan_dft_r2c_1d(
-        static_cast<int>(m_settings->get_sample_size()), m_fftw_input_right,
-        m_fftw_output_right, FFTW_ESTIMATE);
 }
 
 bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
@@ -90,18 +84,29 @@ bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
     return is_silent;
 }
 
-void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
-                                                vis::NcursesWriter *writer)
+void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWriter * writer, const bool is_stereo)
 {
     const auto win_height = NcursesUtils::get_window_height();
     const auto win_width = NcursesUtils::get_window_width();
 
-    bool is_silent_left =
-        prepare_fft_input(buffer, m_settings->get_sample_size(),
-                          m_fftw_input_left, vis::ChannelMode::Left);
-    bool is_silent_right =
-        prepare_fft_input(buffer, m_settings->get_sample_size(),
-                          m_fftw_input_right, vis::ChannelMode::Right);
+    bool is_silent_left = true;
+    bool is_silent_right = true;
+
+    if (is_stereo)
+    {
+        is_silent_left =
+            prepare_fft_input(buffer, m_settings->get_sample_size(),
+                              m_fftw_input_left, vis::ChannelMode::Left);
+        is_silent_right =
+            prepare_fft_input(buffer, m_settings->get_sample_size(),
+                              m_fftw_input_right, vis::ChannelMode::Right);
+    }
+    else
+    {
+        is_silent_left =
+            prepare_fft_input(buffer, m_settings->get_sample_size(),
+                              m_fftw_input_left, vis::ChannelMode::Both);
+    }
 
     if (!(is_silent_left && is_silent_right))
     {
@@ -115,32 +120,66 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     if (m_silent_runs < k_max_silent_runs_before_sleep)
     {
+        m_fftw_plan_left = fftw_plan_dft_r2c_1d(
+            static_cast<int>(m_settings->get_sample_size()), m_fftw_input_left,
+            m_fftw_output_left, FFTW_ESTIMATE);
+
+        if (is_stereo)
+        {
+            m_fftw_plan_right = fftw_plan_dft_r2c_1d(
+                static_cast<int>(m_settings->get_sample_size()), m_fftw_input_right,
+                m_fftw_output_right, FFTW_ESTIMATE);
+        }
+
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
                                m_settings->get_spectrum_bar_width());
+
         uint32_t number_of_bars = static_cast<uint32_t>(
             std::floor(static_cast<uint32_t>(win_width) / (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
         fftw_execute(m_fftw_plan_left);
-        fftw_execute(m_fftw_plan_right);
 
-        const auto half_height = win_height / 2;
-        create_spectrum_bars(m_fftw_output_left, m_fftw_results, half_height,
+        if (is_stereo)
+        {
+            fftw_execute(m_fftw_plan_right);
+        }
+
+        auto height = win_height;
+        if ( is_stereo )
+        {
+            height = height / 2;
+        }
+
+        create_spectrum_bars(m_fftw_output_left, m_fftw_results, height,
                              win_width, number_of_bars, m_bars_left,
                              m_bars_falloff_left);
-        create_spectrum_bars(m_fftw_output_right, m_fftw_results, half_height,
+        create_spectrum_bars(m_fftw_output_right, m_fftw_results, height,
                              win_width, number_of_bars, m_bars_right,
                              m_bars_falloff_right);
 
         // clear screen before writing
         writer->clear();
 
-        draw_bars(m_bars_left, m_bars_falloff_left, half_height + 1, true,
+        auto max_bar_height = win_height;
+        if ( is_stereo )
+        {
+            max_bar_height = height + 1;
+        }
+
+        draw_bars(m_bars_left, m_bars_falloff_left, max_bar_height, true,
                   bar_row_msg, writer);
-        draw_bars(m_bars_right, m_bars_falloff_right, half_height + 1, false,
+        draw_bars(m_bars_right, m_bars_falloff_right, max_bar_height, false,
                   bar_row_msg, writer);
 
         writer->flush();
+
+        fftw_destroy_plan(m_fftw_plan_left);
+
+        if (is_stereo)
+        {
+            fftw_destroy_plan(m_fftw_plan_right);
+        }
     }
     else
     {
@@ -151,54 +190,16 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
     }
 }
 
+void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
+                                                vis::NcursesWriter *writer)
+{
+    execute(buffer, writer, true);
+}
+
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
                                               vis::NcursesWriter *writer)
 {
-    const auto win_height = NcursesUtils::get_window_height();
-    const auto win_width = NcursesUtils::get_window_width();
-
-    bool is_silent =
-        prepare_fft_input(buffer, m_settings->get_sample_size(),
-                          m_fftw_input_left, vis::ChannelMode::Both);
-
-    if (!is_silent)
-    {
-        m_silent_runs = 0;
-    }
-    // if there is no sound, do not do any processing and sleep
-    else
-    {
-        ++m_silent_runs;
-    }
-
-    if (m_silent_runs < k_max_silent_runs_before_sleep)
-    {
-        std::wstring bar_row_msg =
-            create_bar_row_msg(m_settings->get_spectrum_character(),
-                               m_settings->get_spectrum_bar_width());
-
-        uint32_t number_of_bars = static_cast<uint32_t>(
-            std::floor(static_cast<uint32_t>(win_width) / (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
-
-        fftw_execute(m_fftw_plan_left);
-
-        create_spectrum_bars(m_fftw_output_left, m_fftw_results, win_height,
-                             win_width, number_of_bars, m_bars_left,
-                             m_bars_falloff_left);
-
-        // clear screen before writing
-        writer->clear();
-        draw_bars(m_bars_left, m_bars_falloff_left, win_height, true,
-                  bar_row_msg, writer);
-        writer->flush();
-    }
-    else
-    {
-        VIS_LOG(vis::LogLevel::DEBUG, "No input, Sleeping for %d milliseconds",
-                VisConstants::k_silent_sleep_milliseconds);
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
-    }
+    execute(buffer, writer, false);
 }
 
 void vis::SpectrumTransformer::smooth_bars(std::vector<double> &bars)
@@ -646,10 +647,9 @@ void vis::SpectrumTransformer::generate_bars(
 
 vis::SpectrumTransformer::~SpectrumTransformer()
 {
-    fftw_destroy_plan(m_fftw_plan_left);
-    fftw_destroy_plan(m_fftw_plan_right);
     fftw_free(m_fftw_input_left);
     fftw_free(m_fftw_input_right);
+
     fftw_free(m_fftw_output_left);
     fftw_free(m_fftw_output_right);
 }
