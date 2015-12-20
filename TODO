@@ -1,10 +1,13 @@
-- fix shutdown so that when mpd stops ctrl-C works, when mpd is stopped it should just wait for input
 - make ellipse
 - make simple wave matching ncmcpcpp
 - make circle transformer possibly make it rotate
 - make color schemes instead of a file
 - figure out better color spectrum
 - read from alsa
+- make footer with mpd info
+    artist
+    song
+    progress
 - use make_unique instead
 - get rid of direct member variable access in Spectrum transformer and children
 - writing more unit tests

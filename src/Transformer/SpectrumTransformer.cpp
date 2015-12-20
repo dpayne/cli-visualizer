@@ -21,15 +21,15 @@
 
 namespace
 {
-static const size_t kSecsForAutoscaling = 30;
-static const double kAutoScalingResetWindowPercent = 0.10;
-static const double kAutoScalingErasePercentOnReset = 0.75;
-static const double kDeviationAmountToReset =
+static const size_t k_secs_for_autoscaling = 30;
+static const double k_autoscaling_reset_window_percent = 0.10;
+static const double k_autoscaling_erase_percent_on_reset = 0.75;
+static const double k_deviation_amount_to_reset =
     1.0; // amount of deviation needed between short term and long term moving
          // max height averages to trigger an auto scaling reset
 
-static const double kMinimumBarHeight = 0.125;
-static const uint64_t kMaxSilentRunsBeforeSleep =
+static const double k_minimum_bar_height = 0.125;
+static const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
@@ -112,7 +112,7 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
         ++m_silent_runs;
     }
 
-    if (m_silent_runs < kMaxSilentRunsBeforeSleep)
+    if (m_silent_runs < k_max_silent_runs_before_sleep)
     {
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
@@ -171,7 +171,7 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
         ++m_silent_runs;
     }
 
-    if (m_silent_runs < kMaxSilentRunsBeforeSleep)
+    if (m_silent_runs < k_max_silent_runs_before_sleep)
     {
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
@@ -275,9 +275,9 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
     {
         auto outer_index = static_cast<size_t>(i);
 
-        if (bars[outer_index] < kMinimumBarHeight)
+        if (bars[outer_index] < k_minimum_bar_height)
         {
-            bars[outer_index] = kMinimumBarHeight;
+            bars[outer_index] = k_minimum_bar_height;
         }
         else
         {
@@ -358,7 +358,7 @@ void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
 
     // max number of elements to calculate for moving average
     const auto max_number_of_elements = static_cast<size_t>(
-        ((kSecsForAutoscaling * m_settings->get_sampling_frequency()) /
+        ((k_secs_for_autoscaling * m_settings->get_sampling_frequency()) /
          (static_cast<double>(m_settings->get_sample_size()))) *
         2.0);
 
@@ -386,7 +386,7 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
     std::vector<double> *values, double *moving_average, double *std_dev)
 {
     const auto reset_window_size =
-        (kAutoScalingResetWindowPercent * max_number_of_elements);
+        (k_autoscaling_reset_window_percent * max_number_of_elements);
     // Current max height is much larger than moving average, so throw away most
     // values re-calculate
     if (static_cast<double>(values->size()) > reset_window_size)
@@ -402,13 +402,13 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
         // if short term average very different from long term moving average,
         // reset window and re-calculate
         if (std::abs(average_over_reset_window - *moving_average) >
-            (kDeviationAmountToReset * (*std_dev)))
+            (k_deviation_amount_to_reset * (*std_dev)))
         {
             values->erase(
                 values->begin(),
                 values->begin() +
                     static_cast<long>((static_cast<double>(values->size()) *
-                                       kAutoScalingErasePercentOnReset)));
+                                       k_autoscaling_erase_percent_on_reset)));
 
             calculate_moving_average_and_std_dev(
                 current_max_height, max_number_of_elements, *values,

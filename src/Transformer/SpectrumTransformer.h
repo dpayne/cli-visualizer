@@ -9,20 +9,12 @@
 #define _SPECTRUM_TRANSFORMER_H
 
 #include <fftw3.h>
-#include <functional>
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
 #include "Domain/Settings.h"
 
 namespace vis
 {
-
-enum class ChannelMode
-{
-    Left = 0,
-    Right,
-    Both
-};
 
 class SpectrumTransformer : public GenericTransformer
 {

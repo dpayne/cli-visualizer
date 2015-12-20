@@ -36,5 +36,13 @@ enum class FalloffMode
     Fill,
     Top
 };
+
+enum class ChannelMode
+{
+    Left = 0,
+    Right,
+    Both
+};
+
 }
 #endif
