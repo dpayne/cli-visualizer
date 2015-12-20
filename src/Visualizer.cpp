@@ -10,6 +10,7 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
+#include "Transformer/EllipseTransformer.h"
 #include "Utils/NcursesUtils.h"
 
 #include <thread>
@@ -28,8 +29,7 @@ void vis::Visualizer::add_audio_source(const std::string &audio_source)
 {
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
-        m_audio_sources.emplace_back(std::unique_ptr<vis::MpdAudioSource>{
-            new vis::MpdAudioSource{m_settings}});
+        m_audio_sources.emplace_back(std::make_unique<vis::MpdAudioSource>(m_settings));
     }
 }
 
@@ -102,8 +102,8 @@ void vis::Visualizer::setup_audio_sources()
 
 void vis::Visualizer::setup_transformers()
 {
-    m_transformers.emplace_back(std::unique_ptr<vis::SpectrumTransformer>{
-        new vis::SpectrumTransformer{m_settings}});
+    m_transformers.emplace_back(std::make_unique<SpectrumTransformer>(m_settings));
+    m_transformers.emplace_back(std::make_unique<EllipseTransformer>(m_settings));
 }
 
 vis::Visualizer::~Visualizer()

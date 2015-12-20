@@ -41,7 +41,7 @@ int main()
 
     vis::ConfigurationUtils::load_settings(settings);
 
-    std::unique_ptr<vis::Visualizer> visualizer{new vis::Visualizer{&settings}};
+    std::unique_ptr<vis::Visualizer> visualizer = std::make_unique<vis::Visualizer>(&settings);
     g_vis = visualizer.get();
 
     visualizer->run();
