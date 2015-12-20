@@ -493,7 +493,7 @@ void vis::SpectrumTransformer::draw_bars(
                 break;
         }
 
-        bar_height = std::max(1.0, bar_height);
+        bar_height = std::max(0.0, bar_height);
 
         for (auto row_index = 0;
              row_index <= static_cast<int32_t>(bar_height); ++row_index)
