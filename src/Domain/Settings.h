@@ -139,6 +139,16 @@ class Settings
         m_spectrum_character = spectrum_character;
     }
 
+    wchar_t get_ellipse_character() const noexcept
+    {
+        return m_ellipse_character;
+    }
+
+    void set_ellipse_character(wchar_t ellipse_character)
+    {
+        m_ellipse_character = ellipse_character;
+    }
+
     void set_monstercat_smoothing_factor(double monstercat_smoothing_factor)
     {
         m_monstercat_smoothing_factor = monstercat_smoothing_factor;
@@ -231,6 +241,7 @@ class Settings
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;
+    wchar_t m_ellipse_character;
     uint32_t m_spectrum_bar_width;
     uint32_t m_spectrum_bar_spacing;
     double m_monstercat_smoothing_factor;

@@ -17,7 +17,7 @@ namespace vis
 class GenericTransformer
 {
   public:
-    explicit GenericTransformer();
+    explicit GenericTransformer(const Settings *const settings);
 
     virtual ~GenericTransformer();
 

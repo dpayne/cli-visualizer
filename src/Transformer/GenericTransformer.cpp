@@ -7,8 +7,9 @@
 
 #include "Transformer/GenericTransformer.h"
 
-vis::GenericTransformer::GenericTransformer()
+vis::GenericTransformer::GenericTransformer(const Settings *const settings)
 {
+    settings->get_fps();
 }
 
 vis::GenericTransformer::~GenericTransformer()

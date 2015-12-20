@@ -26,7 +26,7 @@ namespace
 
 vis::EllipseTransformer::EllipseTransformer(
     const Settings *const settings)
-    : m_settings{settings}
+    : GenericTransformer(settings), m_settings{settings}
 {
 }
 
@@ -70,7 +70,7 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
     int32_t x;
     int32_t y;
     //TODO: change this to ellipse specific char
-    std::wstring msg{m_settings->get_spectrum_character()};
+    std::wstring msg{m_settings->get_ellipse_character()};
     for (auto i = 0ul; i < m_settings->get_sample_size(); ++i)
     {
         x = buffer[i].l / 32768 *
