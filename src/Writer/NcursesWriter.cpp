@@ -5,13 +5,12 @@
  *     Author: dpayne
  */
 
-#include <ncurses.h>
 #include "Writer/NcursesWriter.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
 
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
-    : m_settings{settings}
+    : m_settings{settings}, m_visualizer_window_width{0}, m_visualizer_window_height{0}, m_info_window_width{0}, m_info_window_height{0}, m_visualizer_window{nullptr}, m_info_window{nullptr}
 {
     initscr();
     curs_set(0); // sets the cursor to invisible
@@ -26,6 +25,22 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
         // initialize color pairs
         setup_colors();
     }
+
+    //Setup windows
+    int32_t max_width, max_height;
+    getmaxyx(stdscr, max_height, max_width);
+
+    m_visualizer_window_width = max_width / 2;
+    m_visualizer_window_height = max_height;
+
+    m_info_window_width = max_width - m_visualizer_window_width;
+    m_info_window_height = max_height;
+
+    m_visualizer_window =
+        newwin(m_visualizer_window_height, m_visualizer_window_width, 0, 0);
+
+    m_info_window = newwin(m_info_window_height, m_info_window_width,
+                           0, m_visualizer_window_width);
 }
 
 void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
@@ -66,26 +81,58 @@ void vis::NcursesWriter::setup_colors()
     }
 }
 
-void vis::NcursesWriter::write(int32_t height, int32_t width,
+void vis::NcursesWriter::write_info(int32_t height, int32_t width,
                                vis::ColorIndex color, const std::wstring &msg)
 {
-    attron(COLOR_PAIR(color));
-
-    move(height, width);
-    addwstr(msg.c_str());
-
-    attroff(COLOR_PAIR(color));
+    write(m_info_window, height, width, color, msg);
 }
 
-void vis::NcursesWriter::clear()
+void vis::NcursesWriter::write_visualizer(int32_t height, int32_t width,
+                               vis::ColorIndex color, const std::wstring &msg)
 {
-    standend();
-    erase();
+    write(m_visualizer_window, height, width, color, msg);
 }
 
-void vis::NcursesWriter::flush()
+void vis::NcursesWriter::write(WINDOW * win, int32_t height, int32_t width,
+                               vis::ColorIndex color, const std::wstring &msg)
 {
-    refresh();
+    wattron(win, COLOR_PAIR(color));
+
+    wmove(win, height, width);
+    waddwstr(win, msg.c_str());
+
+    wattroff(win, COLOR_PAIR(color));
+}
+
+void vis::NcursesWriter::clear_info()
+{
+    clear(m_info_window);
+}
+
+void vis::NcursesWriter::clear_visualizer()
+{
+    clear(m_visualizer_window);
+}
+
+void vis::NcursesWriter::clear(WINDOW *win)
+{
+    wstandend(win);
+    werase(win);
+}
+
+void vis::NcursesWriter::flush_info()
+{
+    flush(m_info_window);
+}
+
+void vis::NcursesWriter::flush_visualizer()
+{
+    flush(m_visualizer_window);
+}
+
+void vis::NcursesWriter::flush(WINDOW * win)
+{
+    wrefresh(win);
 }
 
 vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
@@ -101,5 +148,7 @@ vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
 
 vis::NcursesWriter::~NcursesWriter()
 {
+    delwin(m_visualizer_window);
+    delwin(m_info_window);
     endwin();
 }

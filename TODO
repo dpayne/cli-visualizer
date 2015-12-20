@@ -2,8 +2,10 @@
 - make simple wave matching ncmcpcpp
 - make circle transformer possibly make it rotate
 - make color schemes instead of a file
+- read visualizers from config
 - figure out better color spectrum
 - read from alsa
+- pass config location from command line
 - make footer with mpd info, this might not be possible if ncurses can not do two font sizes
     ncmpcpp does this some how with the clock
     artist

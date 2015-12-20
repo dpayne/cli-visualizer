@@ -36,13 +36,15 @@ vis::EllipseTransformer::~EllipseTransformer()
 void vis::EllipseTransformer::execute_mono(pcm_stereo_sample *buffer,
                   vis::NcursesWriter *writer)
 {
+    //TODO: do something different for mono
+    execute_stereo(buffer, writer);
 }
 
 void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
                     vis::NcursesWriter *writer)
 {
-    const auto win_height = get_window_height();
-    const auto win_width = get_window_width();
+    const auto win_height = writer->get_visualizer_window_height();
+    const auto win_width = writer->get_visualizer_window_width();
 
     const auto left_half_width = win_width / 2;
     const auto right_half_width = win_width - left_half_width;
@@ -61,6 +63,8 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
         m_precomputed_colors[static_cast<size_t>(i)] =
             writer->to_color(i, radius, true);
     }
+
+    writer->clear_visualizer();
 
     int32_t x;
     int32_t y;
@@ -82,9 +86,11 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
         // the same
         // size, this will not always generate a perfect circle.
         const auto color_index = static_cast<uint64_t>(std::floor(std::sqrt(x * x + 4 * y * y )));
-        writer->write(
+        writer->write_visualizer(
             left_half_width + x, top_half_height + y,
             m_precomputed_colors[color_index],
             msg);
     }
+
+    writer->flush_visualizer();
 }

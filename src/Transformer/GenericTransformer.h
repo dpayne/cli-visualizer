@@ -25,11 +25,6 @@ class GenericTransformer
                                 vis::NcursesWriter *writer) = 0;
     virtual void execute_mono(pcm_stereo_sample *buffer,
                               vis::NcursesWriter *writer) = 0;
-
-  protected:
-    virtual int32_t get_window_width() const;
-
-    virtual int32_t get_window_height() const;
 };
 }
 

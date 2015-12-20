@@ -10,7 +10,6 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
-#include "Writer/NcursesWriter.h"
 #include "Utils/NcursesUtils.h"
 
 #include <thread>
@@ -42,7 +41,10 @@ void vis::Visualizer::run()
 
     auto audioSource = get_current_audio_source();
     auto transformer = get_current_transformer();
-    m_writer = std::unique_ptr<NcursesWriter>{new NcursesWriter{m_settings}};
+
+    m_writer = std::make_unique<NcursesWriter>(m_settings);
+    m_mpd_info = std::make_unique<MpdInfo>(m_settings);
+
     while (!should_shutdown() )
     {
         process_user_input();
@@ -56,6 +58,8 @@ void vis::Visualizer::run()
             {
                 transformer->execute_mono(m_pcm_buffer, m_writer.get());
             }
+
+            m_mpd_info->update_mpd_info(m_writer.get());
         }
         else
         {
