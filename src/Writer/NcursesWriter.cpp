@@ -10,7 +10,7 @@
 #include "Utils/NcursesUtils.h"
 
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
-    : m_settings{settings}, m_window_width{0}, m_window_height{0}, m_window{nullptr}
+    : m_settings{settings}
 {
     initscr();
     curs_set(0); // sets the cursor to invisible
@@ -25,10 +25,6 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
         // initialize color pairs
         setup_colors();
     }
-
-    //Setup window
-    getmaxyx(stdscr, m_window_height, m_window_width);
-    m_window = newwin(0, 0, 0, 0);
 }
 
 void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
@@ -37,6 +33,9 @@ void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
                color.get_blue());
 
     // Set background to -1 to enable transparency
+    init_pair(color.get_color_index(), color.get_color_index(), -1);
+
+    // Set colors as a background
     init_pair(color.get_color_index(), color.get_color_index(), color.get_color_index());
 }
 
@@ -45,7 +44,14 @@ void vis::NcursesWriter::setup_colors()
     // setup basic colors
     for (auto pair : NcursesUtils::get_default_color_map())
     {
-        init_pair(pair.second, pair.second, pair.second);
+        init_pair(pair.second, pair.second, -1);
+    }
+
+    auto default_color_map_size = static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
+    //setup basic colors as background
+    for (auto pair : NcursesUtils::get_default_color_map())
+    {
+        init_pair(pair.second + default_color_map_size, pair.second, pair.second);
     }
 
     if (!m_settings->get_color_definitions().empty())
@@ -69,26 +75,38 @@ void vis::NcursesWriter::setup_colors()
     }
 }
 
+void vis::NcursesWriter::write_background(int32_t height, int32_t width,
+                               vis::ColorIndex color,
+                          const std::wstring &msg)
+{
+    auto default_color_map_size = static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
+    auto color_pair = COLOR_PAIR(color + default_color_map_size);
+    attron(color_pair);
+
+    mvaddwstr(height, width, msg.c_str());
+
+    attroff(color_pair);
+}
+
 void vis::NcursesWriter::write(int32_t height, int32_t width,
                                vis::ColorIndex color, const std::wstring &msg)
 {
-    wattron(m_window, COLOR_PAIR(color));
+    attron(COLOR_PAIR(color));
 
-    wmove(m_window, height, width);
-    waddwstr(m_window, msg.c_str());
+    mvaddwstr(height, width,msg.c_str());
 
-    wattroff(m_window, COLOR_PAIR(color));
+    attroff(COLOR_PAIR(color));
 }
 
 void vis::NcursesWriter::clear()
 {
-    wstandend(m_window);
-    werase(m_window);
+    standend();
+    erase();
 }
 
 void vis::NcursesWriter::flush()
 {
-    wrefresh(m_window);
+    refresh();
 }
 
 vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
@@ -104,6 +122,5 @@ vis::ColorIndex vis::NcursesWriter::to_color(int32_t number, int32_t max,
 
 vis::NcursesWriter::~NcursesWriter()
 {
-    delwin(m_window);
     endwin();
 }

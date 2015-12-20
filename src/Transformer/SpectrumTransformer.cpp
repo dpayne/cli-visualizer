@@ -10,6 +10,7 @@
 
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
+#include "Utils/NcursesUtils.h"
 #include "Transformer/SpectrumTransformer.h"
 #include <algorithm>
 #include <climits>
@@ -92,8 +93,8 @@ bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
                                                 vis::NcursesWriter *writer)
 {
-    const auto win_height = writer->get_window_height();
-    const auto win_width = writer->get_window_width();
+    const auto win_height = NcursesUtils::get_window_height();
+    const auto win_width = NcursesUtils::get_window_width();
 
     bool is_silent_left =
         prepare_fft_input(buffer, m_settings->get_sample_size(),
@@ -116,10 +117,9 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
     {
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
-                               m_settings->get_spectrum_bar_width(),
-                               m_settings->get_spectrum_bar_spacing());
+                               m_settings->get_spectrum_bar_width());
         uint32_t number_of_bars = static_cast<uint32_t>(
-            std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
+            std::floor(static_cast<uint32_t>(win_width) / (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
         fftw_execute(m_fftw_plan_left);
         fftw_execute(m_fftw_plan_right);
@@ -154,8 +154,8 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
                                               vis::NcursesWriter *writer)
 {
-    const auto win_height = writer->get_window_height();
-    const auto win_width = writer->get_window_width();
+    const auto win_height = NcursesUtils::get_window_height();
+    const auto win_width = NcursesUtils::get_window_width();
 
     bool is_silent =
         prepare_fft_input(buffer, m_settings->get_sample_size(),
@@ -175,11 +175,10 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
     {
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
-                               m_settings->get_spectrum_bar_width(),
-                               m_settings->get_spectrum_bar_spacing());
+                               m_settings->get_spectrum_bar_width());
 
         uint32_t number_of_bars = static_cast<uint32_t>(
-            std::floor(static_cast<uint32_t>(win_width) / bar_row_msg.size()));
+            std::floor(static_cast<uint32_t>(win_width) / (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
         fftw_execute(m_fftw_plan_left);
 
@@ -418,18 +417,13 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
 }
 
 std::wstring vis::SpectrumTransformer::create_bar_row_msg(
-    const wchar_t character, uint32_t bar_width, uint32_t bar_spacing)
+    const wchar_t character, uint32_t bar_width)
 {
     std::wstring bar_row_msg;
 
     for (auto i = 0u; i < bar_width; ++i)
     {
         bar_row_msg.push_back(character);
-    }
-
-    for (auto i = 0u; i < bar_spacing; ++i)
-    {
-        bar_row_msg.push_back(' ');
     }
 
     return bar_row_msg;
@@ -498,6 +492,8 @@ void vis::SpectrumTransformer::draw_bars(
                 break;
         }
 
+        bar_height = std::max(1.0, bar_height);
+
         for (auto row_index = 0;
              row_index <= static_cast<int32_t>(bar_height); ++row_index)
         {
@@ -515,11 +511,13 @@ void vis::SpectrumTransformer::draw_bars(
                     row_height = win_height + row_index - 1;
                 }
 
-                writer->write(
-                    row_height, static_cast<int32_t>(column_index) *
-                                    static_cast<int32_t>(bar_row_msg.size()),
-                    m_precomputed_colors[static_cast<size_t>(row_index)],
-                    bar_row_msg);
+                auto column = static_cast<int32_t>(column_index) *
+                              static_cast<int32_t>((bar_row_msg.size() +
+                               m_settings->get_spectrum_bar_spacing()));
+
+                write(row_height, column,
+                      m_precomputed_colors[static_cast<size_t>(row_index)],
+                      bar_row_msg, writer);
             }
         }
 
@@ -540,13 +538,32 @@ void vis::SpectrumTransformer::draw_bars(
 
             if ( top_row_height > 0 )
             {
-                writer->write(
-                    top_row_height, static_cast<int32_t>(column_index) *
-                                    static_cast<int32_t>(bar_row_msg.size()),
-                    m_precomputed_colors[static_cast<size_t>(row_index)],
-                    bar_row_msg);
+                auto column = static_cast<int32_t>(column_index) *
+                              static_cast<int32_t>((bar_row_msg.size() +
+                               m_settings->get_spectrum_bar_spacing()));
+                write(top_row_height, column,
+                      m_precomputed_colors[static_cast<size_t>(row_index)],
+                      bar_row_msg, writer);
             }
         }
+    }
+}
+
+void vis::SpectrumTransformer::write(const int32_t row, const int32_t column,
+                                     const vis::ColorIndex color,
+                                     const std::wstring &msg,
+                                     vis::NcursesWriter *writer)
+{
+    // This is a hack to achieve a solid bar look without using a custom font.
+    // Instead of writing a real character, set the background to the color and
+    // write a space
+    if (m_settings->get_spectrum_character() == VisConstants::k_space_wchar)
+    {
+        writer->write_background(row, column, color, msg);
+    }
+    else
+    {
+        writer->write(row, column, color, msg);
     }
 }
 

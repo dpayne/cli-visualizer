@@ -10,6 +10,7 @@
 
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
+#include "Utils/NcursesUtils.h"
 #include "Transformer/EllipseTransformer.h"
 #include <algorithm>
 #include <climits>
@@ -43,8 +44,8 @@ void vis::EllipseTransformer::execute_mono(pcm_stereo_sample *buffer,
 void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
                     vis::NcursesWriter *writer)
 {
-    const auto win_height = writer->get_window_height();
-    const auto win_width = writer->get_window_width();
+    const auto win_height = NcursesUtils::get_window_height();
+    const auto win_width = NcursesUtils::get_window_width();
 
     const auto left_half_width = win_width / 2;
     const auto right_half_width = win_width - left_half_width;

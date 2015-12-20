@@ -33,7 +33,7 @@ const static std::string k_fps_setting{"visualizer.fps"};
 
 const static std::string k_colors_setting{"colors"};
 const static std::string k_colors_default{
-    "black,blue,cyan,green,yellow,red,magenta,white"};
+    "blue,cyan,green,yellow,red,magenta,white"};
 
 const static std::string k_colors_enabled_setting{"colors.enabled"};
 const static std::string k_spectrum_character{"visualizer.spectrum.character"};

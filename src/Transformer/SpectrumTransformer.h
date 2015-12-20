@@ -134,11 +134,17 @@ class SpectrumTransformer : public GenericTransformer
 
     void scale_bars(std::vector<double> &bars, const int32_t height);
 
-    std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width,
-                                    uint32_t bar_spacing);
+    std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width);
 
     void sgs_smoothing(std::vector<double> &bars);
     void monstercat_smoothing(std::vector<double> &bars);
+
+    /**
+     * Write's the msg to the writer
+     */
+    void write(const int32_t row, const int32_t column,
+               const vis::ColorIndex color, const std::wstring &msg,
+               vis::NcursesWriter *writer);
     /** --- END MEMBER FUNCTIONS --- */
 };
 }

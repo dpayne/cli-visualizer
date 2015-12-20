@@ -17,14 +17,14 @@ static const std::string k_true{"true"};
 static const std::string k_false{"false"};
 
 static const std::string k_mpd_audio_source_name{"mpd"};
-static const uint32_t k_default_fps = 25;
+static const uint32_t k_default_fps = 20;
 static const uint32_t k_default_sampling_frequency = 44100;
-static const uint32_t k_default_low_cutoff_frequency = 50;
+static const uint32_t k_default_low_cutoff_frequency = 30;
 static const uint32_t k_default_high_cutoff_frequency = 22050;
 static const std::string k_default_config_path{".vis/config"};
 static const std::string k_default_colors_path{".vis/colors"};
 static const std::string k_default_log_path{".vis/vis.log"};
-static const wchar_t k_default_spectrum_character{L'\u2588'};
+static const wchar_t k_default_spectrum_character{L' '}; // full block is L'\u2588'
 static const double k_default_monstercat_smoothing_factor{1.5};
 static const uint32_t k_default_monstercat_bar_width = 1;
 static const uint32_t k_default_monstercat_bar_spacing = 0;
@@ -39,6 +39,7 @@ static const vis::FalloffMode k_default_spectrum_falloff_mode =
 static const double k_default_spectrum_falloff_weight = 0.99;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
+static const wchar_t k_space_wchar{L' '};
 }
 
 #endif
