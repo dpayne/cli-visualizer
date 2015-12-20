@@ -117,7 +117,8 @@ class Settings
         m_colors = colors;
     }
 
-    const std::vector<vis::ColorDefinition> & get_color_definitions() const noexcept
+    const std::vector<vis::ColorDefinition> &get_color_definitions() const
+        noexcept
     {
         return m_color_definitions;
     }
@@ -138,11 +139,6 @@ class Settings
         m_spectrum_character = spectrum_character;
     }
 
-    wchar_t get_monstercat_character() const noexcept
-    {
-        return m_monstercat_character;
-    }
-
     void set_monstercat_smoothing_factor(double monstercat_smoothing_factor)
     {
         m_monstercat_smoothing_factor = monstercat_smoothing_factor;
@@ -153,29 +149,74 @@ class Settings
         return m_monstercat_smoothing_factor;
     }
 
-    void set_monstercat_character(wchar_t monstercat_character)
+    void set_sgs_smoothing_points(uint32_t sgs_smoothing_points)
     {
-        m_monstercat_character = monstercat_character;
+        m_sgs_smoothing_points = sgs_smoothing_points;
     }
 
-    uint32_t get_monstercat_bar_width() const noexcept
+    uint32_t get_sgs_smoothing_points() const noexcept
     {
-        return m_monstercat_bar_width;
+        return m_sgs_smoothing_points;
     }
 
-    void set_monstercat_bar_width(const uint32_t monstercat_bar_width)
+    void set_sgs_smoothing_passes(uint32_t sgs_smoothing_passes)
     {
-        m_monstercat_bar_width = monstercat_bar_width;
+        m_sgs_smoothing_passes = sgs_smoothing_passes;
     }
 
-    uint32_t get_monstercat_bar_spacing() const noexcept
+    uint32_t get_sgs_smoothing_passes() const noexcept
     {
-        return m_monstercat_bar_spacing;
+        return m_sgs_smoothing_passes;
     }
 
-    void set_monstercat_bar_spacing(const uint32_t monstercat_bar_spacing)
+    uint32_t get_spectrum_bar_width() const noexcept
     {
-        m_monstercat_bar_spacing = monstercat_bar_spacing;
+        return m_spectrum_bar_width;
+    }
+
+    void set_spectrum_bar_width(const uint32_t spectrum_bar_width)
+    {
+        m_spectrum_bar_width = spectrum_bar_width;
+    }
+
+    uint32_t get_spectrum_bar_spacing() const noexcept
+    {
+        return m_spectrum_bar_spacing;
+    }
+
+    void set_spectrum_bar_spacing(const uint32_t spectrum_bar_spacing)
+    {
+        m_spectrum_bar_spacing = spectrum_bar_spacing;
+    }
+
+    SmoothingMode get_spectrum_smoothing_mode() const noexcept
+    {
+        return m_spectrum_smoothing_mode;
+    }
+
+    void set_spectrum_smoothing_mode(SmoothingMode spectrum_smoothing_mode)
+    {
+        m_spectrum_smoothing_mode = spectrum_smoothing_mode;
+    }
+
+    void set_spectrum_falloff_mode(const vis::FalloffMode falloff_mode)
+    {
+        m_spectrum_falloff_mode = falloff_mode;
+    }
+
+    vis::FalloffMode get_spectrum_falloff_mode() const noexcept
+    {
+        return m_spectrum_falloff_mode;
+    }
+
+    void set_spectrum_falloff_weight(const double spectrum_falloff_weight)
+    {
+        m_spectrum_falloff_weight = spectrum_falloff_weight;
+    }
+
+    double get_spectrum_falloff_weight() const noexcept
+    {
+        return m_spectrum_falloff_weight;
     }
 
   private:
@@ -190,10 +231,14 @@ class Settings
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;
-    wchar_t m_monstercat_character;
-    uint32_t m_monstercat_bar_width;
-    uint32_t m_monstercat_bar_spacing;
+    uint32_t m_spectrum_bar_width;
+    uint32_t m_spectrum_bar_spacing;
     double m_monstercat_smoothing_factor;
+    uint32_t m_sgs_smoothing_points;
+    uint32_t m_sgs_smoothing_passes;
+    SmoothingMode m_spectrum_smoothing_mode;
+    FalloffMode m_spectrum_falloff_mode;
+    double m_spectrum_falloff_weight;
 };
 }
 

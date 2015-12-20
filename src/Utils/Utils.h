@@ -153,7 +153,7 @@ class Utils
      */
     template <class E, class V>
     static inline double get(const std::unordered_map<E, V> &map, const E &key,
-                           const double default_value)
+                             const double default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())

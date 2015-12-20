@@ -37,8 +37,23 @@ const static std::string k_colors_default{
 
 const static std::string k_colors_enabled_setting{"colors.enabled"};
 const static std::string k_spectrum_character{"visualizer.spectrum.character"};
-const static std::string k_monstercat_character{"visualizer.monstercat.character"};
-const static std::string k_monstercat_smoothing_factor{"visualizer.monstercat.smoothing.factor"};
+const static std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
+const static std::string k_spectrum_bar_spacing{
+    "visualizer.spectrum.bar.spacing"};
+const static std::string k_spectrum_smoothing_mode{
+    "visualizer.spectrum.smoothing.mode"};
+const static std::string k_spectrum_falloff_mode{
+    "visualizer.spectrum.falloff.mode"};
+const static std::string k_spectrum_falloff_weight{
+    "visualizer.spectrum.falloff.weight"};
+
+const static std::string k_monstercat_smoothing_factor{
+    "visualizer.monstercat.smoothing.factor"};
+
+const static std::string k_sgs_smoothing_points{
+    "visualizer.sgs.smoothing.points"};
+const static std::string k_sgs_smoothing_passes{
+    "visualizer.sgs.smoothing.passes"};
 }
 
 vis::ConfigurationUtils::ConfigurationUtils()
@@ -121,6 +136,80 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     return color_definitions;
 }
 
+vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
+    const std::unordered_map<std::string, std::string> properties,
+    const std::string &config_param,
+    const vis::FalloffMode default_falloff_mode)
+{
+    auto falloff_mode_str =
+        vis::Utils::get(properties, k_spectrum_falloff_mode, std::string{""});
+
+    vis::FalloffMode falloff_mode = default_falloff_mode;
+
+    if (!falloff_mode_str.empty())
+    {
+        std::transform(falloff_mode_str.begin(), falloff_mode_str.end(),
+                       falloff_mode_str.begin(), ::tolower);
+
+        if (falloff_mode_str == "none")
+        {
+            falloff_mode = vis::FalloffMode::None;
+        }
+        else if (falloff_mode_str == "fill")
+        {
+            falloff_mode = vis::FalloffMode::Fill;
+        }
+        else if (falloff_mode_str == "top")
+        {
+            falloff_mode = vis::FalloffMode::Top;
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::ERROR, "Invalid falloff mode %s for %s",
+                    falloff_mode_str.c_str(), config_param.c_str());
+        }
+    }
+
+    return falloff_mode;
+}
+
+vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
+    const std::unordered_map<std::string, std::string> properties,
+    const std::string &config_param,
+    const vis::SmoothingMode default_smoothing_mode)
+{
+    auto smoothing_mode_str =
+        vis::Utils::get(properties, k_spectrum_smoothing_mode, std::string{""});
+
+    vis::SmoothingMode smoothing_mode = default_smoothing_mode;
+
+    if (!smoothing_mode_str.empty())
+    {
+        std::transform(smoothing_mode_str.begin(), smoothing_mode_str.end(),
+                       smoothing_mode_str.begin(), ::tolower);
+
+        if (smoothing_mode_str == "none")
+        {
+            smoothing_mode = vis::SmoothingMode::None;
+        }
+        else if (smoothing_mode_str == "monstercat")
+        {
+            smoothing_mode = vis::SmoothingMode::MonsterCat;
+        }
+        else if (smoothing_mode_str == "sgs")
+        {
+            smoothing_mode = vis::SmoothingMode::Sgs;
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::ERROR, "Invalid spectrum mode %s for %s",
+                    smoothing_mode_str.c_str(), config_param.c_str());
+        }
+    }
+
+    return smoothing_mode;
+}
+
 void vis::ConfigurationUtils::load_settings(Settings &settings)
 {
     auto config_path = Utils::get_home_directory();
@@ -162,13 +251,37 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::get(properties, k_spectrum_character,
                    VisConstants::k_default_spectrum_character));
 
-    settings.set_monstercat_character(
-        Utils::get(properties, k_monstercat_character,
-                   VisConstants::k_default_monstercat_character));
+    settings.set_spectrum_bar_width(
+        Utils::get(properties, k_spectrum_bar_width,
+                   VisConstants::k_default_spectrum_bar_width));
+
+    settings.set_spectrum_bar_spacing(
+        Utils::get(properties, k_spectrum_bar_spacing,
+                   VisConstants::k_default_spectrum_bar_spacing));
+
+    settings.set_spectrum_smoothing_mode(
+        read_smoothing_mode(properties, k_spectrum_smoothing_mode,
+                            VisConstants::k_default_spectrum_smoothing_mode));
+
+    settings.set_spectrum_falloff_mode(
+        read_falloff_mode(properties, k_spectrum_falloff_mode,
+                            VisConstants::k_default_spectrum_falloff_mode));
+
+    settings.set_spectrum_falloff_weight(
+        Utils::get(properties, k_spectrum_falloff_weight,
+                            VisConstants::k_default_spectrum_falloff_weight));
 
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,
                    VisConstants::k_default_monstercat_smoothing_factor));
+
+    settings.set_sgs_smoothing_points(
+        Utils::get(properties, k_sgs_smoothing_points,
+                   VisConstants::k_default_sgs_smoothing_points));
+
+    settings.set_sgs_smoothing_passes(
+        Utils::get(properties, k_sgs_smoothing_passes,
+                   VisConstants::k_default_sgs_smoothing_passes));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

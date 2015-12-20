@@ -10,11 +10,10 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
-#include "Transformer/SgsTransformer.h"
-#include "Transformer/MonsterCatTransformer.h"
 #include "Writer/NcursesWriter.h"
 #include "Utils/NcursesUtils.h"
 
+#include <thread>
 #include <iostream>
 #include <ncurses.h>
 
@@ -44,17 +43,24 @@ void vis::Visualizer::run()
     auto audioSource = get_current_audio_source();
     auto transformer = get_current_transformer();
     m_writer = std::unique_ptr<NcursesWriter>{new NcursesWriter{m_settings}};
-    while (!should_shutdown() &&
-           audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
+    while (!should_shutdown() )
     {
         process_user_input();
-        if (m_settings->is_stereo_enabled())
+        if (audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
         {
-            transformer->execute_stereo(m_pcm_buffer, m_writer.get());
+            if (m_settings->is_stereo_enabled())
+            {
+                transformer->execute_stereo(m_pcm_buffer, m_writer.get());
+            }
+            else
+            {
+                transformer->execute_mono(m_pcm_buffer, m_writer.get());
+            }
         }
         else
         {
-            transformer->execute_mono(m_pcm_buffer, m_writer.get());
+            std::this_thread::sleep_for(
+                std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
         }
 
         // update sources and transformers
@@ -95,12 +101,8 @@ void vis::Visualizer::setup_audio_sources()
 
 void vis::Visualizer::setup_transformers()
 {
-    m_transformers.emplace_back(std::unique_ptr<vis::MonsterCatTransformer>{
-        new vis::MonsterCatTransformer{m_settings}});
     m_transformers.emplace_back(std::unique_ptr<vis::SpectrumTransformer>{
         new vis::SpectrumTransformer{m_settings}});
-    m_transformers.emplace_back(std::unique_ptr<vis::SgsTransformer>{
-        new vis::SgsTransformer{m_settings}});
 }
 
 vis::Visualizer::~Visualizer()
