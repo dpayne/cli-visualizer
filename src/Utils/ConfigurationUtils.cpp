@@ -35,6 +35,9 @@ const static std::string k_colors_setting{"colors"};
 const static std::string k_colors_default{
     "blue,cyan,green,yellow,red,magenta,white"};
 
+const static std::string k_ellipse_character{"visualizer.ellipse.character"};
+const static std::string k_ellipse_radius{"visualizer.ellipse.radius"};
+
 const static std::string k_colors_enabled_setting{"colors.enabled"};
 const static std::string k_spectrum_character{"visualizer.spectrum.character"};
 const static std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
@@ -282,6 +285,14 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_sgs_smoothing_passes(
         Utils::get(properties, k_sgs_smoothing_passes,
                    VisConstants::k_default_sgs_smoothing_passes));
+
+    settings.set_ellipse_character(
+        Utils::get(properties, k_ellipse_character,
+                   VisConstants::k_default_ellipse_character));
+
+    settings.set_ellipse_radius(
+        Utils::get(properties, k_ellipse_radius,
+                   VisConstants::k_default_ellipse_radius));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

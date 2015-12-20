@@ -16,6 +16,7 @@ vis::Settings::Settings()
       m_is_stereo_enabled{true}, m_is_color_enabled{true},
       m_spectrum_character{VisConstants::k_default_spectrum_character},
       m_ellipse_character{VisConstants::k_default_ellipse_character},
+      m_ellipse_radius{VisConstants::k_default_ellipse_radius},
       m_spectrum_bar_width{VisConstants::k_default_spectrum_bar_width},
       m_spectrum_bar_spacing{VisConstants::k_default_spectrum_bar_spacing},
       m_monstercat_smoothing_factor{

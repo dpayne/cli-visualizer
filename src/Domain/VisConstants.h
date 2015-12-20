@@ -26,6 +26,7 @@ static const std::string k_default_colors_path{".vis/colors"};
 static const std::string k_default_log_path{".vis/vis.log"};
 static const wchar_t k_default_spectrum_character{L' '};
 static const wchar_t k_default_ellipse_character{L'\u2588'}; // full block is L'\u2588'
+static const uint32_t k_default_ellipse_radius{2};
 static const double k_default_monstercat_smoothing_factor{1.5};
 static const uint32_t k_default_monstercat_bar_width = 1;
 static const uint32_t k_default_monstercat_bar_spacing = 0;

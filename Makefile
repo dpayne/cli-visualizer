@@ -41,7 +41,6 @@ CC_FLAGS = -std=c++14
 CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 CC_FLAGS += -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
-CC_FLAGS += -ffast-math
 CC_FLAGS += -fno-omit-frame-pointer
 CC_FLAGS += -ggdb -g2
 
@@ -49,7 +48,6 @@ CC_FLAGS += -ggdb -g2
 PERF_TEST_CC_FLAGS = -std=c++14
 PERF_TEST_CC_FLAGS += -O$(OPT_LEVEL)
 PERF_TEST_CC_FLAGS += -march=native
-PERF_TEST_CC_FLAGS += -ffast-math
 PERF_TEST_CC_FLAGS += -fno-omit-frame-pointer
 PERF_TEST_CC_FLAGS += -ggdb -g2
 
