@@ -14,7 +14,6 @@
 #include "Source/AudioSource.h"
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
-#include "Mpd/MpdInfo.h"
 
 namespace vis
 {
@@ -46,7 +45,6 @@ class Visualizer
     size_t m_current_transformer_index;
 
     std::unique_ptr<vis::NcursesWriter> m_writer;
-    std::unique_ptr<vis::MpdInfo> m_mpd_info;
 
     bool m_shutdown;
 

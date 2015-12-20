@@ -92,8 +92,8 @@ bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
                                                 vis::NcursesWriter *writer)
 {
-    const auto win_height = writer->get_visualizer_window_height();
-    const auto win_width = writer->get_visualizer_window_width();
+    const auto win_height = writer->get_window_height();
+    const auto win_width = writer->get_window_width();
 
     bool is_silent_left =
         prepare_fft_input(buffer, m_settings->get_sample_size(),
@@ -133,14 +133,14 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
                              m_bars_falloff_right);
 
         // clear screen before writing
-        writer->clear_visualizer();
+        writer->clear();
 
         draw_bars(m_bars_left, m_bars_falloff_left, half_height + 1, true,
                   bar_row_msg, writer);
         draw_bars(m_bars_right, m_bars_falloff_right, half_height + 1, false,
                   bar_row_msg, writer);
 
-        writer->flush_visualizer();
+        writer->flush();
     }
     else
     {
@@ -154,8 +154,8 @@ void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
                                               vis::NcursesWriter *writer)
 {
-    const auto win_height = writer->get_visualizer_window_height();
-    const auto win_width = writer->get_visualizer_window_width();
+    const auto win_height = writer->get_window_height();
+    const auto win_width = writer->get_window_width();
 
     bool is_silent =
         prepare_fft_input(buffer, m_settings->get_sample_size(),
@@ -188,10 +188,10 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
                              m_bars_falloff_left);
 
         // clear screen before writing
-        writer->clear_visualizer();
+        writer->clear();
         draw_bars(m_bars_left, m_bars_falloff_left, win_height, true,
                   bar_row_msg, writer);
-        writer->flush_visualizer();
+        writer->flush();
     }
     else
     {
@@ -515,7 +515,7 @@ void vis::SpectrumTransformer::draw_bars(
                     row_height = win_height + row_index - 1;
                 }
 
-                writer->write_visualizer(
+                writer->write(
                     row_height, static_cast<int32_t>(column_index) *
                                     static_cast<int32_t>(bar_row_msg.size()),
                     m_precomputed_colors[static_cast<size_t>(row_index)],
@@ -540,7 +540,7 @@ void vis::SpectrumTransformer::draw_bars(
 
             if ( top_row_height > 0 )
             {
-                writer->write_visualizer(
+                writer->write(
                     top_row_height, static_cast<int32_t>(column_index) *
                                     static_cast<int32_t>(bar_row_msg.size()),
                     m_precomputed_colors[static_cast<size_t>(row_index)],

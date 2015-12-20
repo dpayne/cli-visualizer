@@ -43,7 +43,6 @@ void vis::Visualizer::run()
     auto transformer = get_current_transformer();
 
     m_writer = std::make_unique<NcursesWriter>(m_settings);
-    m_mpd_info = std::make_unique<MpdInfo>(m_settings);
 
     while (!should_shutdown() )
     {
@@ -58,8 +57,6 @@ void vis::Visualizer::run()
             {
                 transformer->execute_mono(m_pcm_buffer, m_writer.get());
             }
-
-            m_mpd_info->update_mpd_info(m_writer.get());
         }
         else
         {
