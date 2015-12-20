@@ -4,7 +4,8 @@
 - make color schemes instead of a file
 - figure out better color spectrum
 - read from alsa
-- make footer with mpd info
+- make footer with mpd info, this might not be possible if ncurses can not do two font sizes
+    ncmpcpp does this some how with the clock
     artist
     song
     progress
