@@ -11,6 +11,7 @@
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
 #include "Transformer/EllipseTransformer.h"
+#include "Transformer/LorenzTransformer.h"
 #include "Utils/NcursesUtils.h"
 
 #include <thread>
@@ -104,6 +105,7 @@ void vis::Visualizer::setup_transformers()
 {
     m_transformers.emplace_back(std::make_unique<SpectrumTransformer>(m_settings));
     m_transformers.emplace_back(std::make_unique<EllipseTransformer>(m_settings));
+    m_transformers.emplace_back(std::make_unique<LorenzTransformer>(m_settings));
 }
 
 vis::Visualizer::~Visualizer()
