@@ -20,6 +20,11 @@
 namespace
 {
 static const double k_pi = 3.14159265358979323846;
+static const double k_lorenz_h = 0.01;
+static const double k_lorenz_a = 10.0;
+static const double k_lorenz_b1 = 7.1429;
+static const double k_lorenz_b2 = 0.000908845;
+static const double k_lorenz_c = 8.0/3.0;
 }
 
 vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
@@ -48,10 +53,6 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     const auto samples = m_settings->get_sample_size();
 
-    auto lorenz_h = 0.01;
-    auto lorenz_a = 10.0;
-    auto lorenz_c = 8.0 / 3.0;
-
     m_rotation_count_left =
         m_rotation_count_left >= 1000.0 ? 0 : m_rotation_count_left;
     m_rotation_count_right =
@@ -68,20 +69,20 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     average_left = average_left / samples * 2.0;
     average_right = average_right / samples;
 
-    const auto rotation_interval_left = (average_left * (30.0 / 65536.0));
-    const auto rotation_interval_right = (average_right * (30.0 / 65536.0));
+    const auto rotation_interval_left = (average_left * (m_settings->get_fps() / 65536.0));
+    const auto rotation_interval_right = (average_right * (m_settings->get_fps() / 65536.0));
     const auto average = (average_left + average_right) / 2.0;
 
     // lorenz_b will range from 11.7 to 64.4. Below 10 the lorenz is pretty much
     // just a disc and after 64.4 the size increases dramatically.
     // The equation was generated using linear curve fitting
     // http://www.wolframalpha.com/input/?i=quadratic+fit+%7B10%2C1%7D%2C%7B18000%2C32%7D%2C%7B45000%2C48%7D%2C%7B65536%2C64.4%7D
-    const auto lorenz_b = 7.1429 + 0.000908845 * average;
+    const auto lorenz_b = k_lorenz_b1 + k_lorenz_b2 * average;
 
     // Calculate the center of the lorenz. Described here under the heading
     // Equilibria http://www.me.rochester.edu/courses/ME406/webexamp5/loreq.pdf
     const auto z_center = -1 + lorenz_b;
-    const auto equilbria = std::sqrt(lorenz_c * lorenz_b - lorenz_c);
+    const auto equilbria = std::sqrt(k_lorenz_c * lorenz_b - k_lorenz_c);
 
     // Calculate the scaling factor. The bounds for the complete lorenz are
     // given here http://www.me.rochester.edu/courses/ME406/webexamp5/loreq.pdf
@@ -93,8 +94,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     // smaller than the max y.
     const auto scaling_multiplier =
         1.25 * (half_height) /
-        std::sqrt(lorenz_c * lorenz_b * lorenz_b -
-                  std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2));
+        std::sqrt((k_lorenz_c * lorenz_b * lorenz_b) -
+                  (std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2)));
 
     auto rotation_angle_x = (m_rotation_count_left * 2.0 * k_pi) / 1000.0;
     auto rotation_angle_y = (m_rotation_count_right * 2.0 * k_pi) / 1000.0;
@@ -115,13 +116,12 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     writer->clear();
 
-    // TODO: get own character
-    std::wstring msg{m_settings->get_ellipse_character()};
+    std::wstring msg{m_settings->get_lorenz_character()};
     for (auto i = 0u; i < samples; ++i)
     {
-        auto x1 = x0 + lorenz_h * lorenz_a * (y0 - x0);
-        auto y1 = y0 + lorenz_h * (x0 * (lorenz_b - z0) - y0);
-        auto z1 = z0 + lorenz_h * (x0 * y0 - lorenz_c * z0);
+        auto x1 = x0 + k_lorenz_h * k_lorenz_a * (y0 - x0);
+        auto y1 = y0 + k_lorenz_h * (x0 * (lorenz_b - z0) - y0);
+        auto z1 = z0 + k_lorenz_h * (x0 * y0 - k_lorenz_c * z0);
         x0 = x1;
         y0 = y1;
         z0 = z1;

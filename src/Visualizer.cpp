@@ -10,6 +10,7 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
+#include "Transformer/SpectrumCircleTransformer.h"
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
 #include "Utils/NcursesUtils.h"
@@ -110,6 +111,11 @@ void vis::Visualizer::setup_transformers()
         {
             m_transformers.emplace_back(
                 std::make_unique<SpectrumTransformer>(m_settings));
+        }
+        else if (visualizer == VisConstants::k_spectrum_circle_visualizer_name)
+        {
+            m_transformers.emplace_back(
+                std::make_unique<SpectrumCircleTransformer>(m_settings));
         }
         else if (visualizer == VisConstants::k_ellipse_visualizer_name)
         {

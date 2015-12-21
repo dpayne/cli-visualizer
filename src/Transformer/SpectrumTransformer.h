@@ -28,6 +28,14 @@ class SpectrumTransformer : public GenericTransformer
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
 
+  protected:
+    /**
+     * Write's the msg to the writer
+     */
+    void write(const int32_t row, const int32_t column,
+               const vis::ColorIndex color, const std::wstring &msg,
+               vis::NcursesWriter *writer);
+
   private:
     void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
                  const bool is_stereo);
@@ -115,11 +123,6 @@ class SpectrumTransformer : public GenericTransformer
         std::vector<uint32_t> *high_cutoff_frequencies,
         std::vector<double> *freqconst_per_bin);
 
-    void draw_bars(const std::vector<double> &bars,
-                   const std::vector<double> &bars_falloff, int32_t win_height,
-                   const bool flipped, const std::wstring &bar_row_msg,
-                   vis::NcursesWriter *writer);
-
     void smooth_bars(std::vector<double> &bars);
 
     std::vector<double> apply_falloff(const std::vector<double> &bars,
@@ -135,20 +138,18 @@ class SpectrumTransformer : public GenericTransformer
                                     std::vector<double> *values,
                                     double *moving_average, double *std_dev);
 
-    void scale_bars(std::vector<double> &bars, const int32_t height);
+    virtual void draw_bars(const std::vector<double> &bars,
+                   const std::vector<double> &bars_falloff, int32_t win_height,
+                   const bool flipped, const std::wstring &bar_row_msg,
+                   vis::NcursesWriter *writer);
+
+    virtual void scale_bars(std::vector<double> &bars, const int32_t height);
 
     std::wstring create_bar_row_msg(const wchar_t character,
                                     uint32_t bar_width);
 
     void sgs_smoothing(std::vector<double> &bars);
     void monstercat_smoothing(std::vector<double> &bars);
-
-    /**
-     * Write's the msg to the writer
-     */
-    void write(const int32_t row, const int32_t column,
-               const vis::ColorIndex color, const std::wstring &msg,
-               vis::NcursesWriter *writer);
     /** --- END MEMBER FUNCTIONS --- */
 };
 }

@@ -35,10 +35,6 @@ class LorenzTransformer : public GenericTransformer
 
     double m_rotation_count_right;
 
-    // Pre-compute colors calculations to avoid duplicate work
-    // Note: this is only re-computed when screen height changes
-    std::vector<vis::ColorIndex> m_precomputed_colors;
-
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
