@@ -3,9 +3,6 @@
  *
  * Created on: Jul 30, 2015
  *     Author: dpayne
- *
- *     Much of this code was taken or inspired by cava
- * git@github.com:karlstav/cava.git
  */
 
 #include "Domain/VisConstants.h"

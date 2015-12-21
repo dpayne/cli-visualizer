@@ -77,6 +77,16 @@ class Settings
         m_mpd_fifo_path = path;
     }
 
+    std::vector<std::string> get_visualizers() const noexcept
+    {
+        return m_visualizers;
+    }
+
+    void set_visualizers(const std::vector<std::string> &visualizers)
+    {
+        m_visualizers = visualizers;
+    }
+
     std::vector<std::string> get_audio_sources() const noexcept
     {
         return m_audio_sources;
@@ -248,6 +258,7 @@ class Settings
     bool m_is_stereo_enabled;
     bool m_is_color_enabled;
     std::vector<std::string> m_audio_sources;
+    std::vector<std::string> m_visualizers;
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;

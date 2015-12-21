@@ -29,6 +29,8 @@ const static std::string k_low_cutoff_frequency_setting{
     "audio.low.cutoff.frequency"};
 const static std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
+const static std::string k_visualizers_setting{"visualizers"};
+const static std::string k_visualizers_default{"spectrum,ellipse,lorenz"};
 const static std::string k_fps_setting{"visualizer.fps"};
 
 const static std::string k_colors_setting{"colors"};
@@ -302,7 +304,6 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     const auto colors_strs = Utils::split(
         Utils::get(properties, k_colors_setting, k_colors_default), ',');
-
     std::vector<vis::ColorIndex> colors;
 
     for (const auto &str : colors_strs)
@@ -316,4 +317,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     colors_path.append(VisConstants::k_default_colors_path);
     settings.set_color_definitions(
         vis::ConfigurationUtils::read_colors(colors_path));
+
+    const auto visualizers = Utils::split(
+        Utils::get(properties, k_visualizers_setting, k_visualizers_default),
+        ',');
+
+    settings.set_visualizers(visualizers);
 }

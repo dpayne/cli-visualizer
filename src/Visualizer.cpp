@@ -11,6 +11,7 @@
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
 #include "Transformer/EllipseTransformer.h"
+#include "Transformer/LorenzTransformer.h"
 #include "Utils/NcursesUtils.h"
 
 #include <thread>
@@ -102,8 +103,21 @@ void vis::Visualizer::setup_audio_sources()
 
 void vis::Visualizer::setup_transformers()
 {
-    m_transformers.emplace_back(std::make_unique<SpectrumTransformer>(m_settings));
-    m_transformers.emplace_back(std::make_unique<EllipseTransformer>(m_settings));
+    for ( const auto &visualizer : m_settings->get_visualizers())
+    {
+        if (visualizer == VisConstants::k_spectrum_visualizer_name)
+        {
+            m_transformers.emplace_back(std::make_unique<SpectrumTransformer>(m_settings));
+        }
+        else if (visualizer == VisConstants::k_ellipse_visualizer_name)
+        {
+            m_transformers.emplace_back(std::make_unique<EllipseTransformer>(m_settings));
+        }
+        else if (visualizer == VisConstants::k_lorenz_visualizer_name)
+        {
+            m_transformers.emplace_back(std::make_unique<LorenzTransformer>(m_settings));
+        }
+    }
 }
 
 vis::Visualizer::~Visualizer()

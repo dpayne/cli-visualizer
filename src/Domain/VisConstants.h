@@ -17,6 +17,9 @@ static const std::string k_true{"true"};
 static const std::string k_false{"false"};
 
 static const std::string k_mpd_audio_source_name{"mpd"};
+static const std::string k_spectrum_visualizer_name{"spectrum"};
+static const std::string k_ellipse_visualizer_name{"ellipse"};
+static const std::string k_lorenz_visualizer_name{"lorenz"};
 static const uint32_t k_default_fps = 20;
 static const uint32_t k_default_sampling_frequency = 44100;
 static const uint32_t k_default_low_cutoff_frequency = 30;
