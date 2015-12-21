@@ -27,13 +27,14 @@ class LorenzTransformer : public GenericTransformer
                         vis::NcursesWriter *writer) override;
 
   private:
+
+    /** --- BEGIN MEMBER VARIABLES --- */
+
     const Settings *const m_settings;
 
     double m_rotation_count_left;
 
     double m_rotation_count_right;
-
-    /** --- BEGIN MEMBER VARIABLES --- */
 
     // Pre-compute colors calculations to avoid duplicate work
     //Note: this is only re-computed when screen height changes
@@ -49,4 +50,3 @@ class LorenzTransformer : public GenericTransformer
 }
 
 #endif
-

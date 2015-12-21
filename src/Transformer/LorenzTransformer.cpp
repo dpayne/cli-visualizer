@@ -22,9 +22,9 @@ namespace
     static const double k_pi = 3.14159265358979323846;
 }
 
-vis::LorenzTransformer::LorenzTransformer(
-    const Settings *const settings)
-    : GenericTransformer(settings), m_settings{settings}, m_rotation_count_left{0.0}, m_rotation_count_right{0.0}
+vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
+    : GenericTransformer(settings), m_settings{settings},
+      m_rotation_count_left{0.0}, m_rotation_count_right{0.0}
 {
 }
 
@@ -116,6 +116,9 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     auto y0 = 0.0;
     auto z0 = 0.0;
 
+    writer->clear();
+
+    //TODO: get own character
     std::wstring msg{m_settings->get_ellipse_character()};
     for (auto i = 0u; i < samples; ++i)
     {
@@ -168,6 +171,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
             }
         }
     }
+
+    writer->flush();
 
     m_rotation_count_left += rotation_interval_left;
     m_rotation_count_right += rotation_interval_right;
