@@ -498,28 +498,25 @@ void vis::SpectrumTransformer::draw_bars(
         for (auto row_index = 0;
              row_index <= static_cast<int32_t>(bar_height); ++row_index)
         {
-            if (bars[column_index] > 0)
+            int32_t row_height;
+
+            // left channel grows up, right channel grows down
+            if (flipped)
             {
-                int32_t row_height;
-
-                // left channel grows up, right channel grows down
-                if (flipped)
-                {
-                    row_height = win_height - row_index - 1;
-                }
-                else
-                {
-                    row_height = win_height + row_index - 1;
-                }
-
-                auto column = static_cast<int32_t>(column_index) *
-                              static_cast<int32_t>((bar_row_msg.size() +
-                               m_settings->get_spectrum_bar_spacing()));
-
-                write(row_height, column,
-                      m_precomputed_colors[static_cast<size_t>(row_index)],
-                      bar_row_msg, writer);
+                row_height = win_height - row_index - 1;
             }
+            else
+            {
+                row_height = win_height + row_index - 1;
+            }
+
+            auto column = static_cast<int32_t>(column_index) *
+                          static_cast<int32_t>((bar_row_msg.size() +
+                           m_settings->get_spectrum_bar_spacing()));
+
+            write(row_height, column,
+                  m_precomputed_colors[static_cast<size_t>(row_index)],
+                  bar_row_msg, writer);
         }
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
