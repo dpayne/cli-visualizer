@@ -19,7 +19,7 @@
 
 namespace
 {
-    static const double k_pi = 3.14159265358979323846;
+static const double k_pi = 3.14159265358979323846;
 }
 
 vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
@@ -33,14 +33,14 @@ vis::LorenzTransformer::~LorenzTransformer()
 }
 
 void vis::LorenzTransformer::execute_mono(pcm_stereo_sample *buffer,
-                  vis::NcursesWriter *writer)
+                                          vis::NcursesWriter *writer)
 {
-    //TODO: do something different for mono
+    // TODO: do something different for mono
     execute_stereo(buffer, writer);
 }
 
 void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
-                    vis::NcursesWriter *writer)
+                                            vis::NcursesWriter *writer)
 {
     const auto win_height = NcursesUtils::get_window_height();
     const auto half_height = win_height / 2;
@@ -92,15 +92,12 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     // Only consider max y coordinate since both max z and max x will be much
     // smaller than the max y.
     const auto scaling_multiplier =
-        1.25 * (half_height) / std::sqrt(lorenz_c * lorenz_b * lorenz_b -
-                               std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2));
+        1.25 * (half_height) /
+        std::sqrt(lorenz_c * lorenz_b * lorenz_b -
+                  std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2));
 
-    auto rotation_angle_x =
-        (m_rotation_count_left * 2.0 * k_pi) /
-        1000.0;
-    auto rotation_angle_y =
-        (m_rotation_count_right * 2.0 * k_pi) /
-        1000.0;
+    auto rotation_angle_x = (m_rotation_count_left * 2.0 * k_pi) / 1000.0;
+    auto rotation_angle_y = (m_rotation_count_right * 2.0 * k_pi) / 1000.0;
 
     auto deg_multiplier_cos_x = std::cos(rotation_angle_x);
     auto deg_multiplier_sin_x = std::sin(rotation_angle_x);
@@ -118,7 +115,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     writer->clear();
 
-    //TODO: get own character
+    // TODO: get own character
     std::wstring msg{m_settings->get_ellipse_character()};
     for (auto i = 0u; i < samples; ++i)
     {
@@ -132,13 +129,13 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         // color points based on distance from equiliria. This must be done
         // before rotation
         auto distance_p1 =
-            std::sqrt(std::pow(x0 - equilbria, 2) + std::pow(y0 - equilbria, 2) +
-                 std::pow(z0 - z_center, 2));
+            std::sqrt(std::pow(x0 - equilbria, 2) +
+                      std::pow(y0 - equilbria, 2) + std::pow(z0 - z_center, 2));
         auto distance_p2 =
-            std::sqrt(std::pow(x0 + equilbria, 2) + std::pow(y0 + equilbria, 2) +
-                 std::pow(z0 - z_center, 2));
-        ColorIndex color_distance =
-            writer->to_color(static_cast<int32_t>(std::min(distance_p1, distance_p2)), 16);
+            std::sqrt(std::pow(x0 + equilbria, 2) +
+                      std::pow(y0 + equilbria, 2) + std::pow(z0 - z_center, 2));
+        ColorIndex color_distance = writer->to_color(
+            static_cast<int32_t>(std::min(distance_p1, distance_p2)), 16);
 
         // We want to rotate around the center of the lorenz. so we offset zaxis
         // so that the center of the lorenz is at point (0,0,0)
@@ -149,25 +146,27 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         // Rotate around X and Y axis.
         auto xRxy = x * deg_multiplier_cos_y + z * deg_multiplier_sin_y;
         auto yRxy = x * deg_multiplier_sin_x * deg_multiplier_sin_y +
-                      y * deg_multiplier_cos_x -
-                      z * deg_multiplier_cos_y * deg_multiplier_sin_x;
+                    y * deg_multiplier_cos_x -
+                    z * deg_multiplier_cos_y * deg_multiplier_sin_x;
         auto zRxy = -1 * y * deg_multiplier_cos_x * deg_multiplier_sin_y +
-                      y * deg_multiplier_sin_x +
-                      z * deg_multiplier_cos_x * deg_multiplier_cos_y;
+                    y * deg_multiplier_sin_x +
+                    z * deg_multiplier_cos_x * deg_multiplier_cos_y;
 
         x = xRxy * scaling_multiplier;
         y = yRxy * scaling_multiplier;
         z = zRxy;
 
         // Throw out any points outside the window
-        if (y > (half_height * -1) && y < half_height && x > (win_width / 2 * -1) &&
-            x < win_width / 2)
+        if (y > (half_height * -1) && y < half_height &&
+            x > (win_width / 2 * -1) && x < win_width / 2)
         {
             // skip the first 100 since values under 100 stick out too much from
             // the reset of the points
             if (i > 100)
             {
-                writer->write( static_cast<int32_t>(y + half_height), static_cast<int32_t>(x + win_width / 2.0), color_distance, msg);
+                writer->write(static_cast<int32_t>(y + half_height),
+                              static_cast<int32_t>(x + win_width / 2.0),
+                              color_distance, msg);
             }
         }
     }

@@ -270,11 +270,11 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     settings.set_spectrum_falloff_mode(
         read_falloff_mode(properties, k_spectrum_falloff_mode,
-                            VisConstants::k_default_spectrum_falloff_mode));
+                          VisConstants::k_default_spectrum_falloff_mode));
 
     settings.set_spectrum_falloff_weight(
         Utils::get(properties, k_spectrum_falloff_weight,
-                            VisConstants::k_default_spectrum_falloff_weight));
+                   VisConstants::k_default_spectrum_falloff_weight));
 
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,
@@ -292,9 +292,8 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::get(properties, k_ellipse_character,
                    VisConstants::k_default_ellipse_character));
 
-    settings.set_ellipse_radius(
-        Utils::get(properties, k_ellipse_radius,
-                   VisConstants::k_default_ellipse_radius));
+    settings.set_ellipse_radius(Utils::get(
+        properties, k_ellipse_radius, VisConstants::k_default_ellipse_radius));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

@@ -43,6 +43,5 @@ enum class ChannelMode
     Right,
     Both
 };
-
 }
 #endif

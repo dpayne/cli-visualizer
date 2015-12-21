@@ -34,9 +34,9 @@ static const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
-vis::SpectrumTransformer::SpectrumTransformer(
-    const Settings *const settings)
-    : GenericTransformer(settings), m_settings{settings}, m_previous_win_width{0}, m_silent_runs{0u}
+vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
+    : GenericTransformer(settings), m_settings{settings},
+      m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
@@ -50,13 +50,12 @@ vis::SpectrumTransformer::SpectrumTransformer(
         fftw_malloc(sizeof(fftw_complex) * m_fftw_results));
     m_fftw_output_right = static_cast<fftw_complex *>(
         fftw_malloc(sizeof(fftw_complex) * m_fftw_results));
-
 }
 
 bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
-                                                   uint32_t sample_size,
-                                                   double *fftw_input,
-                                                   ChannelMode channel_mode)
+                                                 uint32_t sample_size,
+                                                 double *fftw_input,
+                                                 ChannelMode channel_mode)
 {
     bool is_silent = true;
 
@@ -84,7 +83,9 @@ bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
     return is_silent;
 }
 
-void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWriter * writer, const bool is_stereo)
+void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
+                                       vis::NcursesWriter *writer,
+                                       const bool is_stereo)
 {
     const auto win_height = NcursesUtils::get_window_height();
     const auto win_width = NcursesUtils::get_window_width();
@@ -127,16 +128,17 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWr
         if (is_stereo)
         {
             m_fftw_plan_right = fftw_plan_dft_r2c_1d(
-                static_cast<int>(m_settings->get_sample_size()), m_fftw_input_right,
-                m_fftw_output_right, FFTW_ESTIMATE);
+                static_cast<int>(m_settings->get_sample_size()),
+                m_fftw_input_right, m_fftw_output_right, FFTW_ESTIMATE);
         }
 
         std::wstring bar_row_msg =
             create_bar_row_msg(m_settings->get_spectrum_character(),
                                m_settings->get_spectrum_bar_width());
 
-        uint32_t number_of_bars = static_cast<uint32_t>(
-            std::floor(static_cast<uint32_t>(win_width) / (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
+        uint32_t number_of_bars = static_cast<uint32_t>(std::floor(
+            static_cast<uint32_t>(win_width) /
+            (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
         fftw_execute(m_fftw_plan_left);
 
@@ -146,7 +148,7 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWr
         }
 
         auto height = win_height;
-        if ( is_stereo )
+        if (is_stereo)
         {
             height = height / 2;
         }
@@ -162,7 +164,7 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWr
         writer->clear();
 
         auto max_bar_height = win_height;
-        if ( is_stereo )
+        if (is_stereo)
         {
             max_bar_height = height + 1;
         }
@@ -185,19 +187,19 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer, vis::NcursesWr
     {
         VIS_LOG(vis::LogLevel::DEBUG, "No input, Sleeping for %d milliseconds",
                 VisConstants::k_silent_sleep_milliseconds);
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
+        std::this_thread::sleep_for(std::chrono::milliseconds(
+            VisConstants::k_silent_sleep_milliseconds));
     }
 }
 
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
-                                                vis::NcursesWriter *writer)
+                                              vis::NcursesWriter *writer)
 {
     execute(buffer, writer, true);
 }
 
 void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
-                                              vis::NcursesWriter *writer)
+                                            vis::NcursesWriter *writer)
 {
     execute(buffer, writer, false);
 }
@@ -317,8 +319,11 @@ std::vector<double> vis::SpectrumTransformer::apply_falloff(
         for (auto i = 0u; i < bars.size(); ++i)
         {
             auto difference = std::abs(previous_bars[i] - bars[i]);
-            previous_bars[i] = std::max(
-                previous_bars[i] * std::pow(m_settings->get_spectrum_falloff_weight(), difference), bars[i]);
+            previous_bars[i] =
+                std::max(previous_bars[i] *
+                             std::pow(m_settings->get_spectrum_falloff_weight(),
+                                      difference),
+                         bars[i]);
         }
 
         return previous_bars;
@@ -347,7 +352,7 @@ void vis::SpectrumTransformer::calculate_moving_average_and_std_dev(
 }
 
 void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
-                                            const int32_t height)
+                                          const int32_t height)
 {
     if (bars.empty())
     {
@@ -417,8 +422,9 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
     }
 }
 
-std::wstring vis::SpectrumTransformer::create_bar_row_msg(
-    const wchar_t character, uint32_t bar_width)
+std::wstring
+vis::SpectrumTransformer::create_bar_row_msg(const wchar_t character,
+                                             uint32_t bar_width)
 {
     std::wstring bar_row_msg;
 
@@ -482,21 +488,21 @@ void vis::SpectrumTransformer::draw_bars(
 
         switch (m_settings->get_spectrum_falloff_mode())
         {
-            case vis::FalloffMode::None:
-                bar_height = bars[column_index];
-                break;
-            case vis::FalloffMode::Fill:
-                bar_height = bars_falloff[column_index];
-                break;
-            case vis::FalloffMode::Top:
-                bar_height = bars[column_index];
-                break;
+        case vis::FalloffMode::None:
+            bar_height = bars[column_index];
+            break;
+        case vis::FalloffMode::Fill:
+            bar_height = bars_falloff[column_index];
+            break;
+        case vis::FalloffMode::Top:
+            bar_height = bars[column_index];
+            break;
         }
 
         bar_height = std::max(0.0, bar_height);
 
-        for (auto row_index = 0;
-             row_index <= static_cast<int32_t>(bar_height); ++row_index)
+        for (auto row_index = 0; row_index <= static_cast<int32_t>(bar_height);
+             ++row_index)
         {
             int32_t row_height;
 
@@ -510,9 +516,10 @@ void vis::SpectrumTransformer::draw_bars(
                 row_height = win_height + row_index - 1;
             }
 
-            auto column = static_cast<int32_t>(column_index) *
-                          static_cast<int32_t>((bar_row_msg.size() +
-                           m_settings->get_spectrum_bar_spacing()));
+            auto column =
+                static_cast<int32_t>(column_index) *
+                static_cast<int32_t>((bar_row_msg.size() +
+                                      m_settings->get_spectrum_bar_spacing()));
 
             write(row_height, column,
                   m_precomputed_colors[static_cast<size_t>(row_index)],
@@ -521,7 +528,8 @@ void vis::SpectrumTransformer::draw_bars(
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
         {
-            int32_t row_index = static_cast<int32_t>(bars_falloff[column_index]);
+            int32_t row_index =
+                static_cast<int32_t>(bars_falloff[column_index]);
             int32_t top_row_height;
 
             // left channel grows up, right channel grows down
@@ -534,11 +542,12 @@ void vis::SpectrumTransformer::draw_bars(
                 top_row_height = win_height + row_index - 1;
             }
 
-            if ( top_row_height > 0 )
+            if (top_row_height > 0)
             {
                 auto column = static_cast<int32_t>(column_index) *
-                              static_cast<int32_t>((bar_row_msg.size() +
-                               m_settings->get_spectrum_bar_spacing()));
+                              static_cast<int32_t>(
+                                  (bar_row_msg.size() +
+                                   m_settings->get_spectrum_bar_spacing()));
                 write(top_row_height, column,
                       m_precomputed_colors[static_cast<size_t>(row_index)],
                       bar_row_msg, writer);

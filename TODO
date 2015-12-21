@@ -1,7 +1,5 @@
 - make circle transformer possibly make it rotate
-- make lorenz
-- read visualizers from config
-- pass config location from command line
+- make globe transformer possibly make it rotate
 - make color schemes instead of a file
 - figure out better color spectrum
 - writing more unit tests

@@ -28,12 +28,14 @@ static const std::string k_default_config_path{".vis/config"};
 static const std::string k_default_colors_path{".vis/colors"};
 static const std::string k_default_log_path{".vis/vis.log"};
 static const wchar_t k_default_spectrum_character{L' '};
-static const wchar_t k_default_ellipse_character{L'\u2588'}; // full block is L'\u2588'
+static const wchar_t k_default_lorenz_character{L'\u2588'};
+static const wchar_t k_default_ellipse_character{L'\u2588'};
 static const uint32_t k_default_ellipse_radius{2};
 static const double k_default_monstercat_smoothing_factor{1.5};
 static const uint32_t k_default_monstercat_bar_width = 1;
 static const uint32_t k_default_monstercat_bar_spacing = 0;
-static const uint32_t k_default_sgs_smoothing_points{3}; //this should be an odd number
+static const uint32_t k_default_sgs_smoothing_points{
+    3}; // this should be an odd number
 static const uint32_t k_default_sgs_smoothing_passes{1};
 static const uint32_t k_default_spectrum_bar_width = 2;
 static const uint32_t k_default_spectrum_bar_spacing = 1;

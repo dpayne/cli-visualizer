@@ -149,6 +149,16 @@ class Settings
         m_spectrum_character = spectrum_character;
     }
 
+    wchar_t get_lorenz_character() const noexcept
+    {
+        return m_lorenz_character;
+    }
+
+    void set_lorenz_character(wchar_t lorenz_character)
+    {
+        m_lorenz_character = lorenz_character;
+    }
+
     wchar_t get_ellipse_character() const noexcept
     {
         return m_ellipse_character;
@@ -262,6 +272,7 @@ class Settings
     std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;
+    wchar_t m_lorenz_character;
     wchar_t m_ellipse_character;
     uint32_t m_ellipse_radius;
     uint32_t m_spectrum_bar_width;

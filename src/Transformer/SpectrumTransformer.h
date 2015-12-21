@@ -29,8 +29,8 @@ class SpectrumTransformer : public GenericTransformer
                         vis::NcursesWriter *writer) override;
 
   private:
-    void execute(pcm_stereo_sample *buffer,
-                        vis::NcursesWriter *writer, const bool is_stereo);
+    void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
+                 const bool is_stereo);
     const Settings *const m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
@@ -74,12 +74,13 @@ class SpectrumTransformer : public GenericTransformer
 
     std::vector<double> m_previous_max_heights;
 
-    //Used by monstercat smoothing to apply weights to a bar's height as determined by it's frequency range
-    //Note: this is only re-computed when screen width changes
+    // Used by monstercat smoothing to apply weights to a bar's height as
+    // determined by it's frequency range
+    // Note: this is only re-computed when screen width changes
     std::vector<double> m_monstercat_smoothing_weights;
 
     // Pre-compute colors calculations to avoid duplicate work
-    //Note: this is only re-computed when screen height changes
+    // Note: this is only re-computed when screen height changes
     std::vector<vis::ColorIndex> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
@@ -95,17 +96,16 @@ class SpectrumTransformer : public GenericTransformer
     /**
      * Populates "bars" and "bars_falloff" with the bar heights to be displayed
      */
-    virtual void
-    create_spectrum_bars(fftw_complex *fftw_output, const size_t fftw_results,
-                         const int32_t win_height, const int32_t win_width,
-                         const uint32_t number_of_bars,
-                         std::vector<double> &bars, std::vector<double> &bars_falloff
-                         );
+    virtual void create_spectrum_bars(fftw_complex *fftw_output,
+                                      const size_t fftw_results,
+                                      const int32_t win_height,
+                                      const int32_t win_width,
+                                      const uint32_t number_of_bars,
+                                      std::vector<double> &bars,
+                                      std::vector<double> &bars_falloff);
 
     void
-    generate_bars(
-    std::vector<double> &bars,
-            const uint32_t number_of_bars,
+    generate_bars(std::vector<double> &bars, const uint32_t number_of_bars,
                   const fftw_complex *fftw_output, const size_t fftw_results,
                   const std::vector<uint32_t> &low_cutoff_frequencies,
                   const std::vector<uint32_t> &high_cutoff_frequencies) const;
@@ -115,7 +115,8 @@ class SpectrumTransformer : public GenericTransformer
         std::vector<uint32_t> *high_cutoff_frequencies,
         std::vector<double> *freqconst_per_bin);
 
-    void draw_bars(const std::vector<double> &bars, const std::vector<double> &bars_falloff, int32_t win_height,
+    void draw_bars(const std::vector<double> &bars,
+                   const std::vector<double> &bars_falloff, int32_t win_height,
                    const bool flipped, const std::wstring &bar_row_msg,
                    vis::NcursesWriter *writer);
 
@@ -136,7 +137,8 @@ class SpectrumTransformer : public GenericTransformer
 
     void scale_bars(std::vector<double> &bars, const int32_t height);
 
-    std::wstring create_bar_row_msg(const wchar_t character, uint32_t bar_width);
+    std::wstring create_bar_row_msg(const wchar_t character,
+                                    uint32_t bar_width);
 
     void sgs_smoothing(std::vector<double> &bars);
     void monstercat_smoothing(std::vector<double> &bars);

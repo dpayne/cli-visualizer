@@ -30,7 +30,8 @@ void vis::Visualizer::add_audio_source(const std::string &audio_source)
 {
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
-        m_audio_sources.emplace_back(std::make_unique<vis::MpdAudioSource>(m_settings));
+        m_audio_sources.emplace_back(
+            std::make_unique<vis::MpdAudioSource>(m_settings));
     }
 }
 
@@ -45,7 +46,7 @@ void vis::Visualizer::run()
 
     m_writer = std::make_unique<NcursesWriter>(m_settings);
 
-    while (!should_shutdown() )
+    while (!should_shutdown())
     {
         process_user_input();
         if (audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
@@ -61,8 +62,8 @@ void vis::Visualizer::run()
         }
         else
         {
-            std::this_thread::sleep_for(
-                std::chrono::milliseconds(VisConstants::k_silent_sleep_milliseconds));
+            std::this_thread::sleep_for(std::chrono::milliseconds(
+                VisConstants::k_silent_sleep_milliseconds));
         }
 
         // update sources and transformers
@@ -103,19 +104,22 @@ void vis::Visualizer::setup_audio_sources()
 
 void vis::Visualizer::setup_transformers()
 {
-    for ( const auto &visualizer : m_settings->get_visualizers())
+    for (const auto &visualizer : m_settings->get_visualizers())
     {
         if (visualizer == VisConstants::k_spectrum_visualizer_name)
         {
-            m_transformers.emplace_back(std::make_unique<SpectrumTransformer>(m_settings));
+            m_transformers.emplace_back(
+                std::make_unique<SpectrumTransformer>(m_settings));
         }
         else if (visualizer == VisConstants::k_ellipse_visualizer_name)
         {
-            m_transformers.emplace_back(std::make_unique<EllipseTransformer>(m_settings));
+            m_transformers.emplace_back(
+                std::make_unique<EllipseTransformer>(m_settings));
         }
         else if (visualizer == VisConstants::k_lorenz_visualizer_name)
         {
-            m_transformers.emplace_back(std::make_unique<LorenzTransformer>(m_settings));
+            m_transformers.emplace_back(
+                std::make_unique<LorenzTransformer>(m_settings));
         }
     }
 }

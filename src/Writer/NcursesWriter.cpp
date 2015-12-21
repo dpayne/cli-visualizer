@@ -36,7 +36,8 @@ void vis::NcursesWriter::setup_color(const vis::ColorDefinition &color)
     init_pair(color.get_color_index(), color.get_color_index(), -1);
 
     // Set colors as a background
-    init_pair(color.get_color_index(), color.get_color_index(), color.get_color_index());
+    init_pair(color.get_color_index(), color.get_color_index(),
+              color.get_color_index());
 }
 
 void vis::NcursesWriter::setup_colors()
@@ -47,11 +48,13 @@ void vis::NcursesWriter::setup_colors()
         init_pair(pair.second, pair.second, -1);
     }
 
-    auto default_color_map_size = static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
-    //setup basic colors as background
+    auto default_color_map_size =
+        static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
+    // setup basic colors as background
     for (auto pair : NcursesUtils::get_default_color_map())
     {
-        init_pair(pair.second + default_color_map_size, pair.second, pair.second);
+        init_pair(pair.second + default_color_map_size, pair.second,
+                  pair.second);
     }
 
     if (!m_settings->get_color_definitions().empty())
@@ -76,10 +79,11 @@ void vis::NcursesWriter::setup_colors()
 }
 
 void vis::NcursesWriter::write_background(int32_t height, int32_t width,
-                               vis::ColorIndex color,
-                          const std::wstring &msg)
+                                          vis::ColorIndex color,
+                                          const std::wstring &msg)
 {
-    auto default_color_map_size = static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
+    auto default_color_map_size =
+        static_cast<int16_t>(NcursesUtils::get_default_color_map().size());
     auto color_pair = COLOR_PAIR(color + default_color_map_size);
     attron(color_pair);
 
@@ -93,7 +97,7 @@ void vis::NcursesWriter::write(int32_t height, int32_t width,
 {
     attron(COLOR_PAIR(color));
 
-    mvaddwstr(height, width,msg.c_str());
+    mvaddwstr(height, width, msg.c_str());
 
     attroff(COLOR_PAIR(color));
 }
