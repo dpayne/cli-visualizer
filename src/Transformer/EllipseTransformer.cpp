@@ -51,7 +51,7 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // Makes the radius of each ring be approximately 2 cells wide.
     const auto radius = static_cast<int32_t>(m_settings->get_ellipse_radius() *
-                                             m_settings->get_colors().size());
+                                             m_settings->get_color_definitions().size());
 
     const auto max_color_index = static_cast<int32_t>(std::floor(
         std::sqrt(win_width * win_width + 4 * win_height * win_height)));
@@ -59,7 +59,7 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
     for (auto i = 0; i < max_color_index; ++i)
     {
         m_precomputed_colors[static_cast<size_t>(i)] =
-            writer->to_color(i, radius, true);
+            writer->to_color_pair(i, radius, true);
     }
 
     writer->clear();

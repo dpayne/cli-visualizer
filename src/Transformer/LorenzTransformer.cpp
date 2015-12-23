@@ -19,7 +19,6 @@
 
 namespace
 {
-static const double k_pi = 3.14159265358979323846;
 static const double k_lorenz_h = 0.01;
 static const double k_lorenz_a = 10.0;
 static const double k_lorenz_b1 = 7.1429;
@@ -97,8 +96,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         std::sqrt((k_lorenz_c * lorenz_b * lorenz_b) -
                   (std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2)));
 
-    auto rotation_angle_x = (m_rotation_count_left * 2.0 * k_pi) / 1000.0;
-    auto rotation_angle_y = (m_rotation_count_right * 2.0 * k_pi) / 1000.0;
+    auto rotation_angle_x = (m_rotation_count_left * 2.0 * VisConstants::k_pi) / 1000.0;
+    auto rotation_angle_y = (m_rotation_count_right * 2.0 * VisConstants::k_pi) / 1000.0;
 
     auto deg_multiplier_cos_x = std::cos(rotation_angle_x);
     auto deg_multiplier_sin_x = std::sin(rotation_angle_x);
@@ -134,7 +133,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         auto distance_p2 =
             std::sqrt(std::pow(x0 + equilbria, 2) +
                       std::pow(y0 + equilbria, 2) + std::pow(z0 - z_center, 2));
-        ColorIndex color_distance = writer->to_color(
+        ColorIndex color_distance = writer->to_color_pair(
             static_cast<int32_t>(std::min(distance_p1, distance_p2)), 16);
 
         // We want to rotate around the center of the lorenz. so we offset zaxis

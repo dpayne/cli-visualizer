@@ -117,16 +117,6 @@ class Settings
         return m_is_color_enabled;
     }
 
-    const std::vector<vis::ColorIndex> &get_colors() const noexcept
-    {
-        return m_colors;
-    }
-
-    void set_colors(const std::vector<vis::ColorIndex> &colors)
-    {
-        m_colors = colors;
-    }
-
     const std::vector<vis::ColorDefinition> &get_color_definitions() const
         noexcept
     {
@@ -259,6 +249,16 @@ class Settings
         return m_spectrum_falloff_weight;
     }
 
+    void set_is_rainbow_colors_enabled(const bool rainbow_colors_enabled)
+    {
+        m_is_rainbow_colors_enabled = rainbow_colors_enabled;
+    }
+
+    bool is_rainbow_colors_enabled() const noexcept
+    {
+        return m_is_rainbow_colors_enabled;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -283,6 +283,7 @@ class Settings
     SmoothingMode m_spectrum_smoothing_mode;
     FalloffMode m_spectrum_falloff_mode;
     double m_spectrum_falloff_weight;
+    bool m_is_rainbow_colors_enabled;
 };
 }
 

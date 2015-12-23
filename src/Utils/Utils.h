@@ -272,6 +272,41 @@ class Utils
         return elems;
     }
 
+    static inline int64_t hex_to_int(char c)
+    {
+        if (c >= '0' && c <= '9')
+        {
+            return static_cast<int64_t>(c - '0');
+        }
+        else
+        {
+            if (c >= 'a' && c <= 'z')
+            {
+                c -= 32;
+            }
+
+            if (c >= 'A' && c <= 'F')
+            {
+                return static_cast<int64_t>(10 + (c - 'A'));
+            }
+            else
+            {
+                return 0;
+            }
+        }
+    }
+
+    static inline int64_t hex_to_int(const std::string &hex)
+    {
+        auto decimalValue = 0l;
+        for (const auto &elem : hex)
+        {
+            decimalValue = decimalValue * 16 + hex_to_int(elem);
+        }
+
+        return decimalValue;
+    }
+
   private:
     explicit Utils();
 

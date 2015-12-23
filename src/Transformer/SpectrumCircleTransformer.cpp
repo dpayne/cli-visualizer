@@ -42,7 +42,7 @@ void vis::SpectrumCircleTransformer::draw_bars(const std::vector<double> &bars,
         auto distance =
             std::sqrt(std::pow(bars[i], 2) +
                       std::pow(0.0, 2));
-        ColorIndex color_distance = writer->to_color(
+        ColorIndex color_distance = writer->to_color_pair(
             static_cast<int32_t>(distance), 16);
 
         const auto scaling_multiplier =

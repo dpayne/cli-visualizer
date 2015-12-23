@@ -26,7 +26,8 @@ static const uint32_t k_default_sampling_frequency = 44100;
 static const uint32_t k_default_low_cutoff_frequency = 30;
 static const uint32_t k_default_high_cutoff_frequency = 22050;
 static const std::string k_default_config_path{".vis/config"};
-static const std::string k_default_colors_path{".vis/colors"};
+static const std::string k_colors_directory{".vis/colors/"};
+static const std::string k_default_colors_path{"colors"};
 static const std::string k_default_log_path{".vis/vis.log"};
 static const wchar_t k_default_spectrum_character{L' '};
 static const wchar_t k_default_lorenz_character{L'\u2588'};
@@ -48,6 +49,7 @@ static const double k_default_spectrum_falloff_weight = 0.99;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 static const wchar_t k_space_wchar{L' '};
+static const double k_pi = 3.14159265358979323846;
 }
 
 #endif

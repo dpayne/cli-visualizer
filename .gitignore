@@ -29,6 +29,7 @@
 
 build
 build_tests
+build_perf_tests
 
 #vim files
 .ycm_extra_conf.pyc

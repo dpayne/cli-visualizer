@@ -149,7 +149,12 @@ class SpectrumTransformer : public GenericTransformer
                                     uint32_t bar_width);
 
     void sgs_smoothing(std::vector<double> &bars);
+
     void monstercat_smoothing(std::vector<double> &bars);
+
+    void recalculate_colors(const int32_t win_height,
+                            const NcursesWriter *writer);
+
     /** --- END MEMBER FUNCTIONS --- */
 };
 }

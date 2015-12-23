@@ -467,6 +467,24 @@ void vis::SpectrumTransformer::create_spectrum_bars(
     bars_falloff = apply_falloff(bars, bars_falloff);
 }
 
+void vis::SpectrumTransformer::recalculate_colors(const int32_t win_height, const NcursesWriter * writer)
+{
+    m_precomputed_colors.reserve(static_cast<size_t>(win_height));
+    for (auto i = 0; i < win_height; ++i)
+    {
+        if (m_settings->is_rainbow_colors_enabled())
+        {
+            m_precomputed_colors[static_cast<size_t>(i)] =
+                writer->to_color_rainbow(i, win_height);
+        }
+        else
+        {
+            m_precomputed_colors[static_cast<size_t>(i)] =
+                writer->to_color_pair(i, win_height);
+        }
+    }
+}
+
 void vis::SpectrumTransformer::draw_bars(
     const std::vector<double> &bars, const std::vector<double> &bars_falloff,
     int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
@@ -474,12 +492,7 @@ void vis::SpectrumTransformer::draw_bars(
 {
     if (static_cast<size_t>(win_height) != m_precomputed_colors.size())
     {
-        m_precomputed_colors.reserve(static_cast<size_t>(win_height));
-        for (auto i = 0; i < win_height; ++i)
-        {
-            m_precomputed_colors[static_cast<size_t>(i)] =
-                writer->to_color(i, win_height);
-        }
+        recalculate_colors(win_height, writer);
     }
 
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)

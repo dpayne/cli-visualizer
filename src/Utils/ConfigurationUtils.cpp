@@ -33,6 +33,8 @@ const static std::string k_visualizers_setting{"visualizers"};
 const static std::string k_visualizers_default{"spectrum,ellipse,lorenz"};
 const static std::string k_fps_setting{"visualizer.fps"};
 
+const static std::string k_color_scheme_path_setting{"colors.scheme"};
+
 const static std::string k_colors_setting{"colors"};
 const static std::string k_colors_default{
     "blue,cyan,green,yellow,red,magenta,white"};
@@ -119,17 +121,19 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 
     std::vector<std::string> split_line;
 
+    ColorIndex i = 0;
     while (file.good() && std::getline(file, line))
     {
-        vis::Utils::split(line, ',', split_line);
-
-        if (split_line.size() == 4)
+        if (line.size() == 7)
         {
-            color_definitions.push_back(vis::ColorDefinition(
-                NcursesUtils::to_color_index(split_line[0]),
-                NcursesUtils::to_color_index(split_line[1]),
-                NcursesUtils::to_color_index(split_line[2]),
-                NcursesUtils::to_color_index(split_line[3])));
+            auto hex_color = vis::Utils::hex_to_int(line.substr(1));
+
+            int16_t red = (hex_color >> 16) % 256;
+            int16_t green = (hex_color >> 8) % 256;
+            int16_t blue = hex_color % 256;
+
+            color_definitions.push_back(
+                vis::ColorDefinition(i, red, green, blue));
         }
         else
         {
@@ -301,19 +305,11 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_is_color_enabled(
         Utils::get(properties, k_colors_enabled_setting, true));
 
-    const auto colors_strs = Utils::split(
-        Utils::get(properties, k_colors_setting, k_colors_default), ',');
-    std::vector<vis::ColorIndex> colors;
-
-    for (const auto &str : colors_strs)
-    {
-        colors.push_back(NcursesUtils::to_color_index(str));
-    }
-
-    settings.set_colors(colors);
-
+    // set color definitions
     auto colors_path = Utils::get_home_directory();
-    colors_path.append(VisConstants::k_default_colors_path);
+    colors_path.append(VisConstants::k_colors_directory);
+    colors_path.append(Utils::get(properties, k_color_scheme_path_setting,
+                                  VisConstants::k_default_colors_path));
     settings.set_color_definitions(
         vis::ConfigurationUtils::read_colors(colors_path));
 
