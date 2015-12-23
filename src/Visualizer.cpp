@@ -83,6 +83,9 @@ void vis::Visualizer::process_user_input()
         m_current_transformer_index =
             (m_current_transformer_index + 1) % m_transformers.size();
         break;
+    case 'q':
+        shutdown();
+        break;
     default:
         // do nothing
         break;

@@ -1,7 +1,5 @@
 - make circle transformer possibly make it rotate
 - make globe transformer possibly make it rotate
-- fix lorenz
-- add rainbow config parsing
 - add more hot keys
     - q for quit
     - switch between color schemes

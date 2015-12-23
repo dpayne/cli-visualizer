@@ -61,8 +61,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     auto average_right = 0.0;
     for (auto i = 0u; i < samples; ++i)
     {
-        average_left += buffer[i].l;
-        average_right += buffer[i].r;
+        average_left += std::abs(buffer[i].l);
+        average_right += std::abs(buffer[i].r);
     }
 
     average_left = average_left / samples * 2.0;
