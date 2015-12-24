@@ -21,7 +21,7 @@ An C++ compiler that supports C++14 is also needed. On arch linux, the latest g+
 
 ### Ubuntu
 
-    sudo apt-get install libncursesw5-dev libfftw3-3
+    sudo apt-get install libfftw3-dev libncursesw5-dev
 
 ### Arch Linux
 

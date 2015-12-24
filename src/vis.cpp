@@ -18,7 +18,11 @@
 #include "Utils/NcursesUtils.h"
 #include "Visualizer.h"
 
+#ifdef NCURSESW
+#include <ncursesw/ncurses.h>
+#else
 #include <ncurses.h>
+#endif
 
 static vis::Visualizer *g_vis = nullptr;
 static std::string g_program_help =

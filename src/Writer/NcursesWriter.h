@@ -8,7 +8,12 @@
 #ifndef _NCURSES_WRITER_H
 #define _NCURSES_WRITER_H
 
+#ifdef NCURSESW
+#include <ncursesw/ncurses.h>
+#else
 #include <ncurses.h>
+#endif
+
 #include "Domain/ColorDefinition.h"
 #include "Domain/Settings.h"
 
