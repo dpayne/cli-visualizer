@@ -107,9 +107,18 @@ PERF_TEST_INCLUDE_PATH = -I/usr/include
 LIB_PATH = -L/usr/local/lib
 
 # Libs
-LIBS = -lncurses -lfftw3 -lm -lstdc++
+LIBS = -lfftw3 -lm -lstdc++
 TEST_LIBS = -lgtest
 PERF_TEST_LIBS = -lbenchmark -lpthread
+
+#if this box has an older version of ncurses
+ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
+	LIBS += -lncursesw
+	CC_FLAGS += -DNCURSESW
+	LD_FLAGS += -DNCURSESW
+else
+	LIBS += -lncurses
+endif
 
 #use jemalloc if available
 ifneq ("$(wildcard /usr/lib/libjemalloc.so)","")

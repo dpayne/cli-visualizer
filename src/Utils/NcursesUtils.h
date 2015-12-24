@@ -15,7 +15,11 @@
 
 #include <map>
 
+#ifdef NCURSESW
+#include <ncursesw/ncurses.h>
+#else
 #include <ncurses.h>
+#endif
 
 namespace vis
 {
