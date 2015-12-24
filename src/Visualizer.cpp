@@ -17,7 +17,6 @@
 
 #include <thread>
 #include <iostream>
-#include <ncurses.h>
 
 vis::Visualizer::Visualizer(const vis::Settings *const settings)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
