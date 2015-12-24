@@ -1,20 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [cli-visualizer](#cli-visualizer)
-  - [Installing Pre-requisites](#installing-pre-requisites)
-    - [Ubuntu](#ubuntu)
-    - [Arch Linux](#arch-linux)
-    - [Mac OS X](#mac-os-x)
-  - [Installing](#installing)
-  - [MPD Setup](#mpd-setup)
-  - [Usage](#usage)
-    - [Controls](#controls)
-  - [Configuration](#configuration)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # cli-visualizer
 
 Command line visualizer. Currently only supports mpd.
@@ -29,6 +12,20 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 ![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
 ![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
+
+**Table of Contents**
+
+- [Installing Pre-requisites](#installing-pre-requisites)
+ - [Ubuntu](#ubuntu)
+ - [Arch Linux](#arch-linux)
+ - [Mac OS X](#mac-os-x)
+- [Installing](#installing)
+- [MPD Setup](#mpd-setup)
+- [Usage](#usage)
+	- [Controls](#controls)
+- [Configuration](#configuration)
+
+
 
 ## Installing Pre-requisites
 
