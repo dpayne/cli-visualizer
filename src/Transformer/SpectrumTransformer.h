@@ -139,9 +139,10 @@ class SpectrumTransformer : public GenericTransformer
                                     double *moving_average, double *std_dev);
 
     virtual void draw_bars(const std::vector<double> &bars,
-                   const std::vector<double> &bars_falloff, int32_t win_height,
-                   const bool flipped, const std::wstring &bar_row_msg,
-                   vis::NcursesWriter *writer);
+                           const std::vector<double> &bars_falloff,
+                           int32_t win_height, const bool flipped,
+                           const std::wstring &bar_row_msg,
+                           vis::NcursesWriter *writer);
 
     virtual void scale_bars(std::vector<double> &bars, const int32_t height);
 

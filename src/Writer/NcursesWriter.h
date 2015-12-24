@@ -31,11 +31,12 @@ class NcursesWriter
     virtual void clear();
 
     virtual ColorIndex to_color_pair(int32_t number, int32_t max,
-                                bool wrap = true) const;
+                                     bool wrap = true) const;
 
     virtual void flush();
 
-    static int16_t to_ansi_color(const int16_t red, const int16_t green, const int16_t blue);
+    static int16_t to_ansi_color(const int16_t red, const int16_t green,
+                                 const int16_t blue);
 
     int16_t to_color_rainbow(int32_t number, int32_t max) const;
 

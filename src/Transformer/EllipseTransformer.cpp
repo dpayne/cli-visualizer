@@ -33,7 +33,7 @@ vis::EllipseTransformer::~EllipseTransformer()
 void vis::EllipseTransformer::execute_mono(pcm_stereo_sample *buffer,
                                            vis::NcursesWriter *writer)
 {
-    // TODO: do something different for mono
+    // TODO(dpayne): do something different for mono
     execute_stereo(buffer, writer);
 }
 
@@ -50,16 +50,21 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
     const auto bottom_half_height = win_height - top_half_height;
 
     // Makes the radius of each ring be approximately 2 cells wide.
-    const auto radius = static_cast<int32_t>(m_settings->get_ellipse_radius() *
-                                             m_settings->get_color_definitions().size());
+    const auto radius =
+        static_cast<int32_t>(m_settings->get_ellipse_radius() *
+                             m_settings->get_color_definitions().size());
 
     const auto max_color_index = static_cast<int32_t>(std::floor(
         std::sqrt(win_width * win_width + 4 * win_height * win_height)));
-    m_precomputed_colors.reserve(static_cast<size_t>(win_height));
-    for (auto i = 0; i < max_color_index; ++i)
+
+    if (m_precomputed_colors.size() != static_cast<size_t>(max_color_index))
     {
-        m_precomputed_colors[static_cast<size_t>(i)] =
-            writer->to_color_pair(i, radius, true);
+        m_precomputed_colors.resize(static_cast<size_t>(max_color_index), 0);
+        for (auto i = 0; i < max_color_index; ++i)
+        {
+            m_precomputed_colors[static_cast<size_t>(i)] =
+                writer->to_color_pair(i, radius, true);
+        }
     }
 
     writer->clear();

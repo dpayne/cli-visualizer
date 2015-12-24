@@ -43,7 +43,8 @@ const static std::string k_ellipse_character{"visualizer.ellipse.character"};
 const static std::string k_ellipse_radius{"visualizer.ellipse.radius"};
 
 const static std::string k_colors_enabled_setting{"colors.enabled"};
-const static std::string k_rainbow_colors_enabled_setting{"colors.rainbow.enabled"};
+const static std::string k_rainbow_colors_enabled_setting{
+    "colors.rainbow.enabled"};
 const static std::string k_spectrum_character{"visualizer.spectrum.character"};
 const static std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
 const static std::string k_spectrum_bar_spacing{

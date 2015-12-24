@@ -34,9 +34,10 @@ void vis::NcursesWriter::setup_colors()
     {
         init_pair(i, i, -1);
 
-        // initialize colors as background, this is used in write_background to create a 
+        // initialize colors as background, this is used in write_background to
+        // create a
         // full block effect without using a custom font
-        init_pair(static_cast<int16_t>(i+COLORS), i, i);
+        init_pair(static_cast<int16_t>(i + COLORS), i, i);
     }
 }
 
@@ -44,7 +45,8 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
                                           vis::ColorIndex color,
                                           const std::wstring &msg)
 {
-    //Add COLORS which will set it to have the color as the background, see "setup_colors"
+    // Add COLORS which will set it to have the color as the background, see
+    // "setup_colors"
     auto color_pair = COLOR_PAIR(color + COLORS);
     attron(color_pair);
 
@@ -83,16 +85,16 @@ int16_t vis::NcursesWriter::to_ansi_color_domain(const int16_t color)
  * Returns nearest supported 256-color an rgb value as an ansi color value
  * Inspired by the rainbow gem https://github.com/sickill/rainbow
  *
- * This is an approximate result. Actual results depend on what colors the terminal has set.
+ * This is an approximate result. Actual results depend on what colors the
+ * terminal has set.
  */
 int16_t vis::NcursesWriter::to_ansi_color(const int16_t red,
                                           const int16_t green,
                                           const int16_t blue)
 {
-    return 16 + static_cast<int16_t>(
-            (to_ansi_color_domain(red) * 36.0) +
-            (to_ansi_color_domain(green) * 6.0) +
-            (to_ansi_color_domain(blue) * 1.0));
+    return 16 + static_cast<int16_t>((to_ansi_color_domain(red) * 36.0) +
+                                     (to_ansi_color_domain(green) * 6.0) +
+                                     (to_ansi_color_domain(blue) * 1.0));
 }
 
 /**
@@ -113,11 +115,17 @@ int16_t vis::NcursesWriter::to_color_rainbow(int32_t number, int32_t max) const
 }
 
 vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
-                                             bool wrap) const
+                                                  bool wrap) const
 {
     const auto colors_size = static_cast<vis::ColorIndex>(
         m_settings->get_color_definitions().size());
     const auto index = (number * colors_size) / (max + 1);
+
+    //no colors
+    if (colors_size == 0)
+    {
+        return 0;
+    }
 
     const auto color_definition =
         m_settings->get_color_definitions()[static_cast<size_t>(

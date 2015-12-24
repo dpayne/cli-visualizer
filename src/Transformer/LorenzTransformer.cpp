@@ -23,7 +23,7 @@ static const double k_lorenz_h = 0.01;
 static const double k_lorenz_a = 10.0;
 static const double k_lorenz_b1 = 7.1429;
 static const double k_lorenz_b2 = 0.000908845;
-static const double k_lorenz_c = 8.0/3.0;
+static const double k_lorenz_c = 8.0 / 3.0;
 }
 
 vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
@@ -39,7 +39,7 @@ vis::LorenzTransformer::~LorenzTransformer()
 void vis::LorenzTransformer::execute_mono(pcm_stereo_sample *buffer,
                                           vis::NcursesWriter *writer)
 {
-    // TODO: do something different for mono
+    // TODO(dpayne): do something different for mono
     execute_stereo(buffer, writer);
 }
 
@@ -68,8 +68,10 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
     average_left = average_left / samples * 2.0;
     average_right = average_right / samples;
 
-    const auto rotation_interval_left = (average_left * (m_settings->get_fps() / 65536.0));
-    const auto rotation_interval_right = (average_right * (m_settings->get_fps() / 65536.0));
+    const auto rotation_interval_left =
+        (average_left * (m_settings->get_fps() / 65536.0));
+    const auto rotation_interval_right =
+        (average_right * (m_settings->get_fps() / 65536.0));
     const auto average = (average_left + average_right) / 2.0;
 
     // lorenz_b will range from 11.7 to 64.4. Below 10 the lorenz is pretty much
@@ -96,8 +98,10 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         std::sqrt((k_lorenz_c * lorenz_b * lorenz_b) -
                   (std::pow(z_center - lorenz_b, 2) / std::pow(lorenz_b, 2)));
 
-    auto rotation_angle_x = (m_rotation_count_left * 2.0 * VisConstants::k_pi) / 1000.0;
-    auto rotation_angle_y = (m_rotation_count_right * 2.0 * VisConstants::k_pi) / 1000.0;
+    auto rotation_angle_x =
+        (m_rotation_count_left * 2.0 * VisConstants::k_pi) / 1000.0;
+    auto rotation_angle_y =
+        (m_rotation_count_right * 2.0 * VisConstants::k_pi) / 1000.0;
 
     auto deg_multiplier_cos_x = std::cos(rotation_angle_x);
     auto deg_multiplier_sin_x = std::sin(rotation_angle_x);
@@ -147,13 +151,9 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         auto yRxy = x * deg_multiplier_sin_x * deg_multiplier_sin_y +
                     y * deg_multiplier_cos_x -
                     z * deg_multiplier_cos_y * deg_multiplier_sin_x;
-        auto zRxy = -1 * y * deg_multiplier_cos_x * deg_multiplier_sin_y +
-                    y * deg_multiplier_sin_x +
-                    z * deg_multiplier_cos_x * deg_multiplier_cos_y;
 
         x = xRxy * scaling_multiplier;
         y = yRxy * scaling_multiplier;
-        z = zRxy;
 
         // Throw out any points outside the window
         if (y > (half_height * -1) && y < half_height &&

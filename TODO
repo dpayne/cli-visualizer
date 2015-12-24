@@ -1,6 +1,6 @@
-- make circle transformer possibly make it rotate
-- make globe transformer possibly make it rotate
-- add more hot keys
-    - q for quit
-    - switch between color schemes
+- read from alsa
 - writing more unit tests
+- make reading from fifo timeout
+- add all settings to config
+- add "make install" and "make uninstall"
+- add setting to rotate between visualizers every x seconds

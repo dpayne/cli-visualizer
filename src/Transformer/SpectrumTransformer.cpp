@@ -314,20 +314,18 @@ std::vector<double> vis::SpectrumTransformer::apply_falloff(
     {
         return bars;
     }
-    else
-    {
-        for (auto i = 0u; i < bars.size(); ++i)
-        {
-            auto difference = std::abs(previous_bars[i] - bars[i]);
-            previous_bars[i] =
-                std::max(previous_bars[i] *
-                             std::pow(m_settings->get_spectrum_falloff_weight(),
-                                      difference),
-                         bars[i]);
-        }
 
-        return previous_bars;
+    for (auto i = 0u; i < bars.size(); ++i)
+    {
+        auto difference = std::abs(previous_bars[i] - bars[i]);
+        previous_bars[i] =
+            std::max(previous_bars[i] *
+                         std::pow(m_settings->get_spectrum_falloff_weight(),
+                                  difference),
+                     bars[i]);
     }
+
+    return previous_bars;
 }
 
 void vis::SpectrumTransformer::calculate_moving_average_and_std_dev(
@@ -412,7 +410,7 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
             values->erase(
                 values->begin(),
                 values->begin() +
-                    static_cast<long>((static_cast<double>(values->size()) *
+                    static_cast<int64_t>((static_cast<double>(values->size()) *
                                        k_autoscaling_erase_percent_on_reset)));
 
             calculate_moving_average_and_std_dev(
@@ -467,7 +465,8 @@ void vis::SpectrumTransformer::create_spectrum_bars(
     bars_falloff = apply_falloff(bars, bars_falloff);
 }
 
-void vis::SpectrumTransformer::recalculate_colors(const int32_t win_height, const NcursesWriter * writer)
+void vis::SpectrumTransformer::recalculate_colors(const int32_t win_height,
+                                                  const NcursesWriter *writer)
 {
     m_precomputed_colors.reserve(static_cast<size_t>(win_height));
     for (auto i = 0; i < win_height; ++i)

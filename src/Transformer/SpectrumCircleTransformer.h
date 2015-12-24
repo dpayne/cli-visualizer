@@ -44,4 +44,3 @@ class SpectrumCircleTransformer : public SpectrumTransformer
 }
 
 #endif
-

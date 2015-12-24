@@ -15,10 +15,16 @@ CCACHE := $(shell which ccache)
 OS= $(shell uname)
 
 #prefer clang over g++
+ifndef COMPILER
 ifneq ($(CLANG),)
 COMPILER=clang++
 else
 COMPILER=g++
+endif
+endif
+
+ifndef PREFIX
+PREFIX=/usr/local/bin/
 endif
 
 #use ccache if available
@@ -38,12 +44,17 @@ OPT_LEVEL = 3
 
 # Make-local Compiler Flags
 CC_FLAGS = -std=c++14
-CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 CC_FLAGS += -O$(OPT_LEVEL)
 CC_FLAGS += -march=native
 CC_FLAGS += -ffast-math
 CC_FLAGS += -fno-omit-frame-pointer
-CC_FLAGS += -ggdb -g2
+
+# Only turn on extra warnings for clang since g++ does not support -Weverything
+ifeq ($(CC),$(CLANG))
+CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
+endif
+
+CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 
 #perf tests should not have many warnings or error out on warning
 PERF_TEST_CC_FLAGS = -std=c++14
@@ -72,12 +83,13 @@ endif
 # DEBUG Settings
 ifdef DEBUG
 OPT_LEVEL=0
-CC_FLAGS += -g2 -DVIS_LOG_DEBUG
+CC_FLAGS += -ggdb -g2 -DVIS_LOG_DEBUG
 LD_FLAGS += -DVIS_LOG_DEBUG
 endif
 
 # Clang sanitize options
 ifdef SANITIZE
+#to get symbols from clang sanitize, run "export ASAN_SYMBOLIZER_PATH=<path_to_llvm_symbolizer>" on Arch Linux symbolizer is usually at"/usr/bin/llvm-symbolizer"
 CC_FLAGS += -fsanitize=$(SANITIZE)
 LD_FLAGS += -fsanitize=$(SANITIZE)
 endif
@@ -91,11 +103,12 @@ PERF_TEST_INCLUDE_PATH = -I/usr/include
 LIB_PATH = -L/usr/local/lib
 
 # Libs
-LIBS = -lncurses -lfftw3
+LIBS = -lncurses -lfftw3 -lm -lstdc++
 TEST_LIBS = -lgtest
 PERF_TEST_LIBS = -lbenchmark -lpthread
 
-ifneq ($(OS),Darwin)
+#use jemalloc if available
+ifneq ("$(wildcard /usr/lib/libjemalloc.so)","")
 LIBS += -ljemalloc
 endif
 
@@ -162,8 +175,11 @@ clean:
 	@rm -rf $(BUILD_TEST_DIR)
 	@rm -rf $(BUILD_PERF_TEST_DIR)
 
+uninstall:
+	@rm -f $(BUILD_DIR)/$(TARGET)
+
 install:
-	cp $(BUILD_DIR)/$(TARGET) /usr/local/bin/
+	cp $(BUILD_DIR)/$(TARGET) $(PREFIX)
 
 ###############################################################################
 ##  BUILD TARGETS                                                            ##

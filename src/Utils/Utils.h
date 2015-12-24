@@ -274,9 +274,10 @@ class Utils
 
     static inline int64_t hex_to_int(char c)
     {
+        int64_t hex_number;
         if (c >= '0' && c <= '9')
         {
-            return static_cast<int64_t>(c - '0');
+            hex_number = static_cast<int64_t>(c - '0');
         }
         else
         {
@@ -287,13 +288,15 @@ class Utils
 
             if (c >= 'A' && c <= 'F')
             {
-                return static_cast<int64_t>(10 + (c - 'A'));
+                hex_number = static_cast<int64_t>(10 + (c - 'A'));
             }
             else
             {
-                return 0;
+                hex_number = 0;
             }
         }
+
+        return hex_number;
     }
 
     static inline int64_t hex_to_int(const std::string &hex)
