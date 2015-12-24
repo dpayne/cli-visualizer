@@ -52,7 +52,7 @@ CC_FLAGS += -fno-omit-frame-pointer
 TEST_CCACHE_CLANG=ccache clang++
 TEST_CLANG=ccache clang++
 
-ALL_WARNINGS=-Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
+ALL_WARNINGS=-Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 # Only turn on extra warnings for clang since g++ does not support -Weverything
 ifeq ($(CC),$(TEST_CLANG))
 CC_FLAGS += $(ALL_WARNINGS)
@@ -73,7 +73,7 @@ PERF_TEST_CC_FLAGS += -ggdb -g2
 ifeq ($(OS),Darwin)
 CC_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 else
-CC_FLAGS += -D_LINUX -Werror
+CC_FLAGS += -D_LINUX
 endif
 
 # Linker flags
@@ -82,8 +82,6 @@ PERF_TEST_LD_FLAGS = -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 LD_FLAGS += -D_XOPEN_SOURCE_EXTENDED
-else
-LD_FLAGS += -Werror
 endif
 
 # DEBUG Settings
