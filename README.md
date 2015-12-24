@@ -15,8 +15,9 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 ## Installing Pre-requisites
 
-`fftw` and `ncursesw` libraries are required to build. Note that ncurses with wide character support is
-needed.
+`fftw` and `ncursesw` libraries are required to build. Note that ncurses with wide character support is needed.
+
+An C++ compiler that supports C++14 is also needed. On arch linux, the latest g++ or clang++ will work.
 
 ### Ubuntu
 
@@ -36,7 +37,7 @@ Mac os x has a version of ncurses builtin, but a newer version is required.
 	brew tap homebrew/dupes
 	brew install ncurses
 
-## Installing Pre-requisites
+## Installing
 
 After the pre-requisites have been installed, run the install script.
 
