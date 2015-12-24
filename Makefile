@@ -49,12 +49,18 @@ CC_FLAGS += -march=native
 CC_FLAGS += -ffast-math
 CC_FLAGS += -fno-omit-frame-pointer
 
-# Only turn on extra warnings for clang since g++ does not support -Weverything
-ifeq ($(CC),$(CLANG))
-CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
-endif
+TEST_CCACHE_CLANG=ccache clang++
+TEST_CLANG=ccache clang++
 
-CC_FLAGS += -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
+ALL_WARNINGS=-Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
+# Only turn on extra warnings for clang since g++ does not support -Weverything
+ifeq ($(CC),$(TEST_CLANG))
+CC_FLAGS += $(ALL_WARNINGS)
+else
+ifeq ($(CC),$(TEST_CCACHE_CLANG))
+CC_FLAGS += $(ALL_WARNINGS)
+endif
+endif
 
 #perf tests should not have many warnings or error out on warning
 PERF_TEST_CC_FLAGS = -std=c++14
