@@ -22,6 +22,12 @@ An C++ compiler that supports C++14 is also needed. On arch linux, the latest g+
 ### Ubuntu
 
     sudo apt-get install libfftw3-dev libncursesw5-dev
+    
+Older versions of Ubuntu also need newer a newer gcc compiler. Note, while this should be safe, it will upgrade some base libc libraries that might break your system.
+
+	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+	sudo apt-get update
+	sudo apt-get install gcc-4.9 g++-4.9
 
 ### Arch Linux
 
@@ -44,6 +50,30 @@ After the pre-requisites have been installed, run the install script.
     ./install.sh
 
 The configuration file is installed under "~/.vis/config".
+
+Older version of Ubuntu need to compile with the newer g++ compiler.
+
+	export COMPILER=g++-4.9
+	./install.sh
+	
+## MPD Setup
+The visualizer needs to use mpd's fifo output file to read in the audio stream. To do this, add the following lines to your mpd config file.
+
+
+	audio_output {
+    	type                    "fifo"
+    	name                    "my_fifo"
+    	path                    "/tmp/mpd.fifo"
+    	format                  "44100:16:2"
+	}
+
+If you have any sync issues with the audio where the visualizer either get ahead or behind the music, try lowering the audio buffer in your mpd config.
+
+	audio_output {
+        ...
+        #this sets the buffer time to 50,000 microseconds
+        buffer_time     "50000"
+	}
 
 ## Usage
 
