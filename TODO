@@ -1,3 +1,4 @@
 - read from alsa
 - make reading from fifo timeout
 - add setting to rotate between visualizers every x seconds
+- add more attribution in specific places
