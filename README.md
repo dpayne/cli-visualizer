@@ -9,7 +9,7 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 ![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
 
-![ellipse](/examples/ellipse?raw=true "Ellipse")
+![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
 ![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
 
