@@ -1,7 +1,3 @@
 - read from alsa
-- writing more unit tests
 - make reading from fifo timeout
-- add all settings to config
-- add "make install" and "make uninstall"
 - add setting to rotate between visualizers every x seconds
-- Add GPL or some other license to everything
