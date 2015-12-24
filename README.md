@@ -4,6 +4,15 @@ Command line visualizer. Currently only supports mpd.
 
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
+
+![spectrum_stereo](r/blob/master/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
+
+![spectrum_mono](r/blob/master/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
+
+![ellipse](r/blob/master/examples/ellipse?raw=true "Ellipse")
+
+![lorenz](r/blob/master/examples/lorenz.gif?raw=true "Lorenz")
+
 ## Installing Pre-requisites
 
 `fftw` and `ncursesw` libraries are required to build. Note that ncurses with wide character support is
@@ -11,21 +20,21 @@ needed.
 
 ### Ubuntu
 
-  sudo apt-get install libncursesw5 libfftw3-3
+    sudo apt-get install libncursesw5 libfftw3-3
 
 ### Arch Linux
 
 In arch, the ncursesw is bundled with the ncurses package.
 
-  sudo pacman -S ncurses fftw
+    sudo pacman -S ncurses fftw
 
 ### Mac OS X
 
 Mac os x has a version of ncurses builtin, but a newer version is required.
 
-  brew install fftw
-  brew tap homebrew/dupes
-  brew install ncurses
+	brew install fftw
+	brew tap homebrew/dupes
+	brew install ncurses
 
 ## Installing Pre-requisites
 
@@ -39,7 +48,7 @@ The configuration file is installed under "~/.vis/config".
 
 Start with
 
-  vis
+	vis
 
 ###Controls
 
