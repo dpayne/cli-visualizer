@@ -1,0 +1,58 @@
+##Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
+#visualizer.fps=20
+
+##Defaults to "/tmp/mpd.fifo"
+#mpd.fifo.path
+
+##If set to false the visualizers will use mono mode instead of stereo. Some visualizers will
+##behave differently when mono is enabled. For example, spectrum show two sets of bars.
+#audio.stereo.enabled=false
+
+##Configures the samples rate and the cutoff frequencies.
+#audio.sampling.frequency=44100
+#audio.low.cutoff.frequency=22050
+#audio.high.cutoff.frequency=30
+
+
+##Configures the visualizers and the order they are in. Available visualizers are spectrum,lorenz,ellipse.
+##Defaults to spectrum,ellipse,lorenz
+#visualizers=spectrum,ellipse,lorenz
+
+
+##Configures what character the spectrum visualizer will use. Specifying a space (e.g " ") means the
+##background will be colored instead of the character. Defaults to " ".
+#visualizer.spectrum.character=#
+
+##Spectrum bar width. Defaults to 1.
+#visualizer.spectrum.bar.width=2
+
+##The amount of space between each bar in the spectrum visualizer. Defaults to 1. It's possible to set this to
+##zero to have no space between bars
+#visualizer.spectrum.bar.spacing=1
+
+##Available smoothing options are monstercat, sgs, none.
+#visualizer.spectrum.smoothing.mode=monstercat
+
+##This configures the falloff effect on the spectrum visualizer. Available falloff options are fill,top,none.
+##Defaults to "fill"
+#visualizer.spectrum.falloff.mode=fill
+
+##Configures how fast the falloff character falls. This is an exponential falloff so values usually look
+##best 0.9+ and small changes in this value can have a large effect. Defaults to 0.99
+#visualizer.spectrum.falloff.weight=0.99
+
+##This configures the sgs smoothing effect on the spectrum visualizer. More points spreads out the smoothing
+##effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=1
+#visualizer.sgs.smoothing.points=3
+#visualizer.sgs.smoothing.passes=1
+
+
+##Configures what character the ellipse visualizer will use. Specifying a space (e.g " ") means the
+##background will be colored instead of the character. Defaults to " ".
+#visualizer.ellipse.character=#
+
+##The radius of each color ring in the ellipse visualizer. Defaults to 2.
+#visualizer.ellipse.radius=2
+
+##Specifies the color scheme. The color scheme must be in ~/.vis/colors/ directory. Default is "colors"
+colors.scheme=rainbow
