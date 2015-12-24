@@ -17,7 +17,7 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 `fftw` and `ncursesw` libraries are required to build. Note that ncurses with wide character support is needed.
 
-An C++ compiler that supports C++14 is also needed. On arch linux, the latest g++ or clang++ will work.
+A C++ compiler that supports C++14 is also needed. On arch linux, the latest g++ or clang++ will work.
 
 ### Ubuntu
 
