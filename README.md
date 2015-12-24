@@ -5,13 +5,13 @@ Command line visualizer. Currently only supports mpd.
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
 
-![spectrum_stereo](r/blob/master/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
+![spectrum_stereo](/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
 
-![spectrum_mono](r/blob/master/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
+![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
 
-![ellipse](r/blob/master/examples/ellipse?raw=true "Ellipse")
+![ellipse](/examples/ellipse?raw=true "Ellipse")
 
-![lorenz](r/blob/master/examples/lorenz.gif?raw=true "Lorenz")
+![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
 
 ## Installing Pre-requisites
 
