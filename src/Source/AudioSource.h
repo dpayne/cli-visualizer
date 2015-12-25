@@ -21,6 +21,9 @@ class AudioSource
 
     virtual ~AudioSource();
 
+    /**
+     * Reads "buffer_size" frames of the audio stream into "buffer"
+     */
     virtual bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) = 0;
 };
 }
