@@ -6,6 +6,7 @@
  *
  *     Much of this code was taken or inspired by cava
  * git@github.com:karlstav/cava.git
+ *
  */
 
 #include "Domain/VisConstants.h"
@@ -35,7 +36,7 @@ static const uint64_t k_max_silent_runs_before_sleep =
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
-    : GenericTransformer(settings), m_settings{settings},
+    : m_settings{settings},
       m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
@@ -261,7 +262,9 @@ void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> &bars)
 void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
 {
     int64_t bars_length = static_cast<int64_t>(bars.size());
-    // re-compute weights if needed
+
+    // re-compute weights if needed, this is a performance tweak to computer the
+    // smoothing considerably faster
     if (m_monstercat_smoothing_weights.size() != bars.size())
     {
         m_monstercat_smoothing_weights.reserve(bars.size());
@@ -273,6 +276,8 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
     }
 
     // apply monstercat sytle smoothing
+    // Since this type of smoothing smoothes the bars around it, doesn't make
+    // sense to smooth the first value so skip it.
     for (auto i = 1l; i < bars_length; ++i)
     {
         auto outer_index = static_cast<size_t>(i);
@@ -295,7 +300,7 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
 
                     // Note: do not use max here, since it's actually slower.
                     // Separating the assignment from the comparison avoids an
-                    // unneeded assignment when bars[index] is the largest
+                    // unneeded assignment when bars[index] is the largest which is often
                     if (bars[index] < weighted_value)
                     {
                         bars[index] = weighted_value;
@@ -307,25 +312,25 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
 }
 
 std::vector<double> vis::SpectrumTransformer::apply_falloff(
-    const std::vector<double> &bars, std::vector<double> &previous_bars) const
+    const std::vector<double> &bars, std::vector<double> &falloff_bars) const
 {
     // Screen size has change which means previous falloff values are not valid
-    if (previous_bars.size() != bars.size())
+    if (falloff_bars.size() != bars.size())
     {
         return bars;
     }
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
-        auto difference = std::abs(previous_bars[i] - bars[i]);
-        previous_bars[i] =
-            std::max(previous_bars[i] *
+        auto difference = std::abs(falloff_bars[i] - bars[i]);
+        falloff_bars[i] =
+            std::max(falloff_bars[i] *
                          std::pow(m_settings->get_spectrum_falloff_weight(),
                                   difference),
                      bars[i]);
     }
 
-    return previous_bars;
+    return falloff_bars;
 }
 
 void vis::SpectrumTransformer::calculate_moving_average_and_std_dev(
@@ -465,34 +470,13 @@ void vis::SpectrumTransformer::create_spectrum_bars(
     bars_falloff = apply_falloff(bars, bars_falloff);
 }
 
-void vis::SpectrumTransformer::recalculate_colors(const int32_t win_height,
-                                                  const NcursesWriter *writer)
-{
-    m_precomputed_colors.reserve(static_cast<size_t>(win_height));
-    for (auto i = 0; i < win_height; ++i)
-    {
-        if (m_settings->is_rainbow_colors_enabled())
-        {
-            m_precomputed_colors[static_cast<size_t>(i)] =
-                writer->to_color_rainbow(i, win_height);
-        }
-        else
-        {
-            m_precomputed_colors[static_cast<size_t>(i)] =
-                writer->to_color_pair(i, win_height);
-        }
-    }
-}
 
 void vis::SpectrumTransformer::draw_bars(
     const std::vector<double> &bars, const std::vector<double> &bars_falloff,
     int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
     vis::NcursesWriter *writer)
 {
-    if (static_cast<size_t>(win_height) != m_precomputed_colors.size())
-    {
-        recalculate_colors(win_height, writer);
-    }
+    recalculate_colors(static_cast<size_t>(win_height), m_precomputed_colors, writer);
 
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)
     {
@@ -533,9 +517,9 @@ void vis::SpectrumTransformer::draw_bars(
                 static_cast<int32_t>((bar_row_msg.size() +
                                       m_settings->get_spectrum_bar_spacing()));
 
-            write(row_height, column,
+            writer->write(row_height, column,
                   m_precomputed_colors[static_cast<size_t>(row_index)],
-                  bar_row_msg, writer);
+                  bar_row_msg, m_settings->get_spectrum_character());
         }
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
@@ -560,29 +544,11 @@ void vis::SpectrumTransformer::draw_bars(
                               static_cast<int32_t>(
                                   (bar_row_msg.size() +
                                    m_settings->get_spectrum_bar_spacing()));
-                write(top_row_height, column,
+                writer->write(top_row_height, column,
                       m_precomputed_colors[static_cast<size_t>(row_index)],
-                      bar_row_msg, writer);
+                      bar_row_msg, m_settings->get_spectrum_character());
             }
         }
-    }
-}
-
-void vis::SpectrumTransformer::write(const int32_t row, const int32_t column,
-                                     const vis::ColorIndex color,
-                                     const std::wstring &msg,
-                                     vis::NcursesWriter *writer)
-{
-    // This is a hack to achieve a solid bar look without using a custom font.
-    // Instead of writing a real character, set the background to the color and
-    // write a space
-    if (m_settings->get_spectrum_character() == VisConstants::k_space_wchar)
-    {
-        writer->write_background(row, column, color, msg);
-    }
-    else
-    {
-        writer->write(row, column, color, msg);
     }
 }
 

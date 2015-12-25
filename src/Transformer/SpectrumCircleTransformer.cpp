@@ -63,11 +63,11 @@ void vis::SpectrumCircleTransformer::draw_bars(
             // TODO(dpayne): if stereo just use 180 degrees
             if (flipped)
             {
-                write(x, y, color_distance, bar_row_msg, writer);
+                writer->write(x, y, color_distance, bar_row_msg, m_settings->get_spectrum_character());
             }
             else
             {
-                write(x, y, color_distance, bar_row_msg, writer);
+                writer->write(x, y, color_distance, bar_row_msg, m_settings->get_spectrum_character());
             }
         }
     }
