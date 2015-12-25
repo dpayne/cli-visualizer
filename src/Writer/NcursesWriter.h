@@ -52,7 +52,6 @@ class NcursesWriter
 
     void write_foreground(int32_t height, int32_t width, vis::ColorIndex color,
                           const std::wstring &msg);
-
 };
 }
 

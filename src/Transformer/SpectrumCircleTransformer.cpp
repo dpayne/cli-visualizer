@@ -34,7 +34,8 @@ void vis::SpectrumCircleTransformer::draw_bars(
 
     m_settings->get_fps();
 
-    // TODO(dpayne): add const everywhere and use min of half height or half width
+    // TODO(dpayne): add const everywhere and use min of half height or half
+    // width
     const auto max_distance =
         std::sqrt(std::pow(half_height, 2) + std::pow(half_height, 2));
 
@@ -63,11 +64,13 @@ void vis::SpectrumCircleTransformer::draw_bars(
             // TODO(dpayne): if stereo just use 180 degrees
             if (flipped)
             {
-                writer->write(x, y, color_distance, bar_row_msg, m_settings->get_spectrum_character());
+                writer->write(x, y, color_distance, bar_row_msg,
+                              m_settings->get_spectrum_character());
             }
             else
             {
-                writer->write(x, y, color_distance, bar_row_msg, m_settings->get_spectrum_character());
+                writer->write(x, y, color_distance, bar_row_msg,
+                              m_settings->get_spectrum_character());
             }
         }
     }

@@ -36,8 +36,7 @@ static const uint64_t k_max_silent_runs_before_sleep =
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
-    : m_settings{settings},
-      m_previous_win_width{0}, m_silent_runs{0u}
+    : m_settings{settings}, m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
@@ -300,7 +299,8 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
 
                     // Note: do not use max here, since it's actually slower.
                     // Separating the assignment from the comparison avoids an
-                    // unneeded assignment when bars[index] is the largest which is often
+                    // unneeded assignment when bars[index] is the largest which
+                    // is often
                     if (bars[index] < weighted_value)
                     {
                         bars[index] = weighted_value;
@@ -311,8 +311,9 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
     }
 }
 
-std::vector<double> vis::SpectrumTransformer::apply_falloff(
-    const std::vector<double> &bars, std::vector<double> &falloff_bars) const
+std::vector<double>
+vis::SpectrumTransformer::apply_falloff(const std::vector<double> &bars,
+                                        std::vector<double> &falloff_bars) const
 {
     // Screen size has change which means previous falloff values are not valid
     if (falloff_bars.size() != bars.size())
@@ -323,11 +324,10 @@ std::vector<double> vis::SpectrumTransformer::apply_falloff(
     for (auto i = 0u; i < bars.size(); ++i)
     {
         auto difference = std::abs(falloff_bars[i] - bars[i]);
-        falloff_bars[i] =
-            std::max(falloff_bars[i] *
-                         std::pow(m_settings->get_spectrum_falloff_weight(),
-                                  difference),
-                     bars[i]);
+        falloff_bars[i] = std::max(
+            falloff_bars[i] *
+                std::pow(m_settings->get_spectrum_falloff_weight(), difference),
+            bars[i]);
     }
 
     return falloff_bars;
@@ -412,11 +412,11 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
         if (std::abs(average_over_reset_window - *moving_average) >
             (k_deviation_amount_to_reset * (*std_dev)))
         {
-            values->erase(
-                values->begin(),
-                values->begin() +
-                    static_cast<int64_t>((static_cast<double>(values->size()) *
-                                       k_autoscaling_erase_percent_on_reset)));
+            values->erase(values->begin(),
+                          values->begin() +
+                              static_cast<int64_t>(
+                                  (static_cast<double>(values->size()) *
+                                   k_autoscaling_erase_percent_on_reset)));
 
             calculate_moving_average_and_std_dev(
                 current_max_height, max_number_of_elements, *values,
@@ -470,13 +470,13 @@ void vis::SpectrumTransformer::create_spectrum_bars(
     bars_falloff = apply_falloff(bars, bars_falloff);
 }
 
-
 void vis::SpectrumTransformer::draw_bars(
     const std::vector<double> &bars, const std::vector<double> &bars_falloff,
     int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
     vis::NcursesWriter *writer)
 {
-    recalculate_colors(static_cast<size_t>(win_height), m_precomputed_colors, writer);
+    recalculate_colors(static_cast<size_t>(win_height), m_precomputed_colors,
+                       writer);
 
     for (auto column_index = 0u; column_index < bars.size(); ++column_index)
     {
@@ -518,8 +518,8 @@ void vis::SpectrumTransformer::draw_bars(
                                       m_settings->get_spectrum_bar_spacing()));
 
             writer->write(row_height, column,
-                  m_precomputed_colors[static_cast<size_t>(row_index)],
-                  bar_row_msg, m_settings->get_spectrum_character());
+                          m_precomputed_colors[static_cast<size_t>(row_index)],
+                          bar_row_msg, m_settings->get_spectrum_character());
         }
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
@@ -544,9 +544,10 @@ void vis::SpectrumTransformer::draw_bars(
                               static_cast<int32_t>(
                                   (bar_row_msg.size() +
                                    m_settings->get_spectrum_bar_spacing()));
-                writer->write(top_row_height, column,
-                      m_precomputed_colors[static_cast<size_t>(row_index)],
-                      bar_row_msg, m_settings->get_spectrum_character());
+                writer->write(
+                    top_row_height, column,
+                    m_precomputed_colors[static_cast<size_t>(row_index)],
+                    bar_row_msg, m_settings->get_spectrum_character());
             }
         }
     }

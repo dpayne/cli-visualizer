@@ -37,7 +37,7 @@ static const double k_max_rotation_count = 1000.0;
 
 static const size_t k_max_color_index_for_lorenz = 16;
 
-//These values were taken through experimentation on what seemed to work best.
+// These values were taken through experimentation on what seemed to work best.
 static const double k_lorenz_h = 0.01;
 static const double k_lorenz_a = 10.0;
 static const double k_lorenz_b1 = 7.1429;
@@ -46,8 +46,8 @@ static const double k_lorenz_c = 8.0 / 3.0;
 }
 
 vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
-    : m_settings{settings},
-      m_rotation_count_left{0.0}, m_rotation_count_right{0.0}
+    : m_settings{settings}, m_rotation_count_left{0.0},
+      m_rotation_count_right{0.0}
 {
 }
 
@@ -71,10 +71,12 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     const auto samples = m_settings->get_sample_size();
 
-    m_rotation_count_left =
-        m_rotation_count_left >= k_max_rotation_count ? 0 : m_rotation_count_left;
-    m_rotation_count_right =
-        m_rotation_count_right >= k_max_rotation_count ? 0 : m_rotation_count_right;
+    m_rotation_count_left = m_rotation_count_left >= k_max_rotation_count
+                                ? 0
+                                : m_rotation_count_left;
+    m_rotation_count_right = m_rotation_count_right >= k_max_rotation_count
+                                 ? 0
+                                 : m_rotation_count_right;
 
     auto average_left = 0.0;
     auto average_right = 0.0;
@@ -119,10 +121,11 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // Calculate the horizontal and vertical rotation angles. This is dependent
     // on the volume of the left and right channels.
-    auto rotation_angle_x =
-        (m_rotation_count_left * 2.0 * VisConstants::k_pi) / k_max_rotation_count;
+    auto rotation_angle_x = (m_rotation_count_left * 2.0 * VisConstants::k_pi) /
+                            k_max_rotation_count;
     auto rotation_angle_y =
-        (m_rotation_count_right * 2.0 * VisConstants::k_pi) / k_max_rotation_count;
+        (m_rotation_count_right * 2.0 * VisConstants::k_pi) /
+        k_max_rotation_count;
 
     auto deg_multiplier_cos_x = std::cos(rotation_angle_x);
     auto deg_multiplier_sin_x = std::sin(rotation_angle_x);
@@ -142,7 +145,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // k_max_color_index_for_lorenz was chosen mostly through experimentation on
     // what seemed to work well.
-    recalculate_colors(k_max_color_index_for_lorenz, m_precomputed_colors, writer);
+    recalculate_colors(k_max_color_index_for_lorenz, m_precomputed_colors,
+                       writer);
 
     std::wstring msg{m_settings->get_lorenz_character()};
     for (auto i = 0u; i < samples; ++i)
@@ -162,7 +166,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         auto distance_p2 =
             std::sqrt(std::pow(x0 + equilbria, 2) +
                       std::pow(y0 + equilbria, 2) + std::pow(z0 - z_center, 2));
-        auto color_distance = static_cast<size_t>(std::min(distance_p1, distance_p2));
+        auto color_distance =
+            static_cast<size_t>(std::min(distance_p1, distance_p2));
 
         // We want to rotate around the center of the lorenz. so we offset zaxis
         // so that the center of the lorenz is at point (0,0,0)
@@ -189,7 +194,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
             {
                 writer->write(static_cast<int32_t>(y + half_height),
                               static_cast<int32_t>(x + win_width / 2.0),
-                              m_precomputed_colors[color_distance], msg, m_settings->get_lorenz_character());
+                              m_precomputed_colors[color_distance], msg,
+                              m_settings->get_lorenz_character());
             }
         }
     }
