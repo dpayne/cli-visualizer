@@ -16,33 +16,27 @@
 
 namespace
 {
-const static std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
-const static std::string k_mpd_fifo_path_default{"/tmp/mpd.fifo"};
-
 const static std::string k_audio_sources_setting{"audio.sources"}; // mpd,alsa
-const static std::string k_audio_sources_default{"mpd"};
+
+const static std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
 
 const static std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
+
+const static std::string k_visualizers_setting{"visualizers"};
+const static std::string k_fps_setting{"visualizer.fps"};
+
+const static std::string k_color_scheme_path_setting{"colors.scheme"};
 const static std::string k_sampling_frequency_setting{
     "audio.sampling.frequency"};
 const static std::string k_low_cutoff_frequency_setting{
     "audio.low.cutoff.frequency"};
 const static std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
-const static std::string k_visualizers_setting{"visualizers"};
-const static std::string k_visualizers_default{"spectrum,ellipse,lorenz"};
-const static std::string k_fps_setting{"visualizer.fps"};
-
-const static std::string k_color_scheme_path_setting{"colors.scheme"};
-
-const static std::string k_colors_setting{"colors"};
-const static std::string k_colors_default{
-    "blue,cyan,green,yellow,red,magenta,white"};
 
 const static std::string k_ellipse_character{"visualizer.ellipse.character"};
 const static std::string k_ellipse_radius{"visualizer.ellipse.radius"};
 
-const static std::string k_colors_enabled_setting{"colors.enabled"};
+// Spectrum settings
 const static std::string k_spectrum_character{"visualizer.spectrum.character"};
 const static std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
 const static std::string k_spectrum_bar_spacing{
@@ -233,12 +227,12 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     // setup mpd
     settings.set_mpd_fifo_path(Utils::get(properties, k_mpd_fifo_path_setting,
-                                          k_mpd_fifo_path_default));
+                                          VisConstants::k_default_mpd_fifo_path));
 
     // setup audio sources
     settings.set_audio_sources(
         Utils::split(Utils::get(properties, k_audio_sources_setting,
-                                k_audio_sources_default),
+                                VisConstants::k_default_audio_sources),
                      ','));
 
     settings.set_fps(
@@ -302,9 +296,6 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));
 
-    settings.set_is_color_enabled(
-        Utils::get(properties, k_colors_enabled_setting, true));
-
     // set color definitions
     auto colors_path = Utils::get_home_directory();
     colors_path.append(VisConstants::k_colors_directory);
@@ -314,7 +305,7 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         vis::ConfigurationUtils::read_colors(colors_path));
 
     const auto visualizers = Utils::split(
-        Utils::get(properties, k_visualizers_setting, k_visualizers_default),
+        Utils::get(properties, k_visualizers_setting, VisConstants::k_default_visualizers),
         ',');
 
     settings.set_visualizers(visualizers);

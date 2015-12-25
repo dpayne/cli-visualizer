@@ -44,11 +44,13 @@ static inline void shutdown(int sig)
 
 int main(int argc, char *argv[])
 {
+    // Catch interrupt and termination signals so the program can be cleanly shutdown.
     std::signal(SIGINT, shutdown);
     std::signal(SIGTERM, shutdown);
 
     std::string config_path;
 
+    // Read the settings file command line argument if available
     if (argc > 1)
     {
         for (auto i = 1; i < argc; ++i)
@@ -88,6 +90,8 @@ int main(int argc, char *argv[])
     visualizer->run();
 
     vis::Logger::uninitialize();
+
+    // Clears the terminal on exit
     system("setterm -blank 10");
     system("clear");
 }
