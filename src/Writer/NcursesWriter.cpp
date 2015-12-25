@@ -56,7 +56,8 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
-                               vis::ColorIndex color, const std::wstring &msg)
+                                          vis::ColorIndex color,
+                                          const std::wstring &msg)
 {
     attron(COLOR_PAIR(color));
 
@@ -66,9 +67,8 @@ void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
 }
 
 void vis::NcursesWriter::write(const int32_t row, const int32_t column,
-                                     const vis::ColorIndex color,
-                                     const std::wstring &msg,
-                                     const wchar_t character)
+                               const vis::ColorIndex color,
+                               const std::wstring &msg, const wchar_t character)
 {
     // This is a hack to achieve a solid bar look without using a custom font.
     // Instead of writing a real character, set the background to the color and
@@ -122,7 +122,7 @@ vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
         m_settings->get_color_definitions().size());
     const auto index = (number * colors_size) / (max + 1);
 
-    //no colors
+    // no colors
     if (colors_size == 0)
     {
         return 0;

@@ -27,7 +27,6 @@ class GenericTransformer
                               vis::NcursesWriter *writer) = 0;
 
   protected:
-
     /**
      * Helper method to recalculate colors for a given range. This is used
      * mainly as a performance tweak since re-calculating colors can be
@@ -36,9 +35,8 @@ class GenericTransformer
      * Colors are re-calculated if max != precomputed_colors.size()
      */
     virtual void recalculate_colors(const size_t max,
-                            std::vector<ColorIndex> &precomputed_colors,
-                            const NcursesWriter *writer);
-
+                                    std::vector<ColorIndex> &precomputed_colors,
+                                    const NcursesWriter *writer);
 };
 }
 
