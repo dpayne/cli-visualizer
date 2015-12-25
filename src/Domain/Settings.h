@@ -107,16 +107,6 @@ class Settings
         return m_is_stereo_enabled;
     }
 
-    void set_is_color_enabled(bool is_color_enabled)
-    {
-        m_is_color_enabled = is_color_enabled;
-    }
-
-    bool is_color_enabled() const noexcept
-    {
-        return m_is_color_enabled;
-    }
-
     const std::vector<vis::ColorDefinition> &get_color_definitions() const
         noexcept
     {
@@ -256,7 +246,6 @@ class Settings
     uint32_t m_low_cutoff_frequency;
     uint32_t m_high_cutoff_frequency;
     bool m_is_stereo_enabled;
-    bool m_is_color_enabled;
     std::vector<std::string> m_audio_sources;
     std::vector<std::string> m_visualizers;
     std::vector<vis::ColorDefinition> m_color_definitions;

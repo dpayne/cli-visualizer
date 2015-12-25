@@ -13,6 +13,8 @@
 
 namespace VisConstants
 {
+
+//Various constants
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
 
@@ -20,15 +22,20 @@ static const double k_pi = 3.14159265358979323846;
 
 static const std::string k_true{"true"};
 static const std::string k_false{"false"};
-
-static const uint32_t k_default_fps = 20;
 static const std::string k_mpd_audio_source_name{"mpd"};
-
-// visualizer names
-static const std::string k_spectrum_visualizer_name{"spectrum"};
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
 static const std::string k_lorenz_visualizer_name{"lorenz"};
+
+//Defaults
+static const uint32_t k_default_fps = 20;
+
+const static std::string k_default_audio_sources{"mpd"};
+const static std::string k_default_mpd_fifo_path{"/tmp/mpd.fifo"};
+const static std::string k_default_visualizers{"spectrum,ellipse,lorenz"};
+
+// visualizer names
+static const std::string k_spectrum_visualizer_name{"spectrum"};
 
 // frequency defaults
 static const uint32_t k_default_sampling_frequency = 44100;
