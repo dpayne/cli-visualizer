@@ -17,7 +17,7 @@ namespace vis
 class GenericTransformer
 {
   public:
-    explicit GenericTransformer(const Settings *const settings);
+    explicit GenericTransformer();
 
     virtual ~GenericTransformer();
 
@@ -25,6 +25,20 @@ class GenericTransformer
                                 vis::NcursesWriter *writer) = 0;
     virtual void execute_mono(pcm_stereo_sample *buffer,
                               vis::NcursesWriter *writer) = 0;
+
+  protected:
+
+    /**
+     * Helper method to recalculate colors for a given range. This is used
+     * mainly as a performance tweak since re-calculating colors can be
+     * somewhat costly if done on every run.
+     *
+     * Colors are re-calculated if max != precomputed_colors.size()
+     */
+    virtual void recalculate_colors(const size_t max,
+                            std::vector<ColorIndex> &precomputed_colors,
+                            const NcursesWriter *writer);
+
 };
 }
 

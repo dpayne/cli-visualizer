@@ -22,7 +22,7 @@ namespace
 }
 
 vis::EllipseTransformer::EllipseTransformer(const Settings *const settings)
-    : GenericTransformer(settings), m_settings{settings}
+    : m_settings{settings}
 {
 }
 
@@ -37,6 +37,26 @@ void vis::EllipseTransformer::execute_mono(pcm_stereo_sample *buffer,
     execute_stereo(buffer, writer);
 }
 
+void vis::EllipseTransformer::recalculate_colors(const size_t max,
+                                                  std::vector<ColorIndex> &precomputed_colors,
+                                                  const NcursesWriter *writer)
+{
+    // Makes the radius of each ring be approximately 2 cells wide.
+    const auto radius =
+        static_cast<int32_t>(m_settings->get_ellipse_radius() *
+                             m_settings->get_color_definitions().size());
+
+    if (precomputed_colors.size() != max)
+    {
+        precomputed_colors.resize(max, 0);
+        for (size_t i = 0u; i < max; ++i)
+        {
+            precomputed_colors[i] =
+                writer->to_color_pair(static_cast<int32_t>(i), radius, true);
+        }
+    }
+}
+
 void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
                                              vis::NcursesWriter *writer)
 {
@@ -49,23 +69,10 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
     const auto top_half_height = win_height / 2;
     const auto bottom_half_height = win_height - top_half_height;
 
-    // Makes the radius of each ring be approximately 2 cells wide.
-    const auto radius =
-        static_cast<int32_t>(m_settings->get_ellipse_radius() *
-                             m_settings->get_color_definitions().size());
-
-    const auto max_color_index = static_cast<int32_t>(std::floor(
+    const auto max_color_index = static_cast<size_t>(std::floor(
         std::sqrt(win_width * win_width + 4 * win_height * win_height)));
 
-    if (m_precomputed_colors.size() != static_cast<size_t>(max_color_index))
-    {
-        m_precomputed_colors.resize(static_cast<size_t>(max_color_index), 0);
-        for (auto i = 0; i < max_color_index; ++i)
-        {
-            m_precomputed_colors[static_cast<size_t>(i)] =
-                writer->to_color_pair(i, radius, true);
-        }
-    }
+    recalculate_colors(max_color_index, m_precomputed_colors, writer);
 
     writer->clear();
 
@@ -81,17 +88,16 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
             (buffer[i].r < 0 ? top_half_height : bottom_half_height);
 
         // The arguments to the to_color function roughly follow a circle
-        // equation where
-        // the center is not centered around (0,0). For example (x - w)^2 +
-        // (y-h)+2 = r^2
-        // centers the circle around the point (w,h). Because fonts are not all
-        // the same
-        // size, this will not always generate a perfect circle.
+        // equation where the center is not centered around (0,0). For example
+        // (x - w)^2 + (y-h)+2 = r^2 centers the circle around the point (w,h).
+        // Because fonts are not all the same size, this will not always
+        // generate a perfect circle, hence the name "ellipse".
         const auto color_index =
             static_cast<uint64_t>(std::floor(std::sqrt(x * x + 4 * y * y)));
+
         writer->write(top_half_height + static_cast<int32_t>(y),
                       left_half_width + static_cast<int32_t>(x),
-                      m_precomputed_colors[color_index], msg);
+                      m_precomputed_colors[color_index], msg, m_settings->get_ellipse_character());
     }
 
     writer->flush();
