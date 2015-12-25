@@ -27,7 +27,6 @@ class EllipseTransformer : public GenericTransformer
                         vis::NcursesWriter *writer) override;
 
   protected:
-
     /**
      * The colors for the ellipse are calculated differently than most
      * other visualizers because the colors might be repeated several
