@@ -27,6 +27,7 @@ class SpectrumTransformer : public GenericTransformer
                       vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
+
   private:
     void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
                  const bool is_stereo);
