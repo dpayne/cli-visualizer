@@ -26,6 +26,17 @@ class EllipseTransformer : public GenericTransformer
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
 
+  protected:
+
+    /**
+     * The colors for the ellipse are calculated differently than most
+     * other visualizers because the colors might be repeated several
+     * timees depending on how many rings there are.
+     */
+    void recalculate_colors(const size_t max,
+                            std::vector<ColorIndex> &precomputed_colors,
+                            const NcursesWriter *writer) override;
+
   private:
     const Settings *const m_settings;
 

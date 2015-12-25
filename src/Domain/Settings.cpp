@@ -28,8 +28,7 @@ vis::Settings::Settings()
           VisConstants::k_default_spectrum_smoothing_mode},
       m_spectrum_falloff_mode{VisConstants::k_default_spectrum_falloff_mode},
       m_spectrum_falloff_weight{
-          VisConstants::k_default_spectrum_falloff_weight},
-      m_is_rainbow_colors_enabled{false}
+          VisConstants::k_default_spectrum_falloff_weight}
 {
 }
 

@@ -35,6 +35,8 @@ class LorenzTransformer : public GenericTransformer
 
     double m_rotation_count_right;
 
+    std::vector<vis::ColorIndex> m_precomputed_colors;
+
     /** --- END MEMBER VARIABLES --- */
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
