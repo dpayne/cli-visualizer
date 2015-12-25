@@ -249,16 +249,6 @@ class Settings
         return m_spectrum_falloff_weight;
     }
 
-    void set_is_rainbow_colors_enabled(const bool rainbow_colors_enabled)
-    {
-        m_is_rainbow_colors_enabled = rainbow_colors_enabled;
-    }
-
-    bool is_rainbow_colors_enabled() const noexcept
-    {
-        return m_is_rainbow_colors_enabled;
-    }
-
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -283,7 +273,6 @@ class Settings
     SmoothingMode m_spectrum_smoothing_mode;
     FalloffMode m_spectrum_falloff_mode;
     double m_spectrum_falloff_weight;
-    bool m_is_rainbow_colors_enabled;
 };
 }
 

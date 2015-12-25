@@ -27,15 +27,6 @@ class SpectrumTransformer : public GenericTransformer
                       vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
-
-  protected:
-    /**
-     * Write's the msg to the writer
-     */
-    void write(const int32_t row, const int32_t column,
-               const vis::ColorIndex color, const std::wstring &msg,
-               vis::NcursesWriter *writer);
-
   private:
     void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
                  const bool is_stereo);
@@ -123,38 +114,86 @@ class SpectrumTransformer : public GenericTransformer
         std::vector<uint32_t> *high_cutoff_frequencies,
         std::vector<double> *freqconst_per_bin);
 
+    /**
+     * Applies the smoothing operations based on the settings in m_settings to
+     * "bars"
+     */
     void smooth_bars(std::vector<double> &bars);
 
+    /**
+     * Applies the falloff effect based on the settings in m_settings to "bars".
+     * The old falloff from the previous run should be in "falloff_bars". The
+     * new falloff values will be updated in-place in "falloff_bars"
+     */
     std::vector<double> apply_falloff(const std::vector<double> &bars,
-                                      std::vector<double> &previous_bars) const;
+                                      std::vector<double> &falloff_bars) const;
 
+    /**
+     * Calculates the moving average and the standard deviation for a given
+     * range of elements.
+     *
+     * "new_value" is added to "old_values".
+     *
+     * If "old_values.size()" >  "max_number_of_elements" the first element of
+     * old_values is erased.
+     */
     void calculate_moving_average_and_std_dev(
         const double new_value, const size_t max_number_of_elements,
         std::vector<double> &old_values, double *moving_average,
         double *std_dev) const;
 
+    /**
+     * A long term and short term running average are kept of the max bar
+     * heights for each frame. If the short term running average is very
+     * different than the long term running average then the scaling size
+     * should be reset to better suit the current music.
+     *
+     * This happens commonly if a there is a new song that is a lot quieter
+     * or louder than the previous song.
+     */
     void maybe_reset_scaling_window(const double current_max_height,
                                     const size_t max_number_of_elements,
                                     std::vector<double> *values,
                                     double *moving_average, double *std_dev);
 
+    /**
+     * Renders the spectrum bars to the screen.
+     */
     virtual void draw_bars(const std::vector<double> &bars,
                            const std::vector<double> &bars_falloff,
                            int32_t win_height, const bool flipped,
                            const std::wstring &bar_row_msg,
                            vis::NcursesWriter *writer);
 
+    /**
+     * Scaling the given vector of points "bars" to a fit a screen with a window
+     * height of "height".
+     */
     virtual void scale_bars(std::vector<double> &bars, const int32_t height);
 
+    /**
+     * Creates the to be used for every section of the bar to be printed. For
+     * example if the bar width is set to two, and the bar character to '#'.
+     * Then the bar row msg would be "##";
+     */
     std::wstring create_bar_row_msg(const wchar_t character,
                                     uint32_t bar_width);
 
+    /**
+     * Savitzky-Golay smoothng. This type of smoothing is usually much faster
+     * than monstercat.
+     *
+     *  https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
+     */
     void sgs_smoothing(std::vector<double> &bars);
 
+    /**
+     * This type of smoothing is inspired by monstercat
+     * (https://www.youtube.com/user/MonstercatMedia). The code was largely
+    taken
+     * from cava git@github.com:karlstav/cava.git
+     */
     void monstercat_smoothing(std::vector<double> &bars);
-
-    void recalculate_colors(const int32_t win_height,
-                            const NcursesWriter *writer);
 
     /** --- END MEMBER FUNCTIONS --- */
 };

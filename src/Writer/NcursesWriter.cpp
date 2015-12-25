@@ -55,7 +55,7 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
     attroff(color_pair);
 }
 
-void vis::NcursesWriter::write(int32_t height, int32_t width,
+void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
                                vis::ColorIndex color, const std::wstring &msg)
 {
     attron(COLOR_PAIR(color));
@@ -63,6 +63,24 @@ void vis::NcursesWriter::write(int32_t height, int32_t width,
     mvaddwstr(height, width, msg.c_str());
 
     attroff(COLOR_PAIR(color));
+}
+
+void vis::NcursesWriter::write(const int32_t row, const int32_t column,
+                                     const vis::ColorIndex color,
+                                     const std::wstring &msg,
+                                     const wchar_t character)
+{
+    // This is a hack to achieve a solid bar look without using a custom font.
+    // Instead of writing a real character, set the background to the color and
+    // write a space
+    if (character == VisConstants::k_space_wchar)
+    {
+        write_background(row, column, color, msg);
+    }
+    else
+    {
+        write_foreground(row, column, color, msg);
+    }
 }
 
 void vis::NcursesWriter::clear()
@@ -95,23 +113,6 @@ int16_t vis::NcursesWriter::to_ansi_color(const int16_t red,
     return 16 + static_cast<int16_t>((to_ansi_color_domain(red) * 36.0) +
                                      (to_ansi_color_domain(green) * 6.0) +
                                      (to_ansi_color_domain(blue) * 1.0));
-}
-
-/**
- * Return a color range that maps to a rainbow from [0,max). The rainbow goes
- * from purple,green,yellow,red,pink.
- */
-int16_t vis::NcursesWriter::to_color_rainbow(int32_t number, int32_t max) const
-{
-    auto freq = (2.0 * VisConstants::k_pi) / max;
-    const auto blue =
-        static_cast<int16_t>(std::cos(freq * number + 0.0) * 127.0 + 128.0);
-    const auto red = static_cast<int16_t>(
-        std::cos(freq * number + 2.0 * VisConstants::k_pi / 3.0) * 127 + 128);
-    const auto green = static_cast<int16_t>(
-        std::cos(freq * number + 4.0 * VisConstants::k_pi / 3.0) * 127 + 128);
-
-    return to_ansi_color(red, green, blue);
 }
 
 vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
