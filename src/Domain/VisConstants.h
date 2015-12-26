@@ -76,6 +76,7 @@ static const vis::FalloffMode k_default_spectrum_falloff_mode =
 static const double k_default_spectrum_falloff_weight = 0.99;
 
 // input timeouts
+static const long k_default_mpd_fifo_timeout = 1l;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 }
