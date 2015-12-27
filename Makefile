@@ -37,9 +37,10 @@ CXX_FLAGS += -O$(OPT_LEVEL)
 CXX_FLAGS += -march=native
 CXX_FLAGS += -ffast-math
 CXX_FLAGS += -fno-omit-frame-pointer
+CXX_FLAGS += -D__extern_always_inline=inline
 
 TEST_CCACHE_CLANG=ccache clang++
-TEST_CLANG=ccache clang++
+TEST_CLANG=clang++
 
 ALL_WARNINGS=-Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 # Only turn on extra warnings for clang since g++ does not support -Weverything
