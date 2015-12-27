@@ -86,7 +86,6 @@ void vis::Visualizer::rotate_transformer(const int64_t rotation_interval, int64_
 {
     if (rotation_interval > 0)
     {
-        std::cerr << rotation_interval << std::endl;
         auto current_timestamp =
             std::chrono::system_clock::now().time_since_epoch() /
             std::chrono::seconds(1);
