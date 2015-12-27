@@ -15,23 +15,12 @@ CCACHE := $(shell which ccache)
 OS= $(shell uname)
 
 #prefer clang over g++
-ifndef COMPILER
-ifneq ($(CLANG),)
-COMPILER=clang++
-else
-COMPILER=g++
-endif
+ifdef VIS_COMPILER
+CXX=$(VIS_COMPILER)
 endif
 
 ifndef PREFIX
 PREFIX=/usr/local/bin/
-endif
-
-#use ccache if available
-ifneq ($(CCACHE),)
-CC=ccache $(COMPILER)
-else
-CC=$(COMPILER)
 endif
 
 DIR=$(shell pwd)
@@ -43,37 +32,37 @@ BUILD_PERF_TEST_DIR = $(DIR)/build_perf_tests
 OPT_LEVEL = 3
 
 # Make-local Compiler Flags
-CC_FLAGS = -std=c++14
-CC_FLAGS += -O$(OPT_LEVEL)
-CC_FLAGS += -march=native
-CC_FLAGS += -ffast-math
-CC_FLAGS += -fno-omit-frame-pointer
+CXX_FLAGS = -std=c++14
+CXX_FLAGS += -O$(OPT_LEVEL)
+CXX_FLAGS += -march=native
+CXX_FLAGS += -ffast-math
+CXX_FLAGS += -fno-omit-frame-pointer
 
 TEST_CCACHE_CLANG=ccache clang++
 TEST_CLANG=ccache clang++
 
 ALL_WARNINGS=-Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat
 # Only turn on extra warnings for clang since g++ does not support -Weverything
-ifeq ($(CC),$(TEST_CLANG))
-CC_FLAGS += $(ALL_WARNINGS)
+ifeq ($(CXX),$(TEST_CLANG))
+CXX_FLAGS += $(ALL_WARNINGS)
 else
-ifeq ($(CC),$(TEST_CCACHE_CLANG))
-CC_FLAGS += $(ALL_WARNINGS)
+ifeq ($(CXX),$(TEST_CCACHE_CLANG))
+CXX_FLAGS += $(ALL_WARNINGS)
 endif
 endif
 
 #perf tests should not have many warnings or error out on warning
-PERF_TEST_CC_FLAGS = -std=c++14
-PERF_TEST_CC_FLAGS += -O$(OPT_LEVEL)
-PERF_TEST_CC_FLAGS += -march=native
-PERF_TEST_CC_FLAGS += -ffast-math
-PERF_TEST_CC_FLAGS += -fno-omit-frame-pointer
-PERF_TEST_CC_FLAGS += -ggdb -g2
+PERF_TEST_CXX_FLAGS = -std=c++14
+PERF_TEST_CXX_FLAGS += -O$(OPT_LEVEL)
+PERF_TEST_CXX_FLAGS += -march=native
+PERF_TEST_CXX_FLAGS += -ffast-math
+PERF_TEST_CXX_FLAGS += -fno-omit-frame-pointer
+PERF_TEST_CXX_FLAGS += -ggdb -g2
 
 ifeq ($(OS),Darwin)
-CC_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
+CXX_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 else
-CC_FLAGS += -D_LINUX
+CXX_FLAGS += -D_LINUX
 endif
 
 # Linker flags
@@ -87,14 +76,14 @@ endif
 # DEBUG Settings
 ifdef DEBUG
 OPT_LEVEL=0
-CC_FLAGS += -ggdb -g2 -DVIS_LOG_DEBUG
+CXX_FLAGS += -ggdb -g2 -DVIS_LOG_DEBUG
 LD_FLAGS += -DVIS_LOG_DEBUG
 endif
 
 # Clang sanitize options
 ifdef SANITIZE
 #to get symbols from clang sanitize, run "export ASAN_SYMBOLIZER_PATH=<path_to_llvm_symbolizer>" on Arch Linux symbolizer is usually at"/usr/bin/llvm-symbolizer"
-CC_FLAGS += -fsanitize=$(SANITIZE)
+CXX_FLAGS += -fsanitize=$(SANITIZE)
 LD_FLAGS += -fsanitize=$(SANITIZE)
 endif
 
@@ -114,7 +103,7 @@ PERF_TEST_LIBS = -lbenchmark -lpthread
 #if this box has an older version of ncurses
 ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
 	LIBS += -lncursesw
-	CC_FLAGS += -DNCURSESW
+	CXX_FLAGS += -DNCURSESW
 	LD_FLAGS += -DNCURSESW
 else
 	LIBS += -lncurses
@@ -201,23 +190,23 @@ install:
 ###############################################################################
 
 $(BUILD_DIR)/%.o: %.cpp
-	$(CC) $(CC_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) -c $< -o $@
+	$(CXX) $(CXX_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(OBJECTS) $(LIBS)
+	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(OBJECTS) $(LIBS)
 
 $(BUILD_TEST_DIR)/%.o: %.cpp
-	$(CC) $(CC_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) -c $< -o $@
+	$(CXX) $(CXX_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) -c $< -o $@
 
 $(TEST_TARGET): $(OBJECTS) $(TEST_OBJECTS)
-	$(CC) $(CC_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
+	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
 	$(BUILD_TEST_DIR)/$(TEST_TARGET)
 
 $(BUILD_PERF_TEST_DIR)/%.o: %.cpp
-	$(CC) $(PERF_TEST_CC_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) -c $< -o $@
+	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) -c $< -o $@
 
 $(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
-	$(CC) $(PERF_TEST_CC_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
+	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
 	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
 
 clang_tidy: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
