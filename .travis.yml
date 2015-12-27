@@ -13,6 +13,7 @@ addons:
     packages:
     - libfftw3-dev
     - libncursesw5-dev
+    - libgtest-dev
     - gcc-4.9
     - g++-4.9
     - clang
