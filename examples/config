@@ -8,6 +8,9 @@
 ##behave differently when mono is enabled. For example, spectrum show two sets of bars.
 #audio.stereo.enabled=false
 
+##Specifies how often the visualizer will change in seconds. 0 means do not rotate. Default is 0.
+#visualizer.rotation.secs=10
+
 ##Configures the samples rate and the cutoff frequencies.
 #audio.sampling.frequency=44100
 #audio.low.cutoff.frequency=22050

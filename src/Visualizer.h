@@ -71,6 +71,9 @@ class Visualizer
     void setup_audio_sources();
 
     void setup_transformers();
+
+    void rotate_transformer(const int64_t rotation_interval,
+                            int64_t *last_rotation_timestamp);
 };
 }
 

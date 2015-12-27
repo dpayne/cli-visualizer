@@ -201,6 +201,22 @@ class Utils
     }
 
     /**
+     * Helper method for getting a int64_t from a unordered map with a default.
+     */
+    template <class E, class V>
+    static inline int64_t get(const std::unordered_map<E, V> &map, const E &key,
+                              const int64_t default_value)
+    {
+        auto iter = map.find(key);
+        if (iter != map.end())
+        {
+            return to_long(iter->second);
+        }
+
+        return default_value;
+    }
+
+    /**
      * Split a string by the first delimiter. Note, the delimiter will not be
      * included in either the first or second string in the pair.
      */
@@ -231,6 +247,20 @@ class Utils
         }
 
         return elems;
+    }
+
+    /**
+     * Helper method to convert string to long. If string is empty, 0 is
+     * returned.
+     */
+    static inline int64_t to_long(const std::string &str)
+    {
+        if (str.empty())
+        {
+            return 0L;
+        }
+
+        return std::atoi(str.c_str());
     }
 
     /**
