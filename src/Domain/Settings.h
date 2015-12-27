@@ -239,6 +239,16 @@ class Settings
         return m_spectrum_falloff_weight;
     }
 
+    void set_rotation_interval(const int64_t rotation_interval)
+    {
+        m_rotation_interval = rotation_interval;
+    }
+
+    int64_t get_rotation_interval() const noexcept
+    {
+        return m_rotation_interval;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -262,6 +272,7 @@ class Settings
     SmoothingMode m_spectrum_smoothing_mode;
     FalloffMode m_spectrum_falloff_mode;
     double m_spectrum_falloff_weight;
+    int64_t m_rotation_interval;
 };
 }
 

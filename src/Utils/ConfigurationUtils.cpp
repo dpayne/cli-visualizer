@@ -22,6 +22,8 @@ const static std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
 
 const static std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
+const static std::string k_vis_rotation_interval{"visualizer.rotation.secs"};
+
 const static std::string k_visualizers_setting{"visualizers"};
 const static std::string k_fps_setting{"visualizer.fps"};
 
@@ -301,6 +303,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     settings.set_ellipse_radius(Utils::get(
         properties, k_ellipse_radius, VisConstants::k_default_ellipse_radius));
+
+    settings.set_rotation_interval(
+        Utils::get(properties, k_vis_rotation_interval,
+                   VisConstants::k_default_visualizer_rotation_interval));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

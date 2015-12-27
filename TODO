@@ -1,6 +1,1 @@
 - read from alsa
-- make reading from fifo timeout
-- make ncurses writer where you can pass in your own WINDOW
-- add setting to rotate between visualizers every x seconds
-- add more attribution in specific places
-- add more comments explaining things
