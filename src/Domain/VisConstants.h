@@ -14,7 +14,7 @@
 namespace VisConstants
 {
 
-//Various constants
+// Various constants
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
 
@@ -27,7 +27,7 @@ static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
 static const std::string k_lorenz_visualizer_name{"lorenz"};
 
-//Defaults
+// Defaults
 static const uint32_t k_default_fps = 20;
 
 const static std::string k_default_audio_sources{"mpd"};

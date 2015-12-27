@@ -44,7 +44,8 @@ static inline void shutdown(int sig)
 
 int main(int argc, char *argv[])
 {
-    // Catch interrupt and termination signals so the program can be cleanly shutdown.
+    // Catch interrupt and termination signals so the program can be cleanly
+    // shutdown.
     std::signal(SIGINT, shutdown);
     std::signal(SIGTERM, shutdown);
 

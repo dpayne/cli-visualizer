@@ -23,11 +23,14 @@ class MpdAudioSource : public vis::AudioSource
 
     ~MpdAudioSource() override;
 
-    bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
+    bool read(pcm_stereo_sample *buffer, const uint32_t buffer_size) override;
 
   private:
     const vis::Settings *const m_settings;
-    std::ifstream m_fifo_stream;
+
+    int32_t m_mpd_fifo_fd;
+
+    bool open_mpd_fifo();
 };
 }
 
