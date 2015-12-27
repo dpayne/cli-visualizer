@@ -1,3 +1,5 @@
+![travis-ci](https://travis-ci.org/dpayne/cli-visualizer.svg?branch=master)
+
 # cli-visualizer
 
 Command line visualizer. Currently only supports mpd.
