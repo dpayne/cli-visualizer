@@ -14,6 +14,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#ifdef _LINUX
+#include <unistd.h>
+#endif
+
 namespace
 {
 static const int32_t k_read_attempts = 100;
