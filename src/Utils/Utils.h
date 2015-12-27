@@ -112,7 +112,8 @@ class Utils
     }
 
     /**
-     * Helper method for getting a wchar_t value from a unordered map with a default.
+     * Helper method for getting a wchar_t value from a unordered map with a
+     * default.
      */
     template <class E>
     static inline wchar_t get(const std::unordered_map<E, std::string> &map,
@@ -233,7 +234,8 @@ class Utils
     }
 
     /**
-     * Helper method to convert string to int. If string is empty, 0 is returned.
+     * Helper method to convert string to int. If string is empty, 0 is
+     * returned.
      */
     static inline int32_t to_int(const std::string &str)
     {
@@ -246,7 +248,8 @@ class Utils
     }
 
     /**
-     * Helper method to convert string to unsigned int. If string is empty, 0 is returned.
+     * Helper method to convert string to unsigned int. If string is empty, 0 is
+     * returned.
      */
     static inline uint32_t to_uint(const std::string &str)
     {
@@ -269,7 +272,8 @@ class Utils
     }
 
     /**
-     * Helper method to split a string by the delimiter "delim", contents are put input the vector "elems"
+     * Helper method to split a string by the delimiter "delim", contents are
+     * put input the vector "elems"
      */
     static inline std::vector<std::string> &
     split(const std::string &s, char delim, std::vector<std::string> &elems)
@@ -288,7 +292,8 @@ class Utils
     }
 
     /**
-     * Helper method to convert a single hex character to the equivalent integer representation.
+     * Helper method to convert a single hex character to the equivalent integer
+     * representation.
      */
     static inline int64_t hex_to_int(char c)
     {
@@ -318,7 +323,8 @@ class Utils
     }
 
     /**
-     * Helper method to convert a hex string to the equivalent integer representation.
+     * Helper method to convert a hex string to the equivalent integer
+     * representation.
      */
     static inline int64_t hex_to_int(const std::string &hex)
     {

@@ -48,7 +48,7 @@ void vis::Visualizer::run()
 
     while (!should_shutdown())
     {
-        //Process user controls
+        // Process user controls
         process_user_input();
 
         if (audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
@@ -62,7 +62,8 @@ void vis::Visualizer::run()
                 transformer->execute_mono(m_pcm_buffer, m_writer.get());
             }
         }
-        // There was not enough data from the audio stream, sleep for sometime before trying again
+        // There was not enough data from the audio stream, sleep for sometime
+        // before trying again
         else
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(
