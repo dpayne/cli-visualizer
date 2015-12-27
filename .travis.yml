@@ -3,8 +3,12 @@ language: cpp
 compiler:
     - clang++
     - g++
+before_install:
+ - "cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd -"
+
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+
 
 addons:
   apt:
