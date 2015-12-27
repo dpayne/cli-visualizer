@@ -97,7 +97,7 @@ LIB_PATH = -L/usr/local/lib
 
 # Libs
 LIBS = -lfftw3 -lm -lstdc++
-TEST_LIBS = -lgtest
+TEST_LIBS = -lgtest -lpthread
 PERF_TEST_LIBS = -lbenchmark -lpthread
 
 #if this box has an older version of ncurses
