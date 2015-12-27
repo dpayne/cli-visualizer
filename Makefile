@@ -154,6 +154,8 @@ VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/))
 
 all: prepare build
 
+test: tests
+
 tests: prepare_tests build_tests
 
 perf_tests: prepare_perf_tests build_perf_tests
