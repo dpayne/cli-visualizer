@@ -83,16 +83,19 @@ vis::ConfigurationUtils::read_config(const std::string &config_path)
 
     while (file.good() && std::getline(file, line))
     {
-        vis::Utils::split_first(line, '=', split_line);
+        if (!line.empty() && line[0] != '#')
+        {
+            vis::Utils::split_first(line, '=', split_line);
 
-        if (!split_line.first.empty())
-        {
-            properties_map[split_line.first] = split_line.second;
-        }
-        else
-        {
-            VIS_LOG(vis::LogLevel::WARN,
-                    "Configuration line was not valid at %s", line.c_str());
+            if (!split_line.first.empty())
+            {
+                properties_map[split_line.first] = split_line.second;
+            }
+            else
+            {
+                VIS_LOG(vis::LogLevel::WARN,
+                        "Configuration line was not valid at %s", line.c_str());
+            }
         }
     }
 
@@ -118,21 +121,26 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     ColorIndex i = 0;
     while (file.good() && std::getline(file, line))
     {
-        if (line.size() == 7)
+        if (!line.empty())
         {
-            auto hex_color = vis::Utils::hex_to_int(line.substr(1));
+            if (line.size() == 7)
+            {
+                auto hex_color = vis::Utils::hex_to_int(line.substr(1));
 
-            int16_t red = (hex_color >> 16) % 256;
-            int16_t green = (hex_color >> 8) % 256;
-            int16_t blue = hex_color % 256;
+                int16_t red = (hex_color >> 16) % 256;
+                int16_t green = (hex_color >> 8) % 256;
+                int16_t blue = hex_color % 256;
 
-            color_definitions.push_back(
-                vis::ColorDefinition(i, red, green, blue));
-        }
-        else
-        {
-            VIS_LOG(vis::LogLevel::WARN,
-                    "Configuration line was not valid at %s", line.c_str());
+                color_definitions.push_back(
+                    vis::ColorDefinition(i, red, green, blue));
+            }
+            else
+            {
+                VIS_LOG(
+                    vis::LogLevel::WARN,
+                    "Configuration color definition line was not valid at %s",
+                    line.c_str());
+            }
         }
     }
 
@@ -226,8 +234,9 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     const auto properties = vis::ConfigurationUtils::read_config(config_path);
 
     // setup mpd
-    settings.set_mpd_fifo_path(Utils::get(properties, k_mpd_fifo_path_setting,
-                                          VisConstants::k_default_mpd_fifo_path));
+    settings.set_mpd_fifo_path(
+        Utils::get(properties, k_mpd_fifo_path_setting,
+                   VisConstants::k_default_mpd_fifo_path));
 
     // setup audio sources
     settings.set_audio_sources(
@@ -304,9 +313,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_color_definitions(
         vis::ConfigurationUtils::read_colors(colors_path));
 
-    const auto visualizers = Utils::split(
-        Utils::get(properties, k_visualizers_setting, VisConstants::k_default_visualizers),
-        ',');
+    const auto visualizers =
+        Utils::split(Utils::get(properties, k_visualizers_setting,
+                                VisConstants::k_default_visualizers),
+                     ',');
 
     settings.set_visualizers(visualizers);
 }
