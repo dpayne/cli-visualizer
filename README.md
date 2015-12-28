@@ -76,7 +76,7 @@ The configuration file is installed under "~/.vis/config".
 
 Older version of Ubuntu need to compile with the newer g++ compiler.
 
-	export COMPILER=g++-4.9
+	export CXX=g++-4.9
 	./install.sh
 
 ### Arch Linux
