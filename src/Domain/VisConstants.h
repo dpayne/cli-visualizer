@@ -48,10 +48,10 @@ static const std::string k_colors_directory{".vis/colors/"};
 static const std::string k_default_colors_path{"colors"};
 static const std::string k_default_log_path{".vis/vis.log"};
 
-// Full block character is L
+// Default characters for visualizers
 static const wchar_t k_default_spectrum_character{k_space_wchar};
-static const wchar_t k_default_lorenz_character{k_space_wchar};
-static const wchar_t k_default_ellipse_character{k_space_wchar};
+static const wchar_t k_default_lorenz_character{k_full_block_wchar};
+static const wchar_t k_default_ellipse_character{k_full_block_wchar};
 
 // ellipse defaults
 static const uint32_t k_default_ellipse_radius{2};
