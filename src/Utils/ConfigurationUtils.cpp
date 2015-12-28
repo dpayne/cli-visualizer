@@ -35,6 +35,8 @@ const static std::string k_low_cutoff_frequency_setting{
 const static std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
 
+const static std::string k_lorenz_character{"visualizer.lorenz.character"};
+
 const static std::string k_ellipse_character{"visualizer.ellipse.character"};
 const static std::string k_ellipse_radius{"visualizer.ellipse.radius"};
 
@@ -296,6 +298,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_sgs_smoothing_passes(
         Utils::get(properties, k_sgs_smoothing_passes,
                    VisConstants::k_default_sgs_smoothing_passes));
+
+    settings.set_lorenz_character(
+        Utils::get(properties, k_lorenz_character,
+                   VisConstants::k_default_lorenz_character));
 
     settings.set_ellipse_character(
         Utils::get(properties, k_ellipse_character,
