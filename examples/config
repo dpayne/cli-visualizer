@@ -2,7 +2,7 @@
 #visualizer.fps=20
 
 ##Defaults to "/tmp/mpd.fifo"
-#mpd.fifo.path
+#mpd.fifo.path=/tmp/mpd.fifo
 
 ##If set to false the visualizers will use mono mode instead of stereo. Some visualizers will
 ##behave differently when mono is enabled. For example, spectrum show two sets of bars.
@@ -51,11 +51,16 @@
 
 
 ##Configures what character the ellipse visualizer will use. Specifying a space (e.g " ") means the
-##background will be colored instead of the character. Defaults to " ".
+##background will be colored instead of the character. Defaults to "█".
 #visualizer.ellipse.character=#
 
 ##The radius of each color ring in the ellipse visualizer. Defaults to 2.
 #visualizer.ellipse.radius=2
+
+
+##Configures what character the lorenz visualizer will use. Specifying a space (e.g " ") means the
+##background will be colored instead of the character. Defaults to "█".
+#visualizer.lorenz.character=#
 
 ##Specifies the color scheme. The color scheme must be in ~/.vis/colors/ directory. Default is "colors"
 colors.scheme=rainbow
