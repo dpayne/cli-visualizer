@@ -4,7 +4,7 @@ compiler:
     - clang++
     - g++
 before_install:
- - "export TMP_CXX=$CXX && export CXX=g++ && cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd - && export CXX=$TMP_CXX"
+ - "export TMP_CC=$CC && export TMP_CXX=$CXX && export CXX=g++ && cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd - && export CXX=$TMP_CXX && export CC=$TMP_CC"
 
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
@@ -21,4 +21,5 @@ addons:
     - libgtest-dev
     - gcc-4.9
     - g++-4.9
+    - clang
     - clang-3.7
