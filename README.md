@@ -36,7 +36,11 @@ A C++ compiler that supports C++14 is also needed. On arch linux, the latest g++
 
 ### 256 Colors
 
-In order to show the colors, you need a terminal with 256 color support. `rxvt-unicode` should work well for this case. Other terminals might work, however, I have only tested with rxvt.
+In order to show the colors, you need a terminal with 256 color support.`rxvt-unicode` out of the box.
+
+For xterm, the default `$TERM` setting needs to be changed to `xterm-256color`. To change this run
+
+    export TERM=xterm-256color
 
 ### Ubuntu
 
