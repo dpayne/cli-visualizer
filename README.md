@@ -32,6 +32,10 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 A C++ compiler that supports C++14 is also needed. On arch linux, the latest g++ or clang++ will work.
 
+### 256 Colors
+
+In order to show the colors, you need a terminal with 256 color support. `rxvt-unicode` should work well for this case. Other terminals might work, however, I have only tested with rxvt.
+
 ### Ubuntu
 
     sudo apt-get install libfftw3-dev libncursesw5-dev
