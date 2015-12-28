@@ -125,9 +125,9 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     {
         if (!line.empty())
         {
-            if (line.size() == 7)
+            if (line.size() >= 7)
             {
-                auto hex_color = vis::Utils::hex_to_int(line.substr(1));
+                auto hex_color = vis::Utils::hex_to_int(line.substr(1,6));
 
                 int16_t red = (hex_color >> 16) % 256;
                 int16_t green = (hex_color >> 8) % 256;

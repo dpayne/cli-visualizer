@@ -1,3 +1,5 @@
+![travis-ci](https://travis-ci.org/dpayne/cli-visualizer.svg?branch=master)
+
 # cli-visualizer
 
 Command line visualizer. Currently only supports mpd.
@@ -72,7 +74,13 @@ Older version of Ubuntu need to compile with the newer g++ compiler.
 
 	export COMPILER=g++-4.9
 	./install.sh
-	
+
+### Arch Linux
+
+The Arch Linux install is much simpler since an AUR package exist for cli-visualizer
+
+	yaourt -S cli-visualizer
+
 ## MPD Setup
 The visualizer needs to use mpd's fifo output file to read in the audio stream. To do this, add the following lines to your mpd config file.
 
