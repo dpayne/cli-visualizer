@@ -22,6 +22,8 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
  - [Mac OS X](#mac-os-x)
 - [Installing](#installing)
 - [MPD Setup](#mpd-setup)
+- [ALSA Setup](#alsa-setup)
+- [Pulse Audio Setup](#pulse-audio-setup)
 - [Usage](#usage)
 	- [Controls](#controls)
 - [Configuration](#configuration)
@@ -103,6 +105,25 @@ If you have any sync issues with the audio where the visualizer either get ahead
         #this sets the buffer time to 50,000 microseconds
         buffer_time     "50000"
 	}
+
+## ALSA Setup
+Similar to the MPD setup, the visualizer needs to use a fifo output file to read in the alsa audio stream. To do this, add the following lines to your alsa config file, usually at `/etc/asound.conf`. If the file does not exist create it under `/etc/asound.conf`. 
+
+
+    pcm.!default {
+        type file               # File PCM
+        slave.pcm "hw:0,0"      # This should match the playback device at /proc/asound/devices
+        file "|safe_fifo /tmp/audio" #safe_fifo will be in the cli-visualizer/bin/safe_fifo directory
+        format raw              # File format ("raw" or "wav")
+        perm 0666               # Output file permission (octal, def. 0600)
+    }
+
+A normal fifo file can not be used since otherwise no sound would work unless the fifo file is being read. This effectively means that no sound would be played if the visualizer is not running. To get around this issue a helper program `safe_fifo` is used. The `safe_fifo` program is essentially a non-blocking fifo file, it takes `stdin` and writes it to a fifo files given as the first parameter. If the fifo buffer is full, it clears the buffer and writes again.
+
+Note that alsa support is still very experimental. There are a couple of caveats with this approach. Firstly `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`. Secondly `slave.pcm` must match whatever your alsa playback device is.
+
+## Pulse Audio Setup
+Currently I have not been able to test a pulseaudio setup since my current computer does not work well with pulseaudio. Theoretically the setup should be the same as the alsa setup but I have not tested this at all.
 
 ## Usage
 
