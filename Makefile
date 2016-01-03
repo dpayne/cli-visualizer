@@ -179,12 +179,19 @@ clean:
 	@rm -rf $(BUILD_DIR)
 	@rm -rf $(BUILD_TEST_DIR)
 	@rm -rf $(BUILD_PERF_TEST_DIR)
+	@rm -rf bin/safe_fifo
+
+.PHONY:safe_fifo
+safe_fifo:
+	gcc bin/safe_fifo.c -o bin/safe_fifo
 
 uninstall:
-	@rm -f $(BUILD_DIR)/$(TARGET)
+	@rm -f $(PREFIX)/$(TARGET)
+	@rm -f $(PREFIX)/safe_fifo
 
 install:
 	cp $(BUILD_DIR)/$(TARGET) $(PREFIX)
+	cp bin/safe_fifo $(PREFIX)
 
 ###############################################################################
 ##  BUILD TARGETS                                                            ##
