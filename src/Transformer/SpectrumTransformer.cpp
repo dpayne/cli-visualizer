@@ -323,7 +323,7 @@ vis::SpectrumTransformer::apply_falloff(const std::vector<double> &bars,
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
-        auto difference = std::abs(falloff_bars[i] - bars[i]);
+        auto difference = std::max(std::abs(falloff_bars[i] - bars[i]), 1.0);
         falloff_bars[i] = std::max(
             falloff_bars[i] *
                 std::pow(m_settings->get_spectrum_falloff_weight(), difference),
