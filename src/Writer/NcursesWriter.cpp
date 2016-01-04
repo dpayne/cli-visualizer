@@ -13,7 +13,7 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     : m_settings{settings}
 {
     initscr();
-    noecho(); // disable printing of pressed keys
+    noecho();    // disable printing of pressed keys
     curs_set(0); // sets the cursor to invisible
     setlocale(LC_ALL, "");
 

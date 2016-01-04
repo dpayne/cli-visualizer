@@ -239,6 +239,56 @@ class Settings
         return m_spectrum_falloff_weight;
     }
 
+    void set_spectrum_top_margin(const double spectrum_top_margin)
+    {
+        m_spectrum_top_margin = spectrum_top_margin;
+    }
+
+    double get_spectrum_top_margin() const noexcept
+    {
+        return m_spectrum_top_margin;
+    }
+
+    void set_spectrum_bottom_margin(const double spectrum_bottom_margin)
+    {
+        m_spectrum_bottom_margin = spectrum_bottom_margin;
+    }
+
+    double get_spectrum_bottom_margin() const noexcept
+    {
+        return m_spectrum_bottom_margin;
+    }
+
+    void set_spectrum_right_margin(const double spectrum_right_margin)
+    {
+        m_spectrum_right_margin = spectrum_right_margin;
+    }
+
+    double get_spectrum_right_margin() const noexcept
+    {
+        return m_spectrum_right_margin;
+    }
+
+    void set_spectrum_left_margin(const double spectrum_left_margin)
+    {
+        m_spectrum_left_margin = spectrum_left_margin;
+    }
+
+    double get_spectrum_left_margin() const noexcept
+    {
+        return m_spectrum_left_margin;
+    }
+
+    void set_is_spectrum_reversed(const bool is_spectrum_reversed)
+    {
+        m_is_spectrum_reversed = is_spectrum_reversed;
+    }
+
+    bool is_spectrum_reversed() const noexcept
+    {
+        return m_is_spectrum_reversed;
+    }
+
     void set_rotation_interval(const int64_t rotation_interval)
     {
         m_rotation_interval = rotation_interval;
@@ -272,6 +322,11 @@ class Settings
     SmoothingMode m_spectrum_smoothing_mode;
     FalloffMode m_spectrum_falloff_mode;
     double m_spectrum_falloff_weight;
+    double m_spectrum_top_margin;
+    double m_spectrum_bottom_margin;
+    double m_spectrum_right_margin;
+    double m_spectrum_left_margin;
+    bool m_is_spectrum_reversed;
     int64_t m_rotation_interval;
 };
 }

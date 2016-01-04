@@ -44,6 +44,15 @@
 ##best 0.9+ and small changes in this value can have a large effect. Defaults to 0.99
 #visualizer.spectrum.falloff.weight=0.99
 
+##Margins in percent of total screen for spectrum visualizer. All margins default to 0
+#visualizer.spectrum.top.margin=0.30
+#visualizer.spectrum.bottom.margin=0.10
+#visualizer.spectrum.right.margin=0.10
+#visualizer.spectrum.left.margin=0.10
+
+##Reverses the direction of the spectrum so that high freqs are first and low freqs last. Defaults to false.
+#visualizer.spectrum.reversed=false
+
 ##This configures the sgs smoothing effect on the spectrum visualizer. More points spreads out the smoothing
 ##effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=1
 #visualizer.sgs.smoothing.points=3

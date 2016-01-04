@@ -74,7 +74,8 @@ void vis::Visualizer::run()
                 VisConstants::k_silent_sleep_milliseconds));
         }
 
-        rotate_transformer(m_settings->get_rotation_interval(), &last_rotation_timestamp);
+        rotate_transformer(m_settings->get_rotation_interval(),
+                           &last_rotation_timestamp);
 
         // update sources and transformers
         audioSource = get_current_audio_source();
@@ -82,7 +83,8 @@ void vis::Visualizer::run()
     }
 }
 
-void vis::Visualizer::rotate_transformer(const int64_t rotation_interval, int64_t *last_rotation_timestamp)
+void vis::Visualizer::rotate_transformer(const int64_t rotation_interval,
+                                         int64_t *last_rotation_timestamp)
 {
     if (rotation_interval > 0)
     {
@@ -90,8 +92,7 @@ void vis::Visualizer::rotate_transformer(const int64_t rotation_interval, int64_
             std::chrono::system_clock::now().time_since_epoch() /
             std::chrono::seconds(1);
 
-        if ((current_timestamp - *last_rotation_timestamp) >=
-            rotation_interval)
+        if ((current_timestamp - *last_rotation_timestamp) >= rotation_interval)
         {
             m_current_transformer_index =
                 (m_current_transformer_index + 1) % m_transformers.size();
