@@ -52,6 +52,17 @@ const static std::string k_spectrum_falloff_mode{
 const static std::string k_spectrum_falloff_weight{
     "visualizer.spectrum.falloff.weight"};
 
+const static std::string k_spectrum_top_margin{
+    "visualizer.spectrum.top.margin"};
+const static std::string k_spectrum_bottom_margin{
+    "visualizer.spectrum.bottom.margin"};
+const static std::string k_spectrum_right_margin{
+    "visualizer.spectrum.right.margin"};
+const static std::string k_spectrum_left_margin{
+    "visualizer.spectrum.left.margin"};
+
+const static std::string k_spectrum_reversed{"visualizer.spectrum.reversed"};
+
 const static std::string k_monstercat_smoothing_factor{
     "visualizer.monstercat.smoothing.factor"};
 
@@ -129,7 +140,7 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         {
             if (line.size() >= 7)
             {
-                auto hex_color = vis::Utils::hex_to_int(line.substr(1,6));
+                auto hex_color = vis::Utils::hex_to_int(line.substr(1, 6));
 
                 int16_t red = (hex_color >> 16) % 256;
                 int16_t green = (hex_color >> 8) % 256;
@@ -286,6 +297,26 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_spectrum_falloff_weight(
         Utils::get(properties, k_spectrum_falloff_weight,
                    VisConstants::k_default_spectrum_falloff_weight));
+
+    settings.set_spectrum_top_margin(
+        Utils::get(properties, k_spectrum_top_margin,
+                   VisConstants::k_default_spectrum_top_margin));
+
+    settings.set_spectrum_bottom_margin(
+        Utils::get(properties, k_spectrum_bottom_margin,
+                   VisConstants::k_default_spectrum_bottom_margin));
+
+    settings.set_spectrum_right_margin(
+        Utils::get(properties, k_spectrum_right_margin,
+                   VisConstants::k_default_spectrum_right_margin));
+
+    settings.set_spectrum_left_margin(
+        Utils::get(properties, k_spectrum_left_margin,
+                   VisConstants::k_default_spectrum_left_margin));
+
+    settings.set_is_spectrum_reversed(
+        Utils::get(properties, k_spectrum_reversed,
+                   VisConstants::k_default_spectrum_reversed));
 
     settings.set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,

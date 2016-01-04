@@ -27,7 +27,13 @@ vis::Settings::Settings()
       m_spectrum_smoothing_mode{
           VisConstants::k_default_spectrum_smoothing_mode},
       m_spectrum_falloff_mode{VisConstants::k_default_spectrum_falloff_mode},
-      m_spectrum_falloff_weight{VisConstants::k_default_spectrum_falloff_weight},
+      m_spectrum_falloff_weight{
+          VisConstants::k_default_spectrum_falloff_weight},
+      m_spectrum_top_margin{VisConstants::k_default_spectrum_top_margin},
+      m_spectrum_bottom_margin{VisConstants::k_default_spectrum_bottom_margin},
+      m_spectrum_right_margin{VisConstants::k_default_spectrum_right_margin},
+      m_spectrum_left_margin{VisConstants::k_default_spectrum_left_margin},
+      m_is_spectrum_reversed{VisConstants::k_default_spectrum_reversed},
       m_rotation_interval{VisConstants::k_default_visualizer_rotation_interval}
 {
 }
