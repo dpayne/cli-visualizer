@@ -142,7 +142,7 @@ VPATH= $(dir $(wildcard src/*/ src/*/*/)) $(dir $(wildcard tests/*/ tests/*/*/))
 ##  MAIN TARGETS                                                             ##
 ###############################################################################
 
-all: prepare build
+all: prepare build safe_fifo
 
 test: tests
 
@@ -191,7 +191,7 @@ uninstall:
 
 install:
 	cp $(BUILD_DIR)/$(TARGET) $(PREFIX)
-	cp bin/safe_fifo $(PREFIX)
+#	cp bin/safe_fifo $(PREFIX)
 
 ###############################################################################
 ##  BUILD TARGETS                                                            ##

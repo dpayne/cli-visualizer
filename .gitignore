@@ -30,6 +30,7 @@
 build
 build_tests
 build_perf_tests
+bin/safe_fifo
 
 #vim files
 .ycm_extra_conf.pyc
