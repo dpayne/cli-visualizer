@@ -5,12 +5,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <time.h>
 
 #define BUF_SIZE 16384
 
 char write_buffer[BUF_SIZE];
 char read_buffer[BUF_SIZE];
 char default_fifo_name [] = "/tmp/audio";
+
+static struct timespec k_read_attempt_sleep_timespec = {
+    0, 1L * 1000000L};
 
 int main(int argc, char *argv[])
 {
@@ -24,9 +28,7 @@ int main(int argc, char *argv[])
         fifo_file_name = argv[1];
     }
 
-
-    mkfifo(fifo_file_name, 0666);
-
+    mkfifo(fifo_file_name, 777);
     int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
 
     //mark stdin as binary
@@ -47,7 +49,12 @@ int main(int argc, char *argv[])
                 read(fd, read_buffer, BUF_SIZE);
             }
         }
+        else
+        {
+            break;
+        }
     }
 
     close(fd);
+    exit(0);
 }

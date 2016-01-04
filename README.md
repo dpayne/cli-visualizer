@@ -109,7 +109,6 @@ If you have any sync issues with the audio where the visualizer either get ahead
 ## ALSA Setup
 Similar to the MPD setup, the visualizer needs to use a fifo output file to read in the alsa audio stream. To do this, add the following lines to your alsa config file, usually at `/etc/asound.conf`. If the file does not exist create it under `/etc/asound.conf`. 
 
-
     pcm.!default {
         type file               # File PCM
         slave.pcm "hw:0,0"      # This should match the playback device at /proc/asound/devices
@@ -174,7 +173,30 @@ This is an example `asound.conf` for Intel HD Audio.
     }
 
 ## Pulse Audio Setup
-Currently I have not been able to test a pulseaudio setup since my current computer does not work well with pulseaudio. Theoretically the setup should be the same as the alsa setup but I have not tested this at all.
+The pulse audio setup is very similar to alsa.
+
+    pcm.mypulse {
+      type pulse
+      fallback "sysdefault"
+      hint {
+        show on
+        description "Default ALSA Output (currently PulseAudio Sound Server)"
+      }
+    }
+
+    pcm.!default {
+        type file               # File PCM
+        slave.pcm "mypulse"     # This should match the playback device at /proc/asound/devices
+        file "|safe_fifo /tmp/audio"
+        format raw              # File format ("raw" or "wav")
+        perm 0666               # Output file permission (octal, def. 0600)
+    }
+
+    ctl.!default {
+      type pulse
+      fallback "sysdefault"
+    }
+
 
 ## Usage
 
