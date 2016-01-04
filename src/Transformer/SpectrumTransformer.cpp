@@ -90,6 +90,13 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
     const auto win_height = NcursesUtils::get_window_height();
     const auto win_width = NcursesUtils::get_window_width();
 
+    auto right_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_right_margin() * win_width);
+    auto left_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_left_margin() * win_width);
+
+    auto width = win_width - right_margin - left_margin;
+
     bool is_silent_left = true;
     bool is_silent_right = true;
 
@@ -137,7 +144,7 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
                                m_settings->get_spectrum_bar_width());
 
         uint32_t number_of_bars = static_cast<uint32_t>(std::floor(
-            static_cast<uint32_t>(win_width) /
+            static_cast<uint32_t>(width) /
             (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
         fftw_execute(m_fftw_plan_left);
@@ -147,26 +154,30 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
             fftw_execute(m_fftw_plan_right);
         }
 
+        auto top_margin = static_cast<int32_t>(
+            m_settings->get_spectrum_top_margin() * win_height);
+
         auto height = win_height;
+        height -= top_margin;
         if (is_stereo)
         {
             height = height / 2;
         }
 
-        create_spectrum_bars(m_fftw_output_left, m_fftw_results, height,
-                             win_width, number_of_bars, m_bars_left,
-                             m_bars_falloff_left);
-        create_spectrum_bars(m_fftw_output_right, m_fftw_results, height,
-                             win_width, number_of_bars, m_bars_right,
+        create_spectrum_bars(m_fftw_output_left, m_fftw_results, height, width,
+                             number_of_bars, m_bars_left, m_bars_falloff_left);
+        create_spectrum_bars(m_fftw_output_right, m_fftw_results, height, width,
+                             number_of_bars, m_bars_right,
                              m_bars_falloff_right);
 
         // clear screen before writing
         writer->clear();
 
-        auto max_bar_height = win_height;
+        auto max_bar_height = height;
         if (is_stereo)
         {
-            max_bar_height = height + 1;
+            ++max_bar_height; // add one so that the spectrums overlap in the
+                              // middle
         }
 
         draw_bars(m_bars_left, m_bars_falloff_left, max_bar_height, true,
@@ -478,8 +489,25 @@ void vis::SpectrumTransformer::draw_bars(
     recalculate_colors(static_cast<size_t>(win_height), m_precomputed_colors,
                        writer);
 
-    for (auto column_index = 0u; column_index < bars.size(); ++column_index)
+    const auto full_win_width = NcursesUtils::get_window_width();
+    const auto full_win_height = NcursesUtils::get_window_height();
+    auto top_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_top_margin() * full_win_height);
+    auto bottom_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_bottom_margin() * full_win_height);
+    auto left_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_left_margin() * full_win_width);
+
+    for (auto original_column_index = 0u; original_column_index < bars.size();
+         ++original_column_index)
     {
+        auto column_index = original_column_index;
+        if (m_settings->is_spectrum_reversed())
+        {
+            column_index =
+                static_cast<uint32_t>(bars.size()) - original_column_index - 1;
+        }
+
         auto bar_height = 0.0;
 
         switch (m_settings->get_spectrum_falloff_mode())
@@ -513,11 +541,12 @@ void vis::SpectrumTransformer::draw_bars(
             }
 
             auto column =
-                static_cast<int32_t>(column_index) *
+                static_cast<int32_t>(original_column_index) *
                 static_cast<int32_t>((bar_row_msg.size() +
                                       m_settings->get_spectrum_bar_spacing()));
 
-            writer->write(row_height, column,
+            writer->write(row_height + top_margin - bottom_margin,
+                          column + left_margin,
                           m_precomputed_colors[static_cast<size_t>(row_index)],
                           bar_row_msg, m_settings->get_spectrum_character());
         }
@@ -540,12 +569,13 @@ void vis::SpectrumTransformer::draw_bars(
 
             if (top_row_height > 0)
             {
-                auto column = static_cast<int32_t>(column_index) *
+                auto column = static_cast<int32_t>(original_column_index) *
                               static_cast<int32_t>(
                                   (bar_row_msg.size() +
                                    m_settings->get_spectrum_bar_spacing()));
                 writer->write(
-                    top_row_height, column,
+                    top_row_height + top_margin - bottom_margin,
+                    column + left_margin,
                     m_precomputed_colors[static_cast<size_t>(row_index)],
                     bar_row_msg, m_settings->get_spectrum_character());
             }

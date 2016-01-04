@@ -26,7 +26,8 @@ static const std::string k_mpd_audio_source_name{"mpd"};
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
 static const std::string k_lorenz_visualizer_name{"lorenz"};
-static const int64_t k_default_visualizer_rotation_interval = 0L; // 0 means disabled
+static const int64_t k_default_visualizer_rotation_interval =
+    0L; // 0 means disabled
 // Defaults
 static const uint32_t k_default_fps = 20;
 
@@ -74,6 +75,12 @@ static const vis::SmoothingMode k_default_spectrum_smoothing_mode =
 static const vis::FalloffMode k_default_spectrum_falloff_mode =
     vis::FalloffMode::Fill;
 static const double k_default_spectrum_falloff_weight = 0.99;
+static const double k_default_spectrum_top_margin = 0.0;
+static const double k_default_spectrum_bottom_margin = 0.0;
+static const double k_default_spectrum_right_margin = 0.0;
+static const double k_default_spectrum_left_margin = 0.0;
+
+static const bool k_default_spectrum_reversed = false;
 
 // input timeouts
 static const long k_default_mpd_fifo_timeout = 1l;
