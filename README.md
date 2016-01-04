@@ -107,6 +107,9 @@ If you have any sync issues with the audio where the visualizer either get ahead
 	}
 
 ## ALSA Setup
+
+WARNING: alsa support is very very experimental. It is very possible that it will be completely broken on various systems and could cause weird/bad behaviour.
+
 Similar to the MPD setup, the visualizer needs to use a fifo output file to read in the alsa audio stream. To do this, add the following lines to your alsa config file, usually at `/etc/asound.conf`. If the file does not exist create it under `/etc/asound.conf`. 
 
     pcm.!default {
@@ -173,7 +176,10 @@ This is an example `asound.conf` for Intel HD Audio.
     }
 
 ## Pulse Audio Setup
-The pulse audio setup is very similar to alsa.
+
+WARNING: pulseaudio support is very very experimental. It is very possible that it will be completely broken on various systems and could cause weird/bad behaviour.
+
+The pulse audio setup is very similar to alsa. Please read the Alsa Setup section for a more of an explanation. `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`.
 
     pcm.mypulse {
       type pulse
