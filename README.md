@@ -122,6 +122,57 @@ A normal fifo file can not be used since otherwise no sound would work unless th
 
 Note that alsa support is still very experimental. There are a couple of caveats with this approach. Firstly `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`. Secondly `slave.pcm` must match whatever your alsa playback device is.
 
+### ALSA with dmix
+On sound cards that do not support hardware level mixing, alsa uses dmix to allow playback from multiple applications at once. In order to make this work with the visualizer a dmixer plugin needs to be defined in `/etc/asound.conf` and the visualizer pcm set to use `dmixer` instead of the hardware device directly. This configuration might will change slightly depending on the system. 
+
+This is an example `asound.conf` for Intel HD Audio.
+
+    pcm.dmixer { 
+        type dmix 
+        ipc_key 1024
+        ipc_key_add_uid false
+        ipc_perm 0666            # mixing for all users
+        slave { 
+            pcm "hw:0,0" 
+            period_time 0 
+            period_size 1024 
+            buffer_size 8192
+            rate 44100
+        }
+        bindings { 
+            0 0 
+            1 1 
+        } 
+    } 
+
+    pcm.dsp0 { 
+        type plug 
+        slave.pcm "dmixer" 
+    } 
+
+    pcm.!default { 
+        type plug 
+        slave.pcm "dmixer" 
+    } 
+
+    pcm.default { 
+       type plug 
+       slave.pcm "dmixer" 
+    } 
+
+    ctl.mixer0 { 
+        type hw 
+        card 0 
+    }
+
+    pcm.!default {
+        type file               # File PCM
+        slave.pcm "dmixer"      # Use the dmixer plugin as the slave pcm
+        file "|safe_fifo /tmp/audio"
+        format raw              # File format ("raw" or "wav")
+        perm 0666               # Output file permission (octal, def. 0600)
+    }
+
 ## Pulse Audio Setup
 Currently I have not been able to test a pulseaudio setup since my current computer does not work well with pulseaudio. Theoretically the setup should be the same as the alsa setup but I have not tested this at all.
 
