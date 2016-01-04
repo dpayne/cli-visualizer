@@ -120,6 +120,10 @@ Similar to the MPD setup, the visualizer needs to use a fifo output file to read
         perm 0666               # Output file permission (octal, def. 0600)
     }
 
+Next change the visualizer config `~/.vis/config` to point to the new fifo file
+
+    mpd.fifo.path=/tmp/audio
+
 A normal fifo file can not be used since otherwise no sound would work unless the fifo file is being read. This effectively means that no sound would be played if the visualizer is not running. To get around this issue a helper program `safe_fifo` is used. The `safe_fifo` program is essentially a non-blocking fifo file, it takes `stdin` and writes it to a fifo files given as the first parameter. If the fifo buffer is full, it clears the buffer and writes again.
 
 Note that alsa support is still very experimental. There are a couple of caveats with this approach. Firstly `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`. Secondly `slave.pcm` must match whatever your alsa playback device is.
@@ -202,6 +206,11 @@ The pulse audio setup is very similar to alsa. Please read the Alsa Setup sectio
       type pulse
       fallback "sysdefault"
     }
+
+
+Next change the visualizer config `~/.vis/config` to point to the new fifo file
+
+    mpd.fifo.path=/tmp/audio
 
 
 ## Usage
