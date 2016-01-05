@@ -1,3 +1,25 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [cli-visualizer](#cli-visualizer)
+  - [Installing Pre-requisites](#installing-pre-requisites)
+    - [256 Colors](#256-colors)
+    - [Ubuntu](#ubuntu)
+    - [Arch Linux](#arch-linux)
+    - [Mac OS X](#mac-os-x)
+  - [Installing](#installing)
+    - [Arch Linux](#arch-linux-1)
+  - [MPD Setup](#mpd-setup)
+  - [ALSA Setup](#alsa-setup)
+    - [ALSA with dmix](#alsa-with-dmix)
+  - [Pulse Audio Setup (Easy)](#pulse-audio-setup-easy)
+  - [Usage](#usage)
+    - [Controls](#controls)
+  - [Configuration](#configuration)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ![travis-ci](https://travis-ci.org/dpayne/cli-visualizer.svg?branch=master)
 
 # cli-visualizer
@@ -13,22 +35,6 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 ![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
 ![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
-
-**Table of Contents**
-
-- [Installing Pre-requisites](#installing-pre-requisites)
- - [Ubuntu](#ubuntu)
- - [Arch Linux](#arch-linux)
- - [Mac OS X](#mac-os-x)
-- [Installing](#installing)
-- [MPD Setup](#mpd-setup)
-- [ALSA Setup](#alsa-setup)
-- [Pulse Audio Setup](#pulse-audio-setup)
-- [Usage](#usage)
-	- [Controls](#controls)
-- [Configuration](#configuration)
-
-
 
 ## Installing Pre-requisites
 
@@ -179,39 +185,17 @@ This is an example `asound.conf` for Intel HD Audio.
         perm 0666               # Output file permission (octal, def. 0600)
     }
 
-## Pulse Audio Setup
+## Pulse Audio Setup (Easy)
 
-WARNING: pulseaudio support is very very experimental. It is very possible that it will be completely broken on various systems and could cause weird/bad behaviour.
+Pulse audio should be the easiest to setup out of all the options. In order for this to work pulseaudio must be installed and vis must be built with pulseaudio enabled. To build with pulseaudio support run `make ENABLE_PULSE=1`.
 
-The pulse audio setup is very similar to alsa. Please read the Alsa Setup section for a more of an explanation. `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`.
+To enable pulse audio in the vis config set audio sources to pulse with
 
-    pcm.mypulse {
-      type pulse
-      fallback "sysdefault"
-      hint {
-        show on
-        description "Default ALSA Output (currently PulseAudio Sound Server)"
-      }
-    }
+    audio.sources=pulse
 
-    pcm.!default {
-        type file               # File PCM
-        slave.pcm "mypulse"     # This should match the playback device at /proc/asound/devices
-        file "|safe_fifo /tmp/audio"
-        format raw              # File format ("raw" or "wav")
-        perm 0666               # Output file permission (octal, def. 0600)
-    }
+If this does not work, then vis has most likely not guess the correct sink to use. Try switching the pulseaudio source vis uses. A list can be found by running the command `pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '`. The correct pulseaudio source can then be set with
 
-    ctl.!default {
-      type pulse
-      fallback "sysdefault"
-    }
-
-
-Next change the visualizer config `~/.vis/config` to point to the new fifo file
-
-    mpd.fifo.path=/tmp/audio
-
+    audio.pulse.source=0
 
 ## Usage
 
@@ -278,6 +262,15 @@ Start with
     visualizer.spectrum.bottom.margin=0.0
     visualizer.spectrum.right.margin=0.0
     visualizer.spectrum.left.margin=0.0
+
+    #Sets the audio sources to use. Currently available ones are "mpd" and "alsa"Sets the audio sources to use.
+    #Currently available ones are "mpd" and "alsa". Defaults to "mpd".
+    audio.sources=pulse
+
+    ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
+    #If pulse audio is not working with vis try switching the audio source. A list can be found by running the
+    #command pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '.
+    audio.pulse.source=0
 
     #Reverses the direction of the spectrum so that high freqs are first and low freqs last. Defaults to false.
     visualizer.spectrum.reversed=false

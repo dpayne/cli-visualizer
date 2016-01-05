@@ -7,6 +7,7 @@
 
 #include "Visualizer.h"
 #include "Source/MpdAudioSource.h"
+#include "Source/PulseAudioSource.h"
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Transformer/SpectrumTransformer.h"
@@ -32,6 +33,11 @@ void vis::Visualizer::add_audio_source(const std::string &audio_source)
     {
         m_audio_sources.emplace_back(
             std::make_unique<vis::MpdAudioSource>(m_settings));
+    }
+    else if (audio_source == VisConstants::k_pulse_audio_source_name)
+    {
+        m_audio_sources.emplace_back(
+            std::make_unique<vis::PulseAudioSource>(m_settings));
     }
 }
 

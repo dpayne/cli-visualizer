@@ -24,6 +24,8 @@ const static std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
 const static std::string k_vis_rotation_interval{"visualizer.rotation.secs"};
 
+const static std::string k_vis_pulse_audio_source{"audio.pulse.source"};
+
 const static std::string k_visualizers_setting{"visualizers"};
 const static std::string k_fps_setting{"visualizer.fps"};
 
@@ -344,6 +346,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_rotation_interval(
         Utils::get(properties, k_vis_rotation_interval,
                    VisConstants::k_default_visualizer_rotation_interval));
+
+    settings.set_pulse_audio_source(
+        Utils::get(properties, k_vis_pulse_audio_source,
+                   VisConstants::k_default_visualizer_pulse_audio_source));
 
     settings.set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));

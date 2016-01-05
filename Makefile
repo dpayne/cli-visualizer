@@ -101,6 +101,16 @@ LIBS = -lfftw3 -lm -lstdc++
 TEST_LIBS = -lgtest -lpthread
 PERF_TEST_LIBS = -lbenchmark -lpthread
 
+ifneq ("$(wildcard /usr/lib/libpulse.so)","")
+ENABLE_PULSE=1
+endif
+
+ifdef ENABLE_PULSE
+CXX_FLAGS += -D_ENABLE_PULSE
+LD_FLAGS += -D_ENABLE_PULSE
+LIBS += -lpulse -lpulse-simple
+endif
+
 #if this box has an older version of ncurses
 ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
 	LIBS += -lncursesw
