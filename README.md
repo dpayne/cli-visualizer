@@ -24,7 +24,7 @@
 
 # cli-visualizer
 
-Command line visualizer. Currently only supports mpd.
+Command line visualizer. Supports mpd, with experimental support for alsa and pulseaudio.
 
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
