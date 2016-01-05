@@ -299,6 +299,16 @@ class Settings
         return m_rotation_interval;
     }
 
+    void set_pulse_audio_source(const std::string & pulse_audio_source)
+    {
+        m_pulse_audio_source = pulse_audio_source;
+    }
+
+    const std::string & get_pulse_audio_source() const noexcept
+    {
+        return m_pulse_audio_source;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -328,6 +338,7 @@ class Settings
     double m_spectrum_left_margin;
     bool m_is_spectrum_reversed;
     int64_t m_rotation_interval;
+    std::string m_pulse_audio_source;
 };
 }
 
