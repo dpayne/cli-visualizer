@@ -4,11 +4,11 @@ HAS_NCURSESW=`pkg-config --list-all | awk '{ print $1 }' | grep ncursesw`
 HAS_FFTW3=`pkg-config --list-all | awk '{ print $1 }' | grep fftw3`
 HAS_LM=`pkg-config --list-all | awk '{ print $1 }' | grep libpulse`
 
-TODO: check for
-    ncurses lib
-    fftw3 lib
-    lm lib
-    pulseaudio
-        warn if not present
+#TODO: check for
+#    ncurses lib
+#    fftw3 lib
+#    lm lib
+#    pulseaudio
+#        warn if not present
 
-    set compiler option
+#    set compiler option
