@@ -1,1 +1,4 @@
-- read from alsa
+- improve reading from alsa
+- find default sink some how for pulseaudio
+- use configure or something similar to check for libraries and which compiler to use and flags
+- add 16-bit color support by name with examples
