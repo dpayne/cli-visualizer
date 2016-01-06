@@ -193,7 +193,7 @@ To enable pulse audio in the vis config set audio sources to pulse with
 
     audio.sources=pulse
 
-If this does not work, then vis has most likely not guess the correct sink to use. Try switching the pulseaudio source vis uses. A list can be found by running the command `pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '`. The correct pulseaudio source can then be set with
+If this does not work, then vis has most likely not guess the correct sink to use. Try switching the pulseaudio source vis uses. A list can be found by running the command `pacmd list-sinks  | grep -e 'name:'  -e 'index'`. The correct pulseaudio source can then be set with
 
     audio.pulse.source=0
 
@@ -269,7 +269,7 @@ Start with
 
     ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
     #If pulse audio is not working with vis try switching the audio source. A list can be found by running the
-    #command pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '.
+    #command pacmd list-sinks  | grep -e 'name:'  -e 'index'
     audio.pulse.source=0
 
     #Reverses the direction of the spectrum so that high freqs are first and low freqs last. Defaults to false.

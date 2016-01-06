@@ -46,10 +46,10 @@ static const uint32_t k_default_low_cutoff_frequency = 30;
 static const uint32_t k_default_high_cutoff_frequency = 22050;
 
 // config path defaults
-static const std::string k_default_config_path{".vis/config"};
-static const std::string k_colors_directory{".vis/colors/"};
+static const std::string k_default_config_path{".config/vis/config"};
+static const std::string k_colors_directory{".config/vis/colors/"};
 static const std::string k_default_colors_path{"colors"};
-static const std::string k_default_log_path{".vis/vis.log"};
+static const std::string k_default_log_path{".config/vis/vis.log"};
 
 // Default characters for visualizers
 static const wchar_t k_default_spectrum_character{k_space_wchar};
