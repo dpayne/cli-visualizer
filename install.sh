@@ -4,9 +4,16 @@ make clean
 make
 sudo make install
 
-#create .vis directory
-mkdir -p ~/.vis/colors
+if [ -z "$XDG_CONFIG_HOME" ]
+then
+    CONFIG_DIR=$HOME/.config/vis
+else
+    CONFIG_DIR=$XDG_CONFIG_HOME/vis
+fi
+
+#create config directory
+mkdir -p $CONFIG_DIR/colors
 
 #copy over example files
-cp examples/config ~/.vis/
-cp examples/rainbow ~/.vis/colors/rainbow
+cp examples/config $CONFIG_DIR/
+cp examples/rainbow $CONFIG_DIR/colors/rainbow

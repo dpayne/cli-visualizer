@@ -29,7 +29,7 @@ static std::string g_program_help =
     "Usage: vis -c FILE\n"
     "vis -- CLI visualizer.\n"
     "\n"
-    "  -c FILE     Config file path, defaults to ~/.vis/config\n"
+    "  -c FILE     Config file path, defaults to ~/.config/vis/config\n"
     "  -h          Give this help list\n";
 
 static inline void shutdown(int sig)

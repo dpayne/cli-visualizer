@@ -7,7 +7,7 @@
 
 ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
 ##If pulse audio is not working with vis try switching the audio source. A list can be found by running the
-##command pacmd list-sinks  | grep -e 'name:'  -e 'alsa.device ' -e 'alsa.subdevice '.
+##command pacmd list-sinks  | grep -e 'name:'  -e 'index'
 #audio.pulse.source=0
 
 ##Defaults to "/tmp/mpd.fifo"
@@ -80,5 +80,5 @@
 ##background will be colored instead of the character. Defaults to "█".
 #visualizer.lorenz.character=#
 
-##Specifies the color scheme. The color scheme must be in ~/.vis/colors/ directory. Default is "colors"
+##Specifies the color scheme. The color scheme must be in ~/.config/vis/colors/ directory. The default scheme is "colors".
 colors.scheme=rainbow
