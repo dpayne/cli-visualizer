@@ -31,11 +31,10 @@ class PulseAudioSource : public vis::AudioSource
     bool read(pcm_stereo_sample *buffer, const uint32_t buffer_size) override;
 
   private:
-
 #ifdef _ENABLE_PULSE
     const vis::Settings *const m_settings;
 
-    pa_simple * m_pulseaudio_simple;
+    pa_simple *m_pulseaudio_simple;
 #endif
 
     bool open_pulseaudio_source(const uint32_t max_buffer_size);
@@ -43,4 +42,3 @@ class PulseAudioSource : public vis::AudioSource
 }
 
 #endif
-

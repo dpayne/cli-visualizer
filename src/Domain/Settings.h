@@ -107,16 +107,14 @@ class Settings
         return m_is_stereo_enabled;
     }
 
-    const std::vector<vis::ColorDefinition> &get_color_definitions() const
-        noexcept
+    const std::vector<vis::ColorIndex> &get_colors() const noexcept
     {
-        return m_color_definitions;
+        return m_colors;
     }
 
-    void set_color_definitions(
-        const std::vector<vis::ColorDefinition> &color_definitions)
+    void set_colors(const std::vector<vis::ColorIndex> &colors)
     {
-        m_color_definitions = color_definitions;
+        m_colors = colors;
     }
 
     wchar_t get_spectrum_character() const noexcept
@@ -299,12 +297,12 @@ class Settings
         return m_rotation_interval;
     }
 
-    void set_pulse_audio_source(const std::string & pulse_audio_source)
+    void set_pulse_audio_source(const std::string &pulse_audio_source)
     {
         m_pulse_audio_source = pulse_audio_source;
     }
 
-    const std::string & get_pulse_audio_source() const noexcept
+    const std::string &get_pulse_audio_source() const noexcept
     {
         return m_pulse_audio_source;
     }
@@ -318,7 +316,6 @@ class Settings
     bool m_is_stereo_enabled;
     std::vector<std::string> m_audio_sources;
     std::vector<std::string> m_visualizers;
-    std::vector<vis::ColorDefinition> m_color_definitions;
     std::vector<vis::ColorIndex> m_colors;
     wchar_t m_spectrum_character;
     wchar_t m_lorenz_character;

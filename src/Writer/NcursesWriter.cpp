@@ -95,32 +95,11 @@ void vis::NcursesWriter::flush()
     refresh();
 }
 
-int16_t vis::NcursesWriter::to_ansi_color_domain(const int16_t color)
-{
-    return static_cast<int16_t>(6.0 * static_cast<double>(color) / 256.0);
-}
-
-/**
- * Returns nearest supported 256-color an rgb value as an ansi color value
- * Inspired by the rainbow gem https://github.com/sickill/rainbow
- *
- * This is an approximate result. Actual results depend on what colors the
- * terminal has set.
- */
-int16_t vis::NcursesWriter::to_ansi_color(const int16_t red,
-                                          const int16_t green,
-                                          const int16_t blue)
-{
-    return 16 + static_cast<int16_t>((to_ansi_color_domain(red) * 36.0) +
-                                     (to_ansi_color_domain(green) * 6.0) +
-                                     (to_ansi_color_domain(blue) * 1.0));
-}
-
 vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
                                                   bool wrap) const
 {
-    const auto colors_size = static_cast<vis::ColorIndex>(
-        m_settings->get_color_definitions().size());
+    const auto colors_size =
+        static_cast<vis::ColorIndex>(m_settings->get_colors().size());
     const auto index = (number * colors_size) / (max + 1);
 
     // no colors
@@ -129,13 +108,10 @@ vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
         return 0;
     }
 
-    const auto color_definition =
-        m_settings->get_color_definitions()[static_cast<size_t>(
-            wrap ? index % colors_size : std::min(index, colors_size - 1))];
+    const auto color = m_settings->get_colors()[static_cast<size_t>(
+        wrap ? index % colors_size : std::min(index, colors_size - 1))];
 
-    return to_ansi_color(color_definition.get_red(),
-                         color_definition.get_green(),
-                         color_definition.get_blue());
+    return color;
 }
 
 vis::NcursesWriter::~NcursesWriter()
