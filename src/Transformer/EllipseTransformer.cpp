@@ -42,9 +42,8 @@ void vis::EllipseTransformer::recalculate_colors(
     const NcursesWriter *writer)
 {
     // Makes the radius of each ring be approximately 2 cells wide.
-    const auto radius =
-        static_cast<int32_t>(m_settings->get_ellipse_radius() *
-                             m_settings->get_color_definitions().size());
+    const auto radius = static_cast<int32_t>(m_settings->get_ellipse_radius() *
+                                             m_settings->get_colors().size());
 
     if (precomputed_colors.size() != max)
     {
