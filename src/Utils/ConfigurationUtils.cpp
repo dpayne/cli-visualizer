@@ -155,8 +155,6 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
                 if (basic_color >= 0)
                 {
                     colors.push_back(basic_color);
-                    VIS_LOG(vis::LogLevel::WARN, "Setting basic color for %s",
-                            line.c_str());
                 }
                 else
                 {
