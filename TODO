@@ -6,3 +6,16 @@
         then reading the source list
 
 - use configure or something similar to check for libraries and which compiler to use and flags
+
+- improve readme
+    - add more examples for
+        falloff
+        smoothing options
+        spectrum bar width and spacing
+        margins
+        reverse
+
+    - add better explanation of color scheme options
+        add examples of different colors schemes
+
+    - add examples of visualizers with different characters
