@@ -17,3 +17,4 @@ mkdir -p $CONFIG_DIR/colors
 #copy over example files
 cp examples/config $CONFIG_DIR/
 cp examples/rainbow $CONFIG_DIR/colors/rainbow
+cp examples/basic_colors $CONFIG_DIR/colors/basic_colors

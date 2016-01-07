@@ -1,4 +1,8 @@
 - improve reading from alsa
+    -probably involves using the alsa api directly
+
 - find default sink some how for pulseaudio
+    - probably involves using pulse audio api directly instead of pulseaudio simple
+        then reading the source list
+
 - use configure or something similar to check for libraries and which compiler to use and flags
-- add 16-bit color support by name with examples

@@ -47,22 +47,9 @@ class NcursesWriter
     const Settings *const m_settings;
 
     /**
-     * Approximate a RGB color to a ncurses color pair. This idea was originally
-     * taken from ruby's rainbow gem https://github.com/sickill/rainbow
-     *
-     * This is not a true RGB color, just an approximation. This is also
-     * dependent on terminal settings. For example, if the terminal colors have
-     * all been set to red, then they will still all be red.
-     */
-    static int16_t to_ansi_color(const int16_t red, const int16_t green,
-                                 const int16_t blue);
-
-    /**
      * Initialize color pairs for ncurses
      */
     void setup_colors();
-
-    static int16_t to_ansi_color_domain(const int16_t color);
 
     /**
      * Write msg to ncurses window using background colors

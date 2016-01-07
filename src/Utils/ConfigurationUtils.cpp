@@ -119,10 +119,10 @@ vis::ConfigurationUtils::read_config(const std::string &config_path)
     return properties_map;
 }
 
-std::vector<vis::ColorDefinition>
+std::vector<vis::ColorIndex>
 vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 {
-    std::vector<vis::ColorDefinition> color_definitions;
+    std::vector<vis::ColorIndex> colors;
 
     std::ifstream file(colors_path.c_str(), std::ifstream::in);
     std::string line;
@@ -130,12 +130,11 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     {
         VIS_LOG(vis::LogLevel::WARN, "Colors configuration not found at %s",
                 colors_path.c_str());
-        return color_definitions;
+        return colors;
     }
 
     std::vector<std::string> split_line;
 
-    ColorIndex i = 0;
     while (file.good() && std::getline(file, line))
     {
         if (!line.empty())
@@ -148,20 +147,29 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
                 int16_t green = (hex_color >> 8) % 256;
                 int16_t blue = hex_color % 256;
 
-                color_definitions.push_back(
-                    vis::ColorDefinition(i, red, green, blue));
+                colors.push_back(NcursesUtils::to_ansi_color(red, green, blue));
             }
             else
             {
-                VIS_LOG(
-                    vis::LogLevel::WARN,
-                    "Configuration color definition line was not valid at %s",
-                    line.c_str());
+                auto basic_color = NcursesUtils::to_basic_color(line);
+                if (basic_color >= 0)
+                {
+                    colors.push_back(basic_color);
+                    VIS_LOG(vis::LogLevel::WARN, "Setting basic color for %s",
+                            line.c_str());
+                }
+                else
+                {
+                    VIS_LOG(vis::LogLevel::WARN, "Configuration color "
+                                                 "definition line was not "
+                                                 "valid at %s",
+                            line.c_str());
+                }
             }
         }
     }
 
-    return color_definitions;
+    return colors;
 }
 
 vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
@@ -359,8 +367,7 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     colors_path.append(VisConstants::k_colors_directory);
     colors_path.append(Utils::get(properties, k_color_scheme_path_setting,
                                   VisConstants::k_default_colors_path));
-    settings.set_color_definitions(
-        vis::ConfigurationUtils::read_colors(colors_path));
+    settings.set_colors(vis::ConfigurationUtils::read_colors(colors_path));
 
     const auto visualizers =
         Utils::split(Utils::get(properties, k_visualizers_setting,
