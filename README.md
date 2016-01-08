@@ -211,6 +211,60 @@ Start with
 | <kbd>q</kbd> or <kbd>CTRL-C</kbd>| Quit |
 
 ## Configuration
+
+### Colors
+
+The display colors and their order can be changed by switching the color scheme in the config under `colors.scheme`.
+The color scheme must be defined at `~/.config/vis/colors/color_scheme` directory.
+
+ vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`.
+
+#### RGB colors
+
+The color scheme can be defined in two ways with RGB values or by index. The RGB values are defined as a hex color code, they are useful for creating a 256 bit color scheme.
+The displayed color will not be the true color, but instead an approximation of the color based on 256-bit terminal colors.
+
+RGB color scheme example
+    #4040ff
+    #2c56fc
+    #2a59fc
+    #1180ed
+    #04a6d5
+    #02abd1
+    #03d2aa
+    #04d6a5
+    #12ee7f
+    #2bfc58
+    #2dfc55
+    #56fc2d
+
+#### Color indexes
+
+The second way to define a color scheme is by the color index. Specifically this is the exact color index used by ncurses.
+Color indexes are useful for creating a visualizer that matches the terminal's set color scheme.
+
+Color index color scheme example
+    4
+    12
+    6
+    14
+    2
+    10
+    11
+    3
+    5
+    1
+    13
+    9
+    7
+    15
+    0
+
+
+#### 256 bit Colors
+
+#### Basic Colors
+
     #Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
     visualizer.fps=20
 

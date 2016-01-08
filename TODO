@@ -5,6 +5,9 @@
     - probably involves using pulse audio api directly instead of pulseaudio simple
         then reading the source list
 
+- add direct mac os x support
+    -involves hooking into CoreAudio probably with AVAudioSession  https://github.com/syedhali/EZAudio/blob/master/EZAudio/EZAudioDevice.m
+
 - use configure or something similar to check for libraries and which compiler to use and flags
 
 - improve readme
@@ -19,3 +22,8 @@
         add examples of different colors schemes
 
     - add examples of visualizers with different characters
+
+- add windows support
+    - probably just ncurses through cygwin
+    - audio source would be some windows api
+    - use define guards everywhere there are *nix dependent includes
