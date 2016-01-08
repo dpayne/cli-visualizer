@@ -191,8 +191,7 @@ class SpectrumTransformer : public GenericTransformer
     /**
      * This type of smoothing is inspired by monstercat
      * (https://www.youtube.com/user/MonstercatMedia). The code was largely
-    taken
-     * from cava git@github.com:karlstav/cava.git
+     * taken from cava git@github.com:karlstav/cava.git
      */
     void monstercat_smoothing(std::vector<double> &bars);
 
