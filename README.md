@@ -28,13 +28,13 @@ Command line visualizer. Supports mpd, with experimental support for alsa and pu
 
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
-![spectrum_stereo](/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
+![spectrum_stereo](http://i.imgur.com/BGyfYiv.gif "Spectrum Stereo")
 
-![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
+![spectrum_mono](http://i.imgur.com/Zo5lByM.gif "Spectrum Mono")
 
-![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
+![ellipse](http://i.imgur.com/WoQlObi.gif "Ellipse")
 
-![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
+![lorenz](http://i.imgur.com/9QJjnDI.gif "Lorenz")
 
 
 ## Installing Pre-requisites
@@ -216,9 +216,9 @@ Start with
 ### Colors
 
 The display colors and their order can be changed by switching the color scheme in the config under `colors.scheme`.
-The color scheme must be defined at `~/.config/vis/colors/color_scheme` directory.
+The color scheme must be defined at `~/.config/vis/colors/color_scheme` directory. There are three different ways to specific a color, by name, by hex number, and by index.
 
- vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`.
+vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`. There are three different ways to specific a color, by name, by hex number, and by index.
 
 #### RGB colors
 
@@ -262,6 +262,27 @@ Color index color scheme example
     7
     15
     0
+
+
+![basic_colors](/examples/spectrum_smoothing_sgs.gif?raw=true "Basic Colors")
+
+All the basic 16 terminal colors from 0-16 in-order.
+
+<br><br>
+
+
+#### Color names
+
+The third way to define a color scheme is by the color name. Only 8 color names are supported: black, blue, cyan, green, yellow, red, magenta, white.
+Note that these 8 colors are the basic terminal colors and are often set by a terminal's color scheme. This means that the color name might not match the color shown since the terminal theme might change it.
+For example, dark themes often set `white` to something dark since `white` is usually the default color for the terminal background.
+
+![blue](/examples/spectrum_smoothing_sgs.gif?raw=true "Blue")
+
+A color scheme with only one color `blue`.
+
+<br><br>
+
 
 ### Spectrum
 
@@ -340,18 +361,53 @@ The `none` option removing the falloff effect entirely..
 
 Falloff effect removed with the spectrum character set to `#`.
 
+#### Spectrum Appearance
 
-bar width
+Certain aspects of the spectrum appearance can be controlled through the config.
 
-bar spacing
+The bar width can be controlled to make it wider or narrower. The default is `2`.
 
-margins
+    visualizer.spectrum.bar.width=2
 
-reversed
+![bar_width](/examples/spectrum_falloff_none.gif?raw=true "Wide bar width")
 
-### Configuration examples
+Bar width set to `5`.
 
-### Full configuration
+<br><br>
+
+The spacing between bars can also be controlled to make it wider or narrower. The default is `1`.
+
+    visualizer.spectrum.bar.width=1
+
+![bar_spacing](/examples/spectrum_falloff_none.gif?raw=true "No bar spacing")
+
+Bar spacing set to `0`.
+
+<br><br>
+
+The margin widths of the spectrum visualizer can also be controlled. The margins are set in percent of total screen for spectrum visualizer. All margin percentages default to `0.0`.
+
+    visualizer.spectrum.top.margin=0.0
+    visualizer.spectrum.bottom.margin=0.0
+    visualizer.spectrum.right.margin=0.0
+    visualizer.spectrum.left.margin=0.0
+
+![spectrum_margins](/examples/spectrum_falloff_none.gif?raw=true "Spectrum Margins")
+
+Spectrum with the top margin set to `0.30` and the left and right margins set to `0.10`.
+
+<br><br>
+
+Normally the bars are ordered so that the lowest frequencies are handled by the left most bars and the highest frequencies by the right most bars.
+The reversed option gives the option to reverse this so that the highest frequencies come first.
+
+    visualizer.spectrum.reversed=true
+
+![spectrum_reversed](/examples/spectrum_falloff_none.gif?raw=true "Spectrum Margins")
+
+Spectrum with reverse set to `true`.
+
+### Full configuration example
 
     #Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
     visualizer.fps=20
@@ -388,7 +444,7 @@ reversed
     #zero to have no space between bars
     visualizer.spectrum.bar.spacing=1
 
-    #Available smoothing options are monstercat, sgs, none.
+    #Available smoothing options are monstercat, sgs, none. Defaults to sgs.
     visualizer.spectrum.smoothing.mode=monstercat
 
     #This configures the falloff effect on the spectrum visualizer. Available falloff options are fill,top,none.
@@ -418,9 +474,9 @@ reversed
     audio.pulse.source=0
 
     #This configures the sgs smoothing effect on the spectrum visualizer. More points spreads out the smoothing
-    #effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=1
+    #effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=2.
     visualizer.sgs.smoothing.points=3
-    visualizer.sgs.smoothing.passes=1
+    visualizer.sgs.smoothing.passes=2
 
 
     #Configures what character the ellipse visualizer will use. Specifying a space (e.g " ") means the
