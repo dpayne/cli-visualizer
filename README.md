@@ -29,17 +29,25 @@ Command line visualizer. Supports mpd, with experimental support for alsa and pu
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
 Spectrum visualizer in stereo mode
+
 ![spectrum_stereo](/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
+
+
+<br>
 
 Spectrum visualizer in mono mode
 
 ![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
 
 
+<br>
+
 Elllipse visualizer
 
 ![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
+
+<br>
 
 Lorenz visualizer
 
