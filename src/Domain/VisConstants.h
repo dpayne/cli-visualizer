@@ -67,13 +67,13 @@ static const uint32_t k_default_monstercat_bar_spacing = 0;
 // sgs smoothing defaults
 static const uint32_t k_default_sgs_smoothing_points{
     3}; // this should be an odd number
-static const uint32_t k_default_sgs_smoothing_passes{1};
+static const uint32_t k_default_sgs_smoothing_passes{2};
 
 // spectrum defaults
 static const uint32_t k_default_spectrum_bar_width = 2;
 static const uint32_t k_default_spectrum_bar_spacing = 1;
 static const vis::SmoothingMode k_default_spectrum_smoothing_mode =
-    vis::SmoothingMode::MonsterCat;
+    vis::SmoothingMode::Sgs;
 static const vis::FalloffMode k_default_spectrum_falloff_mode =
     vis::FalloffMode::Fill;
 static const double k_default_spectrum_falloff_weight = 0.99;

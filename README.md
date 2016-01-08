@@ -30,11 +30,19 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 ![spectrum_stereo](/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
 
+spectrum visualizer in stereo mode
+
 ![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
+
+spectrum visualizer in mono mode
 
 ![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
+Elllipse visualizer
+
 ![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
+
+Lorenz visualizer
 
 ## Installing Pre-requisites
 
@@ -80,7 +88,7 @@ After the pre-requisites have been installed, run the install script.
 
     ./install.sh
 
-The configuration file is installed under "~/.vis/config".
+The configuration file is installed under "~/.config/vis/config".
 
 Older version of Ubuntu need to compile with the newer g++ compiler.
 
@@ -126,7 +134,7 @@ Similar to the MPD setup, the visualizer needs to use a fifo output file to read
         perm 0666               # Output file permission (octal, def. 0600)
     }
 
-Next change the visualizer config `~/.vis/config` to point to the new fifo file
+Next change the visualizer config `~/.config/vis/config` to point to the new fifo file
 
     mpd.fifo.path=/tmp/audio
 
@@ -225,6 +233,7 @@ The color scheme can be defined in two ways with RGB values or by index. The RGB
 The displayed color will not be the true color, but instead an approximation of the color based on 256-bit terminal colors.
 
 RGB color scheme example
+
     #4040ff
     #2c56fc
     #2a59fc
@@ -244,6 +253,7 @@ The second way to define a color scheme is by the color index. Specifically this
 Color indexes are useful for creating a visualizer that matches the terminal's set color scheme.
 
 Color index color scheme example
+
     4
     12
     6
@@ -260,10 +270,43 @@ Color index color scheme example
     15
     0
 
+### Spectrum
 
-#### 256 bit Colors
+The spectrum visualizer allows for many different configuration options.
 
-#### Basic Colors
+#### Smoothing
+
+There are three different smoothing modes, monstercat, sgs, none.
+
+SGS smoothing [Savitzky-Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). There are a couple of options for sgs smoothing.
+
+The first option is controlling the number of smoothing passes done when rendering the bars. Increasing this number with make the spectrum smoother.
+
+The second option is the number of neighbors to look at when smoothing. This is set with `visualizer.sgs.smoothing.points`. This should always be an odd number.
+A larger number will generally increase the smoothing since more neighbors will be looked at.
+
+![sgs_smoothing](/examples/spectrum_smoothing_sgs.gif?raw=true "Spectrum Stereo")
+
+Monster cat smoothing is inspired by the monster cat youtube channel (https://www.youtube.com/user/MonstercatMedia).
+
+![monstercat_smoothing](/examples/spectrum_smoothing_monstercat.gif?raw=true "Spectrum Stereo")
+
+
+
+
+falloff modes
+
+bar width
+
+bar spacing
+
+margins
+
+reversed
+
+### Configuration examples
+
+### Full configuration
 
     #Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
     visualizer.fps=20
@@ -317,6 +360,9 @@ Color index color scheme example
     visualizer.spectrum.right.margin=0.0
     visualizer.spectrum.left.margin=0.0
 
+    #Reverses the direction of the spectrum so that high freqs are first and low freqs last. Defaults to false.
+    visualizer.spectrum.reversed=false
+
     #Sets the audio sources to use. Currently available ones are "mpd" and "alsa"Sets the audio sources to use.
     #Currently available ones are "mpd" and "alsa". Defaults to "mpd".
     audio.sources=pulse
@@ -325,9 +371,6 @@ Color index color scheme example
     #If pulse audio is not working with vis try switching the audio source. A list can be found by running the
     #command pacmd list-sinks  | grep -e 'name:'  -e 'index'
     audio.pulse.source=0
-
-    #Reverses the direction of the spectrum so that high freqs are first and low freqs last. Defaults to false.
-    visualizer.spectrum.reversed=false
 
     #This configures the sgs smoothing effect on the spectrum visualizer. More points spreads out the smoothing
     #effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=1
@@ -342,5 +385,5 @@ Color index color scheme example
     #The radius of each color ring in the ellipse visualizer. Defaults to 2.
     visualizer.ellipse.radius=2
 
-    #Specifies the color scheme. The color scheme must be in ~/.vis/colors/ directory. Default is "colors"
+    #Specifies the color scheme. The color scheme must be in ~/.config/vis/colors/ directory. Default is "colors"
     colors.scheme=rainbow
