@@ -30,26 +30,11 @@ This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava)
 
 ![spectrum_stereo](/examples/spectrum_stereo.gif?raw=true "Spectrum Stereo")
 
-Spectrum visualizer in stereo mode
-
-<br>
-
 ![spectrum_mono](/examples/spectrum_mono.gif?raw=true "Spectrum Mono")
-
-Spectrum visualizer in mono mode
-
-<br>
-
 
 ![ellipse](/examples/ellipse.gif?raw=true "Ellipse")
 
-Ellipse visualizer
-
-<br>
-
 ![lorenz](/examples/lorenz.gif?raw=true "Lorenz")
-
-Lorenz visualizer
 
 
 ## Installing Pre-requisites
@@ -286,23 +271,75 @@ The spectrum visualizer allows for many different configuration options.
 
 There are three different smoothing modes, monstercat, sgs, none.
 
+    #Available smoothing options are monstercat, sgs, none.
+    visualizer.spectrum.smoothing.mode=sgs
+
+##### Sgs Smoothing
+
 SGS smoothing [Savitzky-Golay filter](https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter). There are a couple of options for sgs smoothing.
 
-The first option is controlling the number of smoothing passes done when rendering the bars. Increasing this number with make the spectrum smoother.
+The first option is controlling the number of smoothing passes done when rendering the bars. Increasing this number with make the spectrum smoother. This is set with `visualizer.sgs.smoothing.passes`.
 
 The second option is the number of neighbors to look at when smoothing. This is set with `visualizer.sgs.smoothing.points`. This should always be an odd number.
 A larger number will generally increase the smoothing since more neighbors will be looked at.
 
-![sgs_smoothing](/examples/spectrum_smoothing_sgs.gif?raw=true "Spectrum Stereo")
+![sgs_smoothing](/examples/spectrum_smoothing_sgs.gif?raw=true "Sgs Smoothing")
 
-Monster cat smoothing is inspired by the monster cat youtube channel (https://www.youtube.com/user/MonstercatMedia).
+Default sgs smoothing.
 
-![monstercat_smoothing](/examples/spectrum_smoothing_monstercat.gif?raw=true "Spectrum Stereo")
-
-
+<br><br>
 
 
-falloff modes
+![sgs_smoothing](/examples/spectrum_sgs_passes.gif?raw=true "Sgs Smoothing High Pass")
+
+Sgs smoothing with number of passes set to `5`.
+
+##### MonsterCat Smoothing
+
+Monster cat smoothing is inspired by the monster cat youtube channel (https://www.youtube.com/user/MonstercatMedia). To control the amount of smoothing for montercat use `visualizer.monstercat.smoothing.factor`. The default smoothing factor for monstercat is `1.5`. Increase the smoothing factor by a lot could hurt performance.
+
+![monstercat_smoothing](/examples/spectrum_smoothing_monstercat.gif?raw=true "MonsterCat")
+
+
+##### No Smoothing
+
+Smoothing can be completely turned off by setting the smoothing option to `none`.
+
+    visualizer.spectrum.smoothing.mode=none
+
+Spectrum with smoothing off
+
+![none_smoothing](/examples/spectrum_smoothing_none.gif?raw=true "No Smoothing")
+
+
+#### Falloff
+
+This configures the falloff effect on the spectrum visualizer. This effect creates a slow fall in bar height. Available falloff options are `fill,top,none`. The default falloff option is `fill`.
+
+    visualizer.spectrum.falloff.mode=fill
+
+With the `top` setting the falloff effect is only applied to the top character in the bar. This creates a gap between the main bar and the top falloff character.
+
+![top_falloff](/examples/spectrum_falloff_none.gif?raw=true "Top falloff")
+
+top falloff effect with the spectrum character set to `#`.
+<br><br>
+
+The `fill` option leaves no gaps between the very top character and the rest of the bar.
+
+
+![fill_falloff](/examples/spectrum_falloff_none.gif?raw=true "Fill falloff")
+
+fill falloff effect with the spectrum character set to `#`.
+
+<br><br>
+
+The `none` option removing the falloff effect entirely..
+
+![none_falloff](/examples/spectrum_falloff_none.gif?raw=true "No Falloff")
+
+Falloff effect removed with the spectrum character set to `#`.
+
 
 bar width
 
