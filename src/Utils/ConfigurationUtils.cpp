@@ -367,6 +367,11 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
                                   VisConstants::k_default_colors_path));
     settings.set_colors(vis::ConfigurationUtils::read_colors(colors_path));
 
+    if (settings.get_colors().empty())
+    {
+        settings.set_colors(VisConstants::k_default_colors);
+    }
+
     const auto visualizers =
         Utils::split(Utils::get(properties, k_visualizers_setting,
                                 VisConstants::k_default_visualizers),
