@@ -1,29 +1,18 @@
 - improve reading from alsa
     -probably involves using the alsa api directly
 
-- find default sink some how for pulseaudio
-    - probably involves using pulse audio api directly instead of pulseaudio simple
-        then reading the source list
-
 - add direct mac os x support
     -involves hooking into CoreAudio probably with AVAudioSession  https://github.com/syedhali/EZAudio/blob/master/EZAudio/EZAudioDevice.m
 
 - use configure or something similar to check for libraries and which compiler to use and flags
 
-- improve readme
-    - add more examples for
-        falloff
-        smoothing options
-        spectrum bar width and spacing
-        margins
-        reverse
-
-    - add better explanation of color scheme options
-        add examples of different colors schemes
-
-    - add examples of visualizers with different characters
-
 - add windows support
     - probably just ncurses through cygwin
     - audio source would be some windows api
     - use define guards everywhere there are *nix dependent includes
+
+- add dynamic reload
+    - with 'r' press
+    - with USR1 signal
+
+- add rainbow as default colors list
