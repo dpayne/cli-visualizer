@@ -11,6 +11,7 @@
 #include <fstream>
 
 #ifdef _ENABLE_PULSE
+#include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
 #include <pulse/error.h>
 #endif
@@ -35,7 +36,20 @@ class PulseAudioSource : public vis::AudioSource
     const vis::Settings *const m_settings;
 
     pa_simple *m_pulseaudio_simple;
+
+    pa_mainloop *m_pulseaudio_mainloop;
+
+    std::string m_pulseaudio_default_source_name;
+
+    static void pulseaudio_context_state_callback(pa_context *c,
+                                                  void *userdata);
+
+    static void pulseaudio_server_info_callback(pa_context *context,
+                                                const pa_server_info *i,
+                                                void *userdata);
 #endif
+
+    void populate_default_source_name();
 
     bool open_pulseaudio_source(const uint32_t max_buffer_size);
 };

@@ -26,6 +26,8 @@ static const char k_record_stream_description[] = "vis stream";
 
 static const int32_t k_sample_rate = 44100;
 static const int32_t k_channels = 2;
+
+static const std::string k_default_monitor_postfix = ".monitor";
 #endif
 }
 
@@ -40,11 +42,90 @@ vis::PulseAudioSource::PulseAudioSource(const Settings *const settings)
     settings->get_sampling_frequency();
 }
 
+#ifdef _ENABLE_PULSE
+void vis::PulseAudioSource::pulseaudio_server_info_callback(
+    pa_context *, const pa_server_info *i, void *userdata)
+{
+    if (i != nullptr)
+    {
+        PulseAudioSource *vis_pa_src =
+            reinterpret_cast<PulseAudioSource *>(userdata);
+        std::string name = i->default_sink_name;
+        name.append(k_default_monitor_postfix);
+
+        vis_pa_src->m_pulseaudio_default_source_name = name;
+
+        // stop mainloop after finding default name
+        pa_mainloop_quit(vis_pa_src->m_pulseaudio_mainloop, 0);
+    }
+}
+
+void vis::PulseAudioSource::pulseaudio_context_state_callback(pa_context *c,
+                                                              void *userdata)
+{
+
+    switch (pa_context_get_state(c))
+    {
+    case PA_CONTEXT_UNCONNECTED:
+    case PA_CONTEXT_CONNECTING:
+    case PA_CONTEXT_AUTHORIZING:
+    case PA_CONTEXT_SETTING_NAME:
+        break;
+
+    case PA_CONTEXT_READY:
+    {
+        pa_operation_unref(pa_context_get_server_info(
+            c, pulseaudio_server_info_callback, userdata));
+        break;
+    }
+
+    case PA_CONTEXT_FAILED:
+    case PA_CONTEXT_TERMINATED:
+        PulseAudioSource *vis_pa_src =
+            reinterpret_cast<PulseAudioSource *>(userdata);
+        pa_mainloop_quit(vis_pa_src->m_pulseaudio_mainloop, 0);
+        break;
+    }
+}
+
+#endif
+
+void vis::PulseAudioSource::populate_default_source_name()
+{
+#ifdef _ENABLE_PULSE
+    pa_mainloop_api *mainloop_api;
+    pa_context *pulseaudio_context;
+
+    // Create a mainloop API and connection to the default server
+    m_pulseaudio_mainloop = pa_mainloop_new();
+
+    mainloop_api = pa_mainloop_get_api(m_pulseaudio_mainloop);
+    pulseaudio_context = pa_context_new(mainloop_api, "vis device list");
+
+    // This function connects to the pulse server
+    pa_context_connect(pulseaudio_context, nullptr, PA_CONTEXT_NOFLAGS,
+                       nullptr);
+
+    // This function defines a callback so the server will tell us its state.
+    pa_context_set_state_callback(pulseaudio_context,
+                                  pulseaudio_context_state_callback,
+                                  reinterpret_cast<void *>(this));
+
+    int ret;
+    if (pa_mainloop_run(m_pulseaudio_mainloop, &ret) < 0)
+    {
+        VIS_LOG(vis::LogLevel::ERROR, "Could not open pulseaudio mainloop to "
+                                      "find default device name: %d",
+                ret);
+    }
+#endif
+}
+
 bool vis::PulseAudioSource::open_pulseaudio_source(
     const uint32_t max_buffer_size)
 {
 #ifdef _ENABLE_PULSE
-    int32_t error_code;
+    int32_t error_code = 0;
 
     static const pa_sample_spec sample_spec = {PA_SAMPLE_S16LE, k_sample_rate,
                                                k_channels};
@@ -56,10 +137,26 @@ bool vis::PulseAudioSource::open_pulseaudio_source(
 
     if (audio_device.empty())
     {
-        m_pulseaudio_simple =
-            pa_simple_new(nullptr, k_record_stream_name, PA_STREAM_RECORD,
-                          nullptr, k_record_stream_description, &sample_spec,
-                          nullptr, &buffer_attr, &error_code);
+        populate_default_source_name();
+
+        if (!m_pulseaudio_default_source_name.empty())
+        {
+            m_pulseaudio_simple =
+                pa_simple_new(nullptr, k_record_stream_name, PA_STREAM_RECORD,
+                              m_pulseaudio_default_source_name.c_str(),
+                              k_record_stream_description, &sample_spec,
+                              nullptr, &buffer_attr, &error_code);
+        }
+
+        // Try with the passing in nullptr, so that it will use the default
+        // device
+        if (m_pulseaudio_simple == nullptr)
+        {
+            m_pulseaudio_simple =
+                pa_simple_new(nullptr, k_record_stream_name, PA_STREAM_RECORD,
+                              nullptr, k_record_stream_description,
+                              &sample_spec, nullptr, &buffer_attr, &error_code);
+        }
 
         // if using default still did not work, try again with a common device
         // name

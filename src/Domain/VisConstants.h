@@ -85,7 +85,7 @@ static const double k_default_spectrum_left_margin = 0.0;
 static const bool k_default_spectrum_reversed = false;
 
 // input timeouts
-static const long k_default_mpd_fifo_timeout = 1l;
+static const int64_t k_default_mpd_fifo_timeout = 1l;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 }
