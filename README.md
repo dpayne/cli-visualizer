@@ -264,7 +264,7 @@ Color index color scheme example
     0
 
 
-![basic_colors](http://i.imgur.com/TUrQU01.gif "Basic Colors")
+![basic_colors](http://i.imgur.com/TUrQU01l.gif "Basic Colors")
 
 All the basic 16 terminal colors from 0-16 in-order. The spectrum colors can be ordered in any you want, this example was done in order to show all colors.
 
@@ -277,7 +277,7 @@ The third way to define a color scheme is by the color name. Only 8 color names 
 Note that these 8 colors are the basic terminal colors and are often set by a terminal's color scheme. This means that the color name might not match the color shown since the terminal theme might change it.
 For example, dark themes often set `white` to something dark since `white` is usually the default color for the terminal background.
 
-![blue](http://i.imgur.com/vn1u9tV.gif "Blue")
+![blue](http://i.imgur.com/vn1u9tVl.gif "Blue")
 
 A color scheme with only one color `blue`.
 
@@ -304,14 +304,14 @@ The first option is controlling the number of smoothing passes done when renderi
 The second option is the number of neighbors to look at when smoothing. This is set with `visualizer.sgs.smoothing.points`. This should always be an odd number.
 A larger number will generally increase the smoothing since more neighbors will be looked at.
 
-![sgs_smoothing](http://i.imgur.com/fuxuNQT.gif "Sgs Smoothing")
+![sgs_smoothing](http://i.imgur.com/fuxuNQTl.gif "Sgs Smoothing")
 
 Default sgs smoothing.
 
 <br><br>
 
 
-![sgs_smoothing](http://i.imgur.com/ptF0UhB.gif "Sgs Smoothing High Pass")
+![sgs_smoothing](http://i.imgur.com/ptF0UhBl.gif "Sgs Smoothing High Pass")
 
 Sgs smoothing with number of passes set to `5`.
 
@@ -319,7 +319,7 @@ Sgs smoothing with number of passes set to `5`.
 
 Monster cat smoothing is inspired by the monster cat youtube channel (https://www.youtube.com/user/MonstercatMedia). To control the amount of smoothing for montercat use `visualizer.monstercat.smoothing.factor`. The default smoothing factor for monstercat is `1.5`. Increase the smoothing factor by a lot could hurt performance.
 
-![monstercat_smoothing](http://i.imgur.com/1wmgrje.gif "MonsterCat")
+![monstercat_smoothing](http://i.imgur.com/1wmgrjel.gif "MonsterCat")
 
 
 ##### No Smoothing
@@ -330,7 +330,7 @@ Smoothing can be completely turned off by setting the smoothing option to `none`
 
 Spectrum with smoothing off
 
-![none_smoothing](http://i.imgur.com/8vLS91k.gif "No Smoothing")
+![none_smoothing](http://i.imgur.com/8vLS91kl.gif "No Smoothing")
 
 
 #### Falloff
@@ -369,7 +369,7 @@ The bar width can be controlled to make it wider or narrower. The default is `2`
 
     visualizer.spectrum.bar.width=2
 
-![bar_width](http://i.imgur.com/LT5wRGV.gif "Wide bar width")
+![bar_width](http://i.imgur.com/LT5wRGVl.gif "Wide bar width")
 
 Bar width set to `5`.
 
@@ -379,7 +379,7 @@ The spacing between bars can also be controlled to make it wider or narrower. Th
 
     visualizer.spectrum.bar.width=1
 
-![bar_spacing](http://i.imgur.com/VO8oHZB.gif "No bar spacing")
+![bar_spacing](http://i.imgur.com/VO8oHZBl.gif "No bar spacing")
 
 Bar spacing set to `0`.
 
@@ -392,7 +392,7 @@ The margin widths of the spectrum visualizer can also be controlled. The margins
     visualizer.spectrum.right.margin=0.0
     visualizer.spectrum.left.margin=0.0
 
-![spectrum_margins](http://i.imgur.com/t1t3cdj.gif "Spectrum Margins")
+![spectrum_margins](http://i.imgur.com/t1t3cdjl.gif "Spectrum Margins")
 
 Spectrum with the top margin set to `0.30` and the left and right margins set to `0.10`.
 
@@ -403,7 +403,7 @@ The reversed option gives the option to reverse this so that the highest frequen
 
     visualizer.spectrum.reversed=true
 
-![spectrum_reversed](http://i.imgur.com/EDhaRDr.gif "Reversed")
+![spectrum_reversed](http://i.imgur.com/EDhaRDrl.gif "Reversed")
 
 Spectrum with reverse set to `true`.
 
