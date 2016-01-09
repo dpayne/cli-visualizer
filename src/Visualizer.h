@@ -21,7 +21,7 @@ namespace vis
 class Visualizer
 {
   public:
-    explicit Visualizer(const vis::Settings *const settings);
+    explicit Visualizer(vis::Settings * settings);
 
     virtual ~Visualizer();
 
@@ -39,6 +39,8 @@ class Visualizer
 
     void process_user_input();
 
+    void reload_config();
+
   private:
     size_t m_current_audio_source_index;
 
@@ -48,15 +50,15 @@ class Visualizer
 
     bool m_shutdown;
 
-    const vis::Settings *const m_settings;
+    vis::Settings * m_settings;
 
     std::vector<std::unique_ptr<vis::AudioSource>> m_audio_sources;
 
     std::vector<std::unique_ptr<vis::GenericTransformer>> m_transformers;
 
-    void add_audio_source(const std::string &audio_source);
-
     pcm_stereo_sample *m_pcm_buffer;
+
+    void add_audio_source(const std::string &audio_source);
 
     inline AudioSource *get_current_audio_source()
     {

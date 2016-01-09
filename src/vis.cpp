@@ -42,12 +42,23 @@ static inline void shutdown(int sig)
     }
 }
 
+static inline void reload_config(int sig)
+{
+    std::cerr << "Received signal: " << sig << std::endl;
+
+    if (g_vis != nullptr)
+    {
+        g_vis->reload_config();
+    }
+}
+
 int main(int argc, char *argv[])
 {
     // Catch interrupt and termination signals so the program can be cleanly
     // shutdown.
     std::signal(SIGINT, shutdown);
     std::signal(SIGTERM, shutdown);
+    std::signal(SIGUSR1, reload_config);
 
     std::string config_path;
 

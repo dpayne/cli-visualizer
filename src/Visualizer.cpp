@@ -15,11 +15,17 @@
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
 #include "Utils/NcursesUtils.h"
+#include "Utils/ConfigurationUtils.h"
 
 #include <thread>
 #include <iostream>
 
-vis::Visualizer::Visualizer(const vis::Settings *const settings)
+namespace {
+    const int16_t k_input_quit{'q'};
+    const int16_t k_input_reload{'r'};
+}
+
+vis::Visualizer::Visualizer(vis::Settings * settings)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
       m_shutdown{false}, m_settings{settings}, m_pcm_buffer{nullptr}
 {
@@ -117,13 +123,21 @@ void vis::Visualizer::process_user_input()
         m_current_transformer_index =
             (m_current_transformer_index + 1) % m_transformers.size();
         break;
-    case 'q':
+    case k_input_quit:
         shutdown();
+        break;
+    case k_input_reload:
+        reload_config();
         break;
     default:
         // do nothing
         break;
     }
+}
+
+void vis::Visualizer::reload_config()
+{
+    vis::ConfigurationUtils::load_settings(*m_settings);
 }
 
 void vis::Visualizer::setup_audio_sources()
