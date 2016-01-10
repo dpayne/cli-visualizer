@@ -206,6 +206,9 @@ bool vis::PulseAudioSource::read(pcm_stereo_sample *buffer,
 
     if (m_pulseaudio_simple != nullptr)
     {
+        // zero out buffer
+        memset(buffer, 0, buffer_size_bytes);
+
         int32_t error_code;
         /* Record some data ... */
         auto return_code = pa_simple_read(m_pulseaudio_simple, buffer,

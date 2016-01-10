@@ -66,6 +66,7 @@ bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer,
     if (m_mpd_fifo_fd >= 0)
     {
         auto attempts = 0;
+        memset(buffer, 0, buffer_size_bytes);
         while (bytes_left > 0)
         {
             // Read buffer
