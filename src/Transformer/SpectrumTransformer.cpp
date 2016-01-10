@@ -334,14 +334,10 @@ vis::SpectrumTransformer::apply_falloff(const std::vector<double> &bars,
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
-        auto difference = std::max(std::abs(falloff_bars[i] - bars[i]), 1.0);
-
-        auto falloff_weight =
-            std::pow(m_settings->get_spectrum_falloff_weight(), difference);
-
         // falloff should always by at least one
-        auto falloff_value =
-            std::min(falloff_bars[i] * falloff_weight, falloff_bars[i] - 1);
+        auto falloff_value = std::min(
+            falloff_bars[i] * m_settings->get_spectrum_falloff_weight(),
+            falloff_bars[i] - 1);
 
         falloff_bars[i] = std::max(falloff_value, bars[i]);
     }
