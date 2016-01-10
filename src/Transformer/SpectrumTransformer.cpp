@@ -568,12 +568,13 @@ void vis::SpectrumTransformer::draw_bars(
                 top_row_height = win_height + row_index - 1;
             }
 
-            if (top_row_height > 0 && original_column_index < (bars_falloff.size() - 1))
+            if (row_index > 0)
             {
                 auto column = static_cast<int32_t>(original_column_index) *
                               static_cast<int32_t>(
                                   (bar_row_msg.size() +
                                    m_settings->get_spectrum_bar_spacing()));
+
                 writer->write(
                     top_row_height + top_margin - bottom_margin,
                     column + left_margin,
