@@ -568,7 +568,7 @@ void vis::SpectrumTransformer::draw_bars(
                 top_row_height = win_height + row_index - 1;
             }
 
-            if (top_row_height > 0)
+            if (top_row_height > 0 && original_column_index < (bars_falloff.size() - 1))
             {
                 auto column = static_cast<int32_t>(original_column_index) *
                               static_cast<int32_t>(
