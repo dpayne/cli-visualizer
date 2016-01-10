@@ -77,7 +77,7 @@ static const vis::SmoothingMode k_default_spectrum_smoothing_mode =
     vis::SmoothingMode::Sgs;
 static const vis::FalloffMode k_default_spectrum_falloff_mode =
     vis::FalloffMode::Fill;
-static const double k_default_spectrum_falloff_weight = 0.99;
+static const double k_default_spectrum_falloff_weight = 0.95;
 static const double k_default_spectrum_top_margin = 0.0;
 static const double k_default_spectrum_bottom_margin = 0.0;
 static const double k_default_spectrum_right_margin = 0.0;

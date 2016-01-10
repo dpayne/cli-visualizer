@@ -452,8 +452,8 @@ Spectrum with reverse set to `true`.
     visualizer.spectrum.falloff.mode=fill
 
     #Configures how fast the falloff character falls. This is an exponential falloff so values usually look
-    #best 0.9+ and small changes in this value can have a large effect. Defaults to 0.99
-    visualizer.spectrum.falloff.weight=0.99
+    #best 0.9+ and small changes in this value can have a large effect. Defaults to 0.95
+    visualizer.spectrum.falloff.weight=0.95
 
     #Margins in percent of total screen for spectrum visualizer. All margins default to 0
     visualizer.spectrum.top.margin=0.0
