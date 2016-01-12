@@ -10,5 +10,3 @@
     - probably just ncurses through cygwin
     - audio source would be some windows api
     - use define guards everywhere there are *nix dependent includes
-
-- add rainbow as default colors list
