@@ -90,7 +90,7 @@ static const int64_t k_default_mpd_fifo_timeout = 1l;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 
-//rainbow colorscheme
+// rainbow colorscheme
 static const std::vector<vis::ColorIndex> k_default_colors = {
     63,  69,  33,  39,  38,  44,  43,  49,  48,  84,  83,  119, 118, 154, 148,
     184, 178, 214, 208, 209, 203, 204, 198, 199, 163, 164, 128, 129, 93,  99};

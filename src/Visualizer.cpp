@@ -20,12 +20,13 @@
 #include <thread>
 #include <iostream>
 
-namespace {
-    const int16_t k_input_quit{'q'};
-    const int16_t k_input_reload{'r'};
+namespace
+{
+const int16_t k_input_quit{'q'};
+const int16_t k_input_reload{'r'};
 }
 
-vis::Visualizer::Visualizer(vis::Settings * settings)
+vis::Visualizer::Visualizer(vis::Settings *settings)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
       m_shutdown{false}, m_settings{settings}, m_pcm_buffer{nullptr}
 {

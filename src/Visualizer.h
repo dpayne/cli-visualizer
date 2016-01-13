@@ -21,7 +21,7 @@ namespace vis
 class Visualizer
 {
   public:
-    explicit Visualizer(vis::Settings * settings);
+    explicit Visualizer(vis::Settings *settings);
 
     virtual ~Visualizer();
 
@@ -50,7 +50,7 @@ class Visualizer
 
     bool m_shutdown;
 
-    vis::Settings * m_settings;
+    vis::Settings *m_settings;
 
     std::vector<std::unique_ptr<vis::AudioSource>> m_audio_sources;
 
