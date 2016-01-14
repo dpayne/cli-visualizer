@@ -1,5 +1,9 @@
 language: cpp
 
+env:
+  global:
+    - secure: "cIkbooO8GuQlXs5wMeErYzNG8HyOpi3DEOpV5vZdb2DCg8lOCV6S7xhMOsSplOExZrl8nycH88IhsLAyIDn1mc5j2yO4kK8zWm2orXBKIvyltWrtxMC5LoWkimDwBMrNXUtfDZkS4+t31XAi9fIH44R/2OVls3NqA4vYdvch5qRjCZUa6Y42PY1SP4Qy6RYddXJcC8RyNKer2/MyqgfLSYsBFDLridZgcQ/vE7k/ZWuO0/ZXxi2e2/bgaKvXZjjjzJGbesuY7gTbbrmIm72m0qX3guOgbJgVrzPXyhIJVJ6TAjsmUD0ICsG5Ow3j2t9ZvSuWyiaz9xEpIdLC4HZ2el3akX2GP/udZd3q6H79MKb6xopHXeQvcjmddrOsxz6nzt/IDTbbqRW3zgLE9tjNQIme0o3r0M2d+zECGVgHiC3bK1TKzKmusr63T6H0vilQ+cA8uZkNjAwvjgDFuNTI5aTI6e726NPMEztsCi/WdeF6uiMbqsfppPHP/O9ENr39UAmqRUl7wYLOJihdBoCgNZvskO7knP2KwAOa4Y1aIl+NDCPxa5mCCXUvyydctAGPpwMFwkWgJsCpDDwcL3Hbj3QCe90LwpIf8nuTYyr/4j12GfgPYYkuywOWW8yeR0SM85wqWBJGWU9fz6jR0Zjl3yXzVOexB6ZaO3PaAossc4s="
+
 compiler:
     - clang++
     - g++
@@ -23,3 +27,12 @@ addons:
     - g++-4.9
     - clang
     - clang-3.7
+  coverity_scan:
+    project:
+      name: dpayne/cli-visualizer
+      version: 1.0
+      description: Build submitted via Travis CI
+    notification_email: darby.payne@gmail.com
+    build_command_prepend: make clean
+    build_command: make && make test
+    branch_pattern: coverity_scan
