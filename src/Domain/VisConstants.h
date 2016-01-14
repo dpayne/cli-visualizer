@@ -24,6 +24,7 @@ static const double k_pi = 3.14159265358979323846;
 static const std::string k_true{"true"};
 static const std::string k_false{"false"};
 static const std::string k_mpd_audio_source_name{"mpd"};
+static const std::string k_osx_audio_source_name{"osx"};
 static const std::string k_pulse_audio_source_name{"pulse"};
 static const std::string k_default_visualizer_pulse_audio_source = "";
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
