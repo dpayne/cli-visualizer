@@ -11,14 +11,13 @@
 
 char write_buffer[BUF_SIZE];
 char read_buffer[BUF_SIZE];
-char default_fifo_name [] = "/tmp/audio";
+char default_fifo_name[] = "/tmp/audio";
 
-static struct timespec k_read_attempt_sleep_timespec = {
-    0, 1L * 1000000L};
+static struct timespec k_read_attempt_sleep_timespec = {0, 1L * 1000000L};
 
 int main(int argc, char *argv[])
 {
-    char * fifo_file_name;
+    char *fifo_file_name;
     if (argc < 2)
     {
         fifo_file_name = default_fifo_name;
@@ -28,17 +27,23 @@ int main(int argc, char *argv[])
         fifo_file_name = argv[1];
     }
 
-    mkfifo(fifo_file_name, 777);
-    int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
+    int retval = mkfifo(fifo_file_name, 777);
+    if (retval < 0)
+    {
+        fprintf(stderr, "error creating fifo buffer: %d", errno);
+        return -1;
+    }
 
-    //mark stdin as binary
+    unsigned int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
+
+    // mark stdin as binary
     freopen(NULL, "rb", stdin);
 
     while (!feof(stdin))
     {
         // read input into buffer
         int bytes_read = read(STDIN_FILENO, write_buffer, BUF_SIZE);
-        if ( bytes_read > 0 )
+        if (bytes_read > 0)
         {
             // pipe buffer to fifo
             write(fd, write_buffer, bytes_read);
@@ -46,7 +51,11 @@ int main(int argc, char *argv[])
             // EAGAIN means the buffer is full, clear it and try again
             if (errno == EAGAIN)
             {
-                read(fd, read_buffer, BUF_SIZE);
+                bytes_read = read(fd, read_buffer, BUF_SIZE);
+                if (bytes_read < 0)
+                {
+                    fprintf(stderr, "error flushing fifo buffer: %d", errno);
+                }
             }
         }
         else

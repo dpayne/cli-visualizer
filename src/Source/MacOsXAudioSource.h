@@ -14,7 +14,7 @@
 #include "Domain/Settings.h"
 
 #ifdef _OS_OSX
-    // TODO: put mac os x specific headers here
+// TODO: put mac os x specific headers here
 #endif
 
 namespace vis
@@ -33,13 +33,10 @@ class MacOsXAudioSource : public vis::AudioSource
     bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 
   private:
-
 #ifdef _OS_OSX
-    // TODO: put mac os x specific features here
+// TODO: put mac os x specific features here
 #endif
-
 };
 }
 
 #endif
-

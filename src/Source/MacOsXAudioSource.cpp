@@ -17,12 +17,12 @@ vis::MacOsXAudioSource::~MacOsXAudioSource()
 }
 
 bool vis::MacOsXAudioSource::read(pcm_stereo_sample *buffer,
-                               const uint32_t buffer_size)
+                                  const uint32_t buffer_size)
 {
 #ifdef _OS_OSX
-    // TODO: put mac os x specific code here
+// TODO: put mac os x specific code here
 #endif
-    if ( buffer_size > 0 || buffer != nullptr )
+    if (buffer_size > 0 || buffer != nullptr)
     {
         return false;
     }

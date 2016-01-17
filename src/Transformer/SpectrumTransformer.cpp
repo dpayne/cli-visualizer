@@ -36,7 +36,10 @@ static const uint64_t k_max_silent_runs_before_sleep =
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
-    : m_settings{settings}, m_previous_win_width{0}, m_silent_runs{0u}
+    : m_settings{settings}, m_fftw_results{0}, m_fftw_input_left{nullptr},
+      m_fftw_input_right{nullptr}, m_fftw_output_left{nullptr},
+      m_fftw_output_right{nullptr}, m_fftw_plan_left{nullptr},
+      m_fftw_plan_right{nullptr}, m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;

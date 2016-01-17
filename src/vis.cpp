@@ -12,6 +12,7 @@
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"
+#include "Domain/VisException.h"
 #include "Utils/ConfigurationUtils.h"
 #include "Utils/Utils.h"
 #include "Utils/Logger.h"
@@ -83,23 +84,38 @@ int main(int argc, char *argv[])
 
     vis::Logger::initialize(VisConstants::k_default_log_path);
 
-    vis::Settings settings;
-
-    // use default config path if none given
-    if (config_path.empty())
+    try
     {
-        vis::ConfigurationUtils::load_settings(settings);
+        vis::Settings settings;
+
+        // use default config path if none given
+        if (config_path.empty())
+        {
+            vis::ConfigurationUtils::load_settings(settings);
+        }
+        else
+        {
+            vis::ConfigurationUtils::load_settings(settings, config_path);
+        }
+
+        std::unique_ptr<vis::Visualizer> visualizer =
+            std::make_unique<vis::Visualizer>(&settings);
+        g_vis = visualizer.get();
+
+        visualizer->run();
     }
-    else
+    catch (const vis::VisException &ex)
     {
-        vis::ConfigurationUtils::load_settings(settings, config_path);
+        VIS_LOG(vis::LogLevel::ERROR, "vis exception: %s", ex.what());
     }
-
-    std::unique_ptr<vis::Visualizer> visualizer =
-        std::make_unique<vis::Visualizer>(&settings);
-    g_vis = visualizer.get();
-
-    visualizer->run();
+    catch (const std::exception &ex)
+    {
+        VIS_LOG(vis::LogLevel::ERROR, "standard exception: %s", ex.what());
+    }
+    catch (...)
+    {
+        VIS_LOG(vis::LogLevel::ERROR, "unknown exception");
+    }
 
     vis::Logger::uninitialize();
 

@@ -32,8 +32,6 @@ void vis::SpectrumCircleTransformer::draw_bars(
     const auto half_height = win_height / 2.0;
     const auto half_width = NcursesUtils::get_window_width() / 2.0;
 
-    m_settings->get_fps();
-
     // TODO(dpayne): add const everywhere and use min of half height or half
     // width
     const auto max_distance =
@@ -69,7 +67,7 @@ void vis::SpectrumCircleTransformer::draw_bars(
             }
             else
             {
-                writer->write(x, y, color_distance, bar_row_msg,
+                writer->write(y, x, color_distance, bar_row_msg,
                               m_settings->get_spectrum_character());
             }
         }

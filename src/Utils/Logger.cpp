@@ -50,6 +50,7 @@ void vis::Logger::log(vis::LogLevel level, const char *file, uint16_t line,
         log_level_names[std::min(static_cast<uint8_t>(level),
                                  static_cast<uint8_t>(vis::LogLevel::ERROR))],
         message_text_buf);
+    va_end(args);
 }
 
 vis::Logger::~Logger()

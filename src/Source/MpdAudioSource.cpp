@@ -45,7 +45,14 @@ bool vis::MpdAudioSource::open_mpd_fifo()
     }
 
     auto flags = fcntl(m_mpd_fifo_fd, F_GETFL, 0);
-    fcntl(m_mpd_fifo_fd, F_SETFL, flags | O_NONBLOCK);
+    auto retval = fcntl(m_mpd_fifo_fd, F_SETFL, flags | O_NONBLOCK);
+
+    if (retval < 0)
+    {
+        VIS_LOG(vis::LogLevel::ERROR,
+                "Could not set correct file controls on mpd fifo file: %s",
+                strerror(errno));
+    }
 
     return true;
 }
