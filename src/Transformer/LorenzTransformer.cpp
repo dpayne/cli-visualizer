@@ -186,7 +186,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
         // Throw out any points outside the window
         if (y > (half_height * -1) && y < half_height &&
-            x > ((win_width / 2.0) * -1) && x < win_width / 2)
+            x > ((static_cast<double>(win_width) / 2.0) * -1) &&
+            x < (static_cast<double>(win_width) / 2.0))
         {
             // skip the first 100 since values under 100 stick out too much from
             // the reset of the points

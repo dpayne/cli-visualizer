@@ -22,6 +22,8 @@
 
 ![travis-ci](https://travis-ci.org/dpayne/cli-visualizer.svg?branch=master)
 
+![Coverity Scan Build Status](https://scan.coverity.com/projects/7519/badge.svg)
+
 # cli-visualizer
 
 Command line visualizer. Supports mpd, with experimental support for alsa and pulseaudio.

@@ -34,7 +34,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    unsigned int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
+    int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
+
+    if (fd < 0)
+    {
+        fprintf(stderr, "error opening fifo buffer: %d", errno);
+        return -1;
+    }
 
     // mark stdin as binary
     freopen(NULL, "rb", stdin);
@@ -64,6 +70,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    close(fd);
+    if (close(fd) < 0)
+    {
+        fprintf(stderr, "error closing fifo buffer: %d", errno);
+        return -1;
+    }
     exit(0);
 }
