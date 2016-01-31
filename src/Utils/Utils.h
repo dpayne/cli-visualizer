@@ -43,34 +43,17 @@ class Utils
     }
 
     /**
-     * Return the current user's home directory. The directory will be return
+     * Return the current user's home directory. The directory will be returned
      * with a '/' at the end.
      *
      * If the user's home directory cannot be found, empty string is returned.
      *
-     *  Note: this will only work on *nix environments.
+     * Note: this will only work on *nix environments.
      */
     static inline std::string get_home_directory()
     {
-        const char *homedir;
-
-        // If $HOME environment variable is not set, fallback to getting it from
-        // getpwuid
-        if ((homedir = getenv("HOME")) == nullptr)
-        {
-            homedir = getpwuid(getuid())->pw_dir;
-        }
-
-        std::string homedir_str{homedir};
-
-        // Add the '/' if the home directory was found
-        if (!homedir_str.empty())
-        {
-            homedir_str.push_back('/');
-            return homedir_str;
-        }
-
-        return std::string{};
+        // HOME must be set according to POSIX
+        return getenv("HOME") ? std::string(getenv("HOME")) + "/" : std::string{};
     }
 
     /**
