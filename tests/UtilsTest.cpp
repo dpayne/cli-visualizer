@@ -42,14 +42,6 @@ TEST(UtilsTest, LowercaseEmptyString)
     EXPECT_EQ(expected, actual) << "lowercase must work with an empty string";
 }
 
-TEST(UtilsTest, GetHomeDirectory)
-{
-    auto actual = vis::Utils::get_home_directory();
-
-    EXPECT_FALSE(actual.empty())
-        << "get home directory should not return an empty string";
-}
-
 TEST(UtilsTest, ToBoolEmptyString)
 {
     auto actual = vis::Utils::to_bool("");
