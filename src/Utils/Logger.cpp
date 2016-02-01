@@ -26,7 +26,7 @@ vis::Logger::Logger()
 
 void vis::Logger::initialize(const std::string log_location)
 {
-    std::string log_path{Utils::get_home_directory()};
+    std::string log_path{VisConstants::k_default_log_path};
     log_path.append(log_location);
 
     // redirect stderr to log file

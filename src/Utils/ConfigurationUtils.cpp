@@ -246,8 +246,7 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
 
 void vis::ConfigurationUtils::load_settings(Settings &settings)
 {
-    auto config_path = Utils::get_home_directory();
-    config_path.append(VisConstants::k_default_config_path);
+    auto config_path = VisConstants::k_default_config_path;
     load_settings(settings, config_path);
 }
 
@@ -361,8 +360,7 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::get(properties, k_stereo_enabled_setting, true));
 
     // set color definitions
-    auto colors_path = Utils::get_home_directory();
-    colors_path.append(VisConstants::k_colors_directory);
+    auto colors_path = VisConstants::k_colors_directory;
     colors_path.append(Utils::get(properties, k_color_scheme_path_setting,
                                   VisConstants::k_default_colors_path));
     settings.set_colors(vis::ConfigurationUtils::read_colors(colors_path));
