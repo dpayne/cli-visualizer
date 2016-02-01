@@ -49,13 +49,13 @@ static const uint32_t k_default_high_cutoff_frequency = 22050;
 
 // config path defaults
 // http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
-static const std::string k_default_config_path_root = std::getenv("XDG_CONFIG_HOME") ?
-    std::string(std::getenv("XDG_CONFIG_HOME")) : (std::string(std::getenv("HOME")) + "/.config");
-
-static const std::string k_default_config_path = k_default_config_path_root + "/vis/config";
-static const std::string k_colors_directory = k_default_config_path_root + "/vis/colors/";
-static const std::string k_default_colors_path = "colors";
-static const std::string k_default_log_path = k_default_config_path_root + "/vis/vis.log";
+static const char* k_xdg_config_home{std::getenv("XDG_CONFIG_HOME")};
+static const std::string k_default_config_path_root{k_xdg_config_home != nullptr ?
+        std::string(k_xdg_config_home) + "/vis" : std::string(std::getenv("HOME")) + "/.config/vis"};
+static const std::string k_default_config_path = k_default_config_path_root + "/config";
+static const std::string k_colors_directory{k_default_config_path_root + "/colors/"};
+static const std::string k_default_colors_path{"colors"};
+static const std::string k_default_log_path{k_default_config_path_root + "/vis.log"};
 
 // Default characters for visualizers
 static const wchar_t k_default_spectrum_character{k_space_wchar};

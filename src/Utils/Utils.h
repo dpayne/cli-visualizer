@@ -43,20 +43,6 @@ class Utils
     }
 
     /**
-     * Return the current user's home directory. The directory will be returned
-     * with a '/' at the end.
-     *
-     * If the user's home directory cannot be found, empty string is returned.
-     *
-     * Note: this will only work on *nix environments.
-     */
-    static inline std::string get_home_directory()
-    {
-        // HOME must be set according to POSIX
-        return getenv("HOME") ? std::string(getenv("HOME")) + "/" : std::string{};
-    }
-
-    /**
      * lowercase and ascii string.
      *  Note: this will not work on multi-byte unicode strings
      */
