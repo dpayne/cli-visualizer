@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdlib>
 #include "Domain/VisTypes.h"
 
 namespace VisConstants

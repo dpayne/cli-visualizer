@@ -20,7 +20,7 @@ CXX=$(VIS_COMPILER)
 endif
 
 ifndef PREFIX
-PREFIX=/bin/
+PREFIX=/usr/local/bin/
 endif
 
 DIR=$(shell pwd)
