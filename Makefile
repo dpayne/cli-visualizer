@@ -62,6 +62,7 @@ PERF_TEST_CXX_FLAGS += -ggdb -g2
 
 ifeq ($(OS),Darwin)
 CXX_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
+
 else
 CXX_FLAGS += -D_LINUX
 endif
@@ -72,6 +73,8 @@ PERF_TEST_LD_FLAGS = -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 LD_FLAGS += -D_XOPEN_SOURCE_EXTENDED
+#El Capitan has SIP, so things need to live in usr/local/bin now.
+PREFIX=/usr/local/bin/
 endif
 
 # DEBUG Settings
