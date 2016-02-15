@@ -25,7 +25,6 @@
 #include <ncurses.h>
 #endif
 
-static vis::Visualizer *g_vis = nullptr;
 static std::string g_program_help =
     "Usage: vis -c FILE\n"
     "vis -- CLI visualizer.\n"
@@ -33,34 +32,9 @@ static std::string g_program_help =
     "  -c FILE     Config file path, defaults to ~/.config/vis/config\n"
     "  -h          Give this help list\n";
 
-static inline void shutdown(int sig)
-{
-    std::cerr << "Received signal: " << sig << std::endl;
-
-    if (g_vis != nullptr)
-    {
-        g_vis->shutdown();
-    }
-}
-
-static inline void reload_config(int sig)
-{
-    std::cerr << "Received signal: " << sig << std::endl;
-
-    if (g_vis != nullptr)
-    {
-        g_vis->reload_config();
-    }
-}
 
 int main(int argc, char *argv[])
 {
-    // Catch interrupt and termination signals so the program can be cleanly
-    // shutdown.
-    std::signal(SIGINT, shutdown);
-    std::signal(SIGTERM, shutdown);
-    std::signal(SIGUSR1, reload_config);
-
     std::string config_path;
 
     // Read the settings file command line argument if available
@@ -100,7 +74,6 @@ int main(int argc, char *argv[])
 
         std::unique_ptr<vis::Visualizer> visualizer =
             std::make_unique<vis::Visualizer>(&settings);
-        g_vis = visualizer.get();
 
         visualizer->run();
     }

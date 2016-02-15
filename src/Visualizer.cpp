@@ -20,6 +20,9 @@
 
 #include <thread>
 #include <iostream>
+#include <csignal>
+
+static vis::Visualizer *g_vis = nullptr;
 
 namespace
 {
@@ -29,10 +32,45 @@ const int16_t k_input_reload{'r'};
 
 vis::Visualizer::Visualizer(vis::Settings *settings)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
-      m_shutdown{false}, m_settings{settings}, m_pcm_buffer{nullptr}
+      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings}, m_pcm_buffer{nullptr}
 {
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
         calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
+    g_vis = this;
+}
+
+// Used to catch CTRL-C signal to cause shutdown
+static inline void shutdown_sig(int sig)
+{
+    std::cerr << "Received signal: " << sig << std::endl;
+
+    if (g_vis != nullptr)
+    {
+        g_vis->shutdown();
+    }
+}
+
+// Used to catch signal to cause config to be reloaded
+static inline void reload_config_sig(int sig)
+{
+    std::cerr << "Received signal: " << sig << std::endl;
+
+    if (g_vis != nullptr)
+    {
+        g_vis->reload_config();
+    }
+}
+
+void vis::Visualizer::setup_signal_handlers()
+{
+    if ( !m_signal_handlers_setup )
+    {
+        // Catch interrupt and termination signals so the program can be cleanly
+        // shutdown.
+        std::signal(SIGINT, shutdown_sig);
+        std::signal(SIGTERM, shutdown_sig);
+        std::signal(SIGUSR1, reload_config_sig);
+    }
 }
 
 void vis::Visualizer::add_audio_source(const std::string &audio_source)
@@ -99,6 +137,9 @@ void vis::Visualizer::run()
         // update sources and transformers
         audioSource = get_current_audio_source();
         transformer = get_current_transformer();
+
+        //Only do this after at least one loop to prevent CTRL-C not killing the process if audio cannot be read
+        setup_signal_handlers();
     }
 }
 

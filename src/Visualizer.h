@@ -50,6 +50,8 @@ class Visualizer
 
     bool m_shutdown;
 
+    bool m_signal_handlers_setup;
+
     vis::Settings *m_settings;
 
     std::vector<std::unique_ptr<vis::AudioSource>> m_audio_sources;
@@ -73,6 +75,8 @@ class Visualizer
     void setup_audio_sources();
 
     void setup_transformers();
+
+    void setup_signal_handlers();
 
     void rotate_transformer(const int64_t rotation_interval,
                             int64_t *last_rotation_timestamp);
