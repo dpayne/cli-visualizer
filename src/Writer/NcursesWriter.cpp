@@ -33,12 +33,10 @@ void vis::NcursesWriter::setup_colors()
     // initialize colors
     for (int16_t i = 0; i < COLORS; ++i)
     {
-        init_pair(i, i, -1);
-
         // initialize colors as background, this is used in write_background to
         // create a
         // full block effect without using a custom font
-        init_pair(static_cast<int16_t>(i + COLORS), i, i);
+        init_pair(i, i, i);
     }
 }
 
