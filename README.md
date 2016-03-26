@@ -212,8 +212,13 @@ Start with
 | --- | ----------- |
 | <kbd>space</kbd> | switch visualizers |
 | <kbd>q</kbd> or <kbd>CTRL-C</kbd>| Quit |
+| <kbd>r</kbd>| Reload config |
 
 ## Configuration
+
+### Reloading Config
+
+The config can be reload while `vis` is running by either pressing the `r` key or by sending the `USR1` signal to `vis`. Sending the `USR1` signal can be done with `killall -USR1 vis`, this is useful if you want to dynamically reload colors from a script.
 
 ### Colors
 
