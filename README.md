@@ -55,8 +55,13 @@ For xterm, the default `$TERM` setting needs to be changed to `xterm-256color`. 
 
 ### Ubuntu
 
-    sudo apt-get install libfftw3-dev libncursesw5-dev
-    
+
+	sudo apt-get install libfftw3-dev libncursesw5-dev
+
+For pulseaudio support, the pulseaudio library also needs to be installed
+
+	sudo apt-get install libpulse-dev
+
 Older versions of Ubuntu also need newer a newer gcc compiler. Note, while this should be safe, it will upgrade some base libc libraries that might break your system.
 
 	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
