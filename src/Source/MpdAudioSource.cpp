@@ -14,9 +14,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef _LINUX
 #include <unistd.h>
-#endif
 
 namespace
 {
