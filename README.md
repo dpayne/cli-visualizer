@@ -389,7 +389,7 @@ Bar width set to `5`.
 
 The spacing between bars can also be controlled to make it wider or narrower. The default is `1`.
 
-    visualizer.spectrum.bar.width=1
+    visualizer.spectrum.bar.spacing=1
 
 ![bar_spacing](http://i.imgur.com/VO8oHZBl.gif "No bar spacing")
 
