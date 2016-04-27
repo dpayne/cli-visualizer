@@ -477,7 +477,7 @@ Spectrum with reverse set to `true`.
     visualizer.spectrum.reversed=false
 
     #Sets the audio sources to use. Currently available ones are "mpd" and "alsa"Sets the audio sources to use.
-    #Currently available ones are "mpd" and "alsa". Defaults to "mpd".
+    #Currently available ones are "mpd", "pulse", and "alsa". Defaults to "mpd".
     audio.sources=pulse
 
     ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
