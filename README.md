@@ -97,11 +97,18 @@ Older version of Ubuntu need to compile with the newer g++ compiler.
 
 ### Arch Linux
 
-The Arch Linux install is much simpler since an AUR package exist for cli-visualizer
+The Arch Linux install is much simpler since an AUR package exist for cli-visualizer.
 
 	yaourt -S cli-visualizer
 
-## MPD Setup
+You will have to copy config and colors manually.
+
+## Setup
+
+At least one of the following needs to be configured (and linked in the config): mpd, alsa and pulseaudio
+
+### MPD Setup
+
 The visualizer needs to use mpd's fifo output file to read in the audio stream. To do this, add the following lines to your mpd config file.
 
 
@@ -120,7 +127,7 @@ If you have any sync issues with the audio where the visualizer either get ahead
         buffer_time     "50000"
 	}
 
-## ALSA Setup
+### ALSA Setup
 
 WARNING: alsa support is very very experimental. It is very possible that it will be completely broken on various systems and could cause weird/bad behaviour.
 
@@ -142,7 +149,8 @@ A normal fifo file can not be used since otherwise no sound would work unless th
 
 Note that alsa support is still very experimental. There are a couple of caveats with this approach. Firstly `safe_fifo` must in a location alsa can find it. If you are building from source it us under `cli-visualizer/bin/safe_fifo`. Secondly `slave.pcm` must match whatever your alsa playback device is.
 
-### ALSA with dmix
+#### ALSA with dmix
+
 On sound cards that do not support hardware level mixing, alsa uses dmix to allow playback from multiple applications at once. In order to make this work with the visualizer a dmixer plugin needs to be defined in `/etc/asound.conf` and the visualizer pcm set to use `dmixer` instead of the hardware device directly. This configuration might will change slightly depending on the system. 
 
 This is an example `asound.conf` for Intel HD Audio.
@@ -193,7 +201,7 @@ This is an example `asound.conf` for Intel HD Audio.
         perm 0666               # Output file permission (octal, def. 0600)
     }
 
-## Pulse Audio Setup (Easy)
+### Pulse Audio Setup (Easy)
 
 Pulse audio should be the easiest to setup out of all the options. In order for this to work pulseaudio must be installed and vis must be built with pulseaudio enabled. To build with pulseaudio support run `make ENABLE_PULSE=1`.
 
