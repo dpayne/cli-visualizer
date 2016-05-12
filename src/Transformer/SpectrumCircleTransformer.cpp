@@ -5,6 +5,7 @@
  *     Author: dpayne
  */
 
+#include <cmath>
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
