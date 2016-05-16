@@ -521,3 +521,17 @@ Spectrum with reverse set to `true`.
 
     #Specifies the color scheme. The color scheme must be in ~/.config/vis/colors/ directory. Default is "colors"
     colors.scheme=rainbow
+
+## Trouble Shooting
+
+### Mac OSX
+
+#### vis hangs with no output
+
+It is possible there is a naming conflict with an existing BSD tool `vis`. Try running `vis -h`. If the output looks something like
+
+    mac ❯❯❯ vis -h
+    vis: illegal option -- h
+    usage: vis [-cbflnostw] [-F foldwidth] [file ...]
+
+then there is a naming conflict with cli-visualizer. To fix this issue, put `/usr/local/bin` before `/usr/bin/` in `$PATH`.
