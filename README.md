@@ -30,6 +30,9 @@
       - [Falloff](#falloff)
       - [Spectrum Appearance](#spectrum-appearance)
     - [Full configuration example](#full-configuration-example)
+  - [Trouble Shooting](#trouble-shooting)
+    - [Mac OSX](#mac-osx)
+        - [vis hangs with no output](#vis-hangs-with-no-output)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
