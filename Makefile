@@ -23,6 +23,10 @@ ifndef PREFIX
 PREFIX=/bin/
 endif
 
+ifndef VIS_COMPILER_ARCH
+VIS_COMPILER_ARCH=native
+endif
+
 DIR=$(shell pwd)
 BUILD_DIR = $(DIR)/build
 BUILD_TEST_DIR = $(DIR)/build_tests
@@ -34,7 +38,7 @@ OPT_LEVEL = 3
 # Make-local Compiler Flags
 CXX_FLAGS = -std=c++14
 CXX_FLAGS += -O$(OPT_LEVEL)
-CXX_FLAGS += -march=native
+CXX_FLAGS += -march=$(VIS_COMPILER_ARCH)
 CXX_FLAGS += -ffast-math
 CXX_FLAGS += -fno-omit-frame-pointer
 CXX_FLAGS += -D__extern_always_inline=inline
@@ -55,7 +59,7 @@ endif
 #perf tests should not have many warnings or error out on warning
 PERF_TEST_CXX_FLAGS = -std=c++14
 PERF_TEST_CXX_FLAGS += -O$(OPT_LEVEL)
-PERF_TEST_CXX_FLAGS += -march=native
+PERF_TEST_CXX_FLAGS += -march=$(VIS_COMPILER_ARCH)
 PERF_TEST_CXX_FLAGS += -ffast-math
 PERF_TEST_CXX_FLAGS += -fno-omit-frame-pointer
 PERF_TEST_CXX_FLAGS += -ggdb -g2
