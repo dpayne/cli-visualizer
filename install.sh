@@ -3,6 +3,7 @@
 ARCH=`uname -m`
 
 if [[ $ARCH == "arm6"* ]]; then export "VIS_COMPILER_ARCH"="armv6"; fi
+if [[ $ARCH == "armv6"* ]]; then export "VIS_COMPILER_ARCH"="armv6"; fi
 if [[ $ARCH == "armv7"* ]]; then export "VIS_COMPILER_ARCH"="armv7"; fi
 
 make clean
