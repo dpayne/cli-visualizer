@@ -64,11 +64,19 @@ PERF_TEST_CXX_FLAGS += -ffast-math
 PERF_TEST_CXX_FLAGS += -fno-omit-frame-pointer
 PERF_TEST_CXX_FLAGS += -ggdb -g2
 
+# Mac OS
 ifeq ($(OS),Darwin)
 CXX_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 
+# Linux
 else
 CXX_FLAGS += -D_LINUX
+
+# Enable pulse audio by default on linux
+ifndef ENABLE_PULSE
+ENABLE_PULSE=1
+endif
+
 endif
 
 # Linker flags
@@ -108,11 +116,7 @@ LIBS = -lfftw3 -lm -lstdc++
 TEST_LIBS = -lgtest -lpthread
 PERF_TEST_LIBS = -lbenchmark -lpthread
 
-ifneq ("$(wildcard /usr/lib/libpulse.so)","")
-ENABLE_PULSE=1
-endif
-
-ifdef ENABLE_PULSE
+ifeq ($(ENABLE_PULSE),1)
 CXX_FLAGS += -D_ENABLE_PULSE
 LD_FLAGS += -D_ENABLE_PULSE
 LIBS += -lpulse -lpulse-simple
