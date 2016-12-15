@@ -93,23 +93,23 @@ TEST(UtilsTest, ToBoolFaLseString)
 
 TEST(UtilsTest, GetStrFromStrStrUnorderedMap)
 {
-    std::unordered_map<std::string, std::string> m{
-        {"a", "a"}, {"b", "b"}, {"c", "c"}};
+    std::unordered_map<std::string, std::wstring> m{
+        {"a", L"a"}, {"b", L"b"}, {"c", L"c"}};
 
-    EXPECT_EQ(std::string{"a"},
-              vis::Utils::get(m, std::string{"a"}, std::string{""}));
-    EXPECT_EQ(std::string{"b"},
-              vis::Utils::get(m, std::string{"b"}, std::string{""}));
-    EXPECT_EQ(std::string{""},
-              vis::Utils::get(m, std::string{"z"}, std::string{""}));
-    EXPECT_EQ(std::string{"d"},
-              vis::Utils::get(m, std::string{"z"}, std::string{"d"}));
+    EXPECT_EQ(std::wstring{L"a"},
+              vis::Utils::get(m, std::string{"a"}, std::wstring{L""}));
+    EXPECT_EQ(std::wstring{L"b"},
+              vis::Utils::get(m, std::string{"b"}, std::wstring{L""}));
+    EXPECT_EQ(std::wstring{L""},
+              vis::Utils::get(m, std::string{"z"}, std::wstring{L""}));
+    EXPECT_EQ(std::wstring{L"d"},
+              vis::Utils::get(m, std::string{"z"}, std::wstring{L"d"}));
 }
 
 TEST(UtilsTest, GetBoolFromStrStrUnorderedMap)
 {
-    std::unordered_map<std::string, std::string> m{
-        {"a", "true"}, {"b", "false"}, {"c", "c"}};
+    std::unordered_map<std::string, std::wstring> m{
+        {"a", L"true"}, {"b", L"false"}, {"c", L"c"}};
 
     EXPECT_EQ(true, vis::Utils::get(m, std::string{"a"}, true));
     EXPECT_EQ(false, vis::Utils::get(m, std::string{"b"}, true));
@@ -119,8 +119,8 @@ TEST(UtilsTest, GetBoolFromStrStrUnorderedMap)
 
 TEST(UtilsTest, GetUintFromStrStrUnorderedMap)
 {
-    std::unordered_map<std::string, std::string> m{
-        {"a", "1337"}, {"b", "42"}, {"c", "c"}};
+    std::unordered_map<std::string, std::wstring> m{
+        {"a", L"1337"}, {"b", L"42"}, {"c", L"c"}};
 
     EXPECT_EQ(1337,
               vis::Utils::get(m, std::string{"a"}, static_cast<uint32_t>(1)));
