@@ -8,9 +8,9 @@
 #ifndef _VIS_COLOR_DEFINITION_H
 #define _VIS_COLOR_DEFINITION_H
 
+#include "Domain/VisTypes.h"
 #include <string>
 #include <vector>
-#include "Domain/VisTypes.h"
 
 namespace vis
 {

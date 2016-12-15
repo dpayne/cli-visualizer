@@ -307,6 +307,16 @@ class Settings
         return m_pulse_audio_source;
     }
 
+    void set_colors_config_path(const std::string &colors_config_path)
+    {
+        m_colors_config_path = colors_config_path;
+    }
+
+    const std::string &get_colors_config_path() const noexcept
+    {
+        return m_colors_config_path;
+    }
+
   private:
     std::string m_mpd_fifo_path;
     uint32_t m_fps;
@@ -336,6 +346,7 @@ class Settings
     bool m_is_spectrum_reversed;
     int64_t m_rotation_interval;
     std::string m_pulse_audio_source;
+    std::string m_colors_config_path;
 };
 }
 

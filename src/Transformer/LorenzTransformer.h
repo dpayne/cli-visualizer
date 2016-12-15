@@ -8,8 +8,8 @@
 #ifndef _LORENZ_TRANSFORMER_H
 #define _LORENZ_TRANSFORMER_H
 
-#include "Transformer/GenericTransformer.h"
 #include "Domain/Settings.h"
+#include "Transformer/GenericTransformer.h"
 
 namespace vis
 {

@@ -81,4 +81,4 @@
 #visualizer.lorenz.character=#
 
 ##Specifies the color scheme. The color scheme must be in ~/.config/vis/colors/ directory. The default scheme is "colors".
-colors.scheme=rainbow
+#colors.scheme=rainbow

@@ -5,17 +5,17 @@
  *     Author: dpayne
  */
 
+#include "Transformer/EllipseTransformer.h"
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
-#include "Transformer/EllipseTransformer.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
 #include <iostream>
+#include <numeric>
 #include <stdio.h>
 #include <thread>
-#include <numeric>
 
 namespace
 {

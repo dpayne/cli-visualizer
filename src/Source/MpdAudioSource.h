@@ -10,8 +10,8 @@
 
 #include <fstream>
 
-#include "Source/AudioSource.h"
 #include "Domain/Settings.h"
+#include "Source/AudioSource.h"
 
 namespace vis
 {

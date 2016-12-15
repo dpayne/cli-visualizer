@@ -8,8 +8,8 @@
 #ifndef _SPECTRUM_CIRCLE_TRANSFORMER_H
 #define _SPECTRUM_CIRCLE_TRANSFORMER_H
 
-#include "Transformer/SpectrumTransformer.h"
 #include "Domain/Settings.h"
+#include "Transformer/SpectrumTransformer.h"
 
 namespace vis
 {

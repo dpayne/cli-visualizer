@@ -11,13 +11,13 @@
 #include <fstream>
 
 #ifdef _ENABLE_PULSE
+#include <pulse/error.h>
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
-#include <pulse/error.h>
 #endif
 
-#include "Source/AudioSource.h"
 #include "Domain/Settings.h"
+#include "Source/AudioSource.h"
 
 namespace vis
 {

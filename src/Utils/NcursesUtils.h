@@ -65,6 +65,21 @@ class NcursesUtils
     }
 
     /**
+     * Returns number of colors supported in the current terminal
+     */
+    static inline int32_t number_of_colors_supported()
+    {
+        if (has_colors() == TRUE)
+        {
+            return COLORS;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    /**
      * Approximate a RGB color to a ncurses color pair. This idea was originally
      * taken from ruby's rainbow gem https://github.com/sickill/rainbow
      *

@@ -91,8 +91,9 @@ class Utils
      * Helper method for getting a value from a unordered map with a default.
      */
     template <class E>
-    static inline const std::string get(const std::unordered_map<E, std::wstring> &map,
-                               const E &key, const std::string &default_value)
+    static inline const std::string
+    get(const std::unordered_map<E, std::wstring> &map, const E &key,
+        const std::string &default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
@@ -102,7 +103,6 @@ class Utils
 
         return default_value;
     }
-
 
     /**
      * Helper method for getting a wchar_t value from a unordered map with a
@@ -131,8 +131,8 @@ class Utils
      * default.
      */
     template <class E>
-    static inline bool get(const std::unordered_map<E, std::wstring> &map, const E &key,
-                           const bool default_value)
+    static inline bool get(const std::unordered_map<E, std::wstring> &map,
+                           const E &key, const bool default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
@@ -148,8 +148,8 @@ class Utils
      * default.
      */
     template <class E>
-    static inline double get(const std::unordered_map<E, std::wstring> &map, const E &key,
-                             const double default_value)
+    static inline double get(const std::unordered_map<E, std::wstring> &map,
+                             const E &key, const double default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
@@ -180,8 +180,8 @@ class Utils
      * Helper method for getting a int32_t from a unordered map with a default.
      */
     template <class E>
-    static inline int32_t get(const std::unordered_map<E, std::wstring> &map, const E &key,
-                              const int32_t default_value)
+    static inline int32_t get(const std::unordered_map<E, std::wstring> &map,
+                              const E &key, const int32_t default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
@@ -196,8 +196,8 @@ class Utils
      * Helper method for getting a int64_t from a unordered map with a default.
      */
     template <class E>
-    static inline int64_t get(const std::unordered_map<E, std::wstring> &map, const E &key,
-                              const int64_t default_value)
+    static inline int64_t get(const std::unordered_map<E, std::wstring> &map,
+                              const E &key, const int64_t default_value)
     {
         auto iter = map.find(key);
         if (iter != map.end())
@@ -268,7 +268,8 @@ class Utils
         }
         else
         {
-            elems.second = s.substr(index_of_first_elem + 1, std::wstring::npos);
+            elems.second =
+                s.substr(index_of_first_elem + 1, std::wstring::npos);
         }
 
         return elems;
@@ -350,7 +351,7 @@ class Utils
      * Helper method to split a wstring by the delimiter "delim"
      */
     static inline std::vector<std::wstring> split(const std::wstring &s,
-                                                 wchar_t delim)
+                                                  wchar_t delim)
     {
         std::vector<std::wstring> result;
         return split(s, delim, result);
@@ -361,7 +362,8 @@ class Utils
      * put input the vector "elems"
      */
     static inline std::vector<std::wstring> &
-    split(const std::wstring &s, wchar_t delim, std::vector<std::wstring> &elems)
+    split(const std::wstring &s, wchar_t delim,
+          std::vector<std::wstring> &elems)
     {
         std::wstringstream ss(s);
         std::wstring item;

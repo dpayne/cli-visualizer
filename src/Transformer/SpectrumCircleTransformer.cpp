@@ -5,11 +5,11 @@
  *     Author: dpayne
  */
 
-#include <cmath>
+#include "Transformer/SpectrumCircleTransformer.h"
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
-#include "Transformer/SpectrumCircleTransformer.h"
+#include <cmath>
 
 namespace
 {

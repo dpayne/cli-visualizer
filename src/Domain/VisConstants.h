@@ -8,11 +8,12 @@
 #ifndef _VIS_CONSTANTS_H
 #define _VIS_CONSTANTS_H
 
+#include <cstdlib>
 #include <string>
 #include <vector>
-#include <cstdlib>
 
 #include "Domain/VisTypes.h"
+#include "Writer/NcursesWriter.h"
 
 namespace VisConstants
 {
@@ -111,6 +112,14 @@ static const uint64_t k_silent_sleep_milliseconds = 100ul;
 static const std::vector<vis::ColorIndex> k_default_colors = {
     63,  69,  33,  39,  38,  44,  43,  49,  48,  84,  83,  119, 118, 154, 148,
     184, 178, 214, 208, 209, 203, 204, 198, 199, 163, 164, 128, 129, 93,  99};
+
+// 16 bit colorscheme
+static const std::vector<vis::ColorIndex> k_default_16_colors = {
+    4, 12, 6, 14, 2, 10, 11, 3, 5, 1, 13, 9, 7, 15, 0};
+
+// 8 bit colorscheme
+static const std::vector<vis::ColorIndex> k_default_8_colors = {4, 6, 2, 3,
+                                                                5, 1, 7, 0};
 }
 
 #endif

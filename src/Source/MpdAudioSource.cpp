@@ -7,12 +7,12 @@
 
 #include "Source/MpdAudioSource.h"
 #include "Utils/Logger.h"
-#include <string.h>
-#include <iostream>
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/types.h>
+#include <iostream>
+#include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #include <unistd.h>
 

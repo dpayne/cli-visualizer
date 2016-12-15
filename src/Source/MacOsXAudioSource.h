@@ -8,10 +8,10 @@
 #ifndef _VIS_MAC_OS_X_AUDIO_SOURCE_H
 #define _VIS_MAC_OS_X_AUDIO_SOURCE_H
 
-#include <cstdint>
+#include "Domain/Settings.h"
 #include "Domain/VisTypes.h"
 #include "Source/AudioSource.h"
-#include "Domain/Settings.h"
+#include <cstdint>
 
 #ifdef _OS_OSX
 // TODO: put mac os x specific headers here

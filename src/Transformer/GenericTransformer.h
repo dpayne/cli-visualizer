@@ -8,8 +8,8 @@
 #ifndef _VIS_GENERIC_TRANSFORMER_H
 #define _VIS_GENERIC_TRANSFORMER_H
 
-#include "Writer/NcursesWriter.h"
 #include "Domain/VisTypes.h"
+#include "Writer/NcursesWriter.h"
 
 namespace vis
 {

@@ -6,21 +6,21 @@
  */
 
 #include "Visualizer.h"
-#include "Source/MpdAudioSource.h"
-#include "Source/PulseAudioSource.h"
-#include "Source/MacOsXAudioSource.h"
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
-#include "Transformer/SpectrumTransformer.h"
-#include "Transformer/SpectrumCircleTransformer.h"
+#include "Source/MacOsXAudioSource.h"
+#include "Source/MpdAudioSource.h"
+#include "Source/PulseAudioSource.h"
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
-#include "Utils/NcursesUtils.h"
+#include "Transformer/SpectrumCircleTransformer.h"
+#include "Transformer/SpectrumTransformer.h"
 #include "Utils/ConfigurationUtils.h"
+#include "Utils/NcursesUtils.h"
 
-#include <thread>
-#include <iostream>
 #include <csignal>
+#include <iostream>
+#include <thread>
 
 static vis::Visualizer *g_vis = nullptr;
 
@@ -30,9 +30,10 @@ const int16_t k_input_quit{'q'};
 const int16_t k_input_reload{'r'};
 }
 
-vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale & loc)
+vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale &loc)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
-      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings}, m_loc{loc}, m_pcm_buffer{nullptr}
+      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings},
+      m_loc{loc}, m_pcm_buffer{nullptr}
 {
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
         calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
@@ -63,7 +64,7 @@ static inline void reload_config_sig(int sig)
 
 void vis::Visualizer::setup_signal_handlers()
 {
-    if ( !m_signal_handlers_setup )
+    if (!m_signal_handlers_setup)
     {
         // Catch interrupt and termination signals so the program can be cleanly
         // shutdown.
@@ -103,6 +104,9 @@ void vis::Visualizer::run()
 
     m_writer = std::make_unique<NcursesWriter>(m_settings);
 
+    // color settings must be re-loaded after ncurses initialization
+    vis::ConfigurationUtils::load_color_settings(*m_settings);
+
     auto last_rotation_timestamp =
         std::chrono::system_clock::now().time_since_epoch() /
         std::chrono::seconds(1);
@@ -138,7 +142,8 @@ void vis::Visualizer::run()
         audioSource = get_current_audio_source();
         transformer = get_current_transformer();
 
-        //Only do this after at least one loop to prevent CTRL-C not killing the process if audio cannot be read
+        // Only do this after at least one loop to prevent CTRL-C not killing
+        // the process if audio cannot be read
         setup_signal_handlers();
     }
 }

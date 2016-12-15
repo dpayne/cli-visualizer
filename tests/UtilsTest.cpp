@@ -1,7 +1,7 @@
-#include <ncurses.h>
-#include <iostream>
-#include <gtest/gtest.h>
 #include <Utils/Utils.h>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <ncurses.h>
 
 TEST(UtilsTest, LowercaseAllLowerCase)
 {

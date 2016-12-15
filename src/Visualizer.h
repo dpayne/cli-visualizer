@@ -8,13 +8,13 @@
 #ifndef _VIS_VISUALIZER_H
 #define _VIS_VISUALIZER_H
 
-#include <memory>
-#include <locale>
 #include "Domain/Settings.h"
 #include "Domain/VisTypes.h"
 #include "Source/AudioSource.h"
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
+#include <locale>
+#include <memory>
 
 namespace vis
 {
@@ -22,7 +22,7 @@ namespace vis
 class Visualizer
 {
   public:
-    explicit Visualizer(vis::Settings *settings, const std::locale & loc);
+    explicit Visualizer(vis::Settings *settings, const std::locale &loc);
 
     virtual ~Visualizer();
 

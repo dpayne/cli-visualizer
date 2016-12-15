@@ -8,10 +8,10 @@
 #ifndef _SPECTRUM_TRANSFORMER_H
 #define _SPECTRUM_TRANSFORMER_H
 
-#include <fftw3.h>
+#include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
-#include "Domain/Settings.h"
+#include <fftw3.h>
 
 namespace vis
 {

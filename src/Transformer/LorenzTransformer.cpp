@@ -5,17 +5,17 @@
  *     Author: dpayne
  */
 
+#include "Transformer/LorenzTransformer.h"
 #include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
-#include "Transformer/LorenzTransformer.h"
 #include <algorithm>
 #include <climits>
 #include <cmath>
 #include <iostream>
+#include <numeric>
 #include <stdio.h>
 #include <thread>
-#include <numeric>
 
 /**
  * This visualizer is based on the lorenz equation. The lorenz rotates on the

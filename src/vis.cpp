@@ -5,18 +5,18 @@
  *     Author: dpayne
  */
 
+#include <csignal>
 #include <iostream>
 #include <memory>
-#include <csignal>
 #include <string.h>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Utils/ConfigurationUtils.h"
-#include "Utils/Utils.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
+#include "Utils/Utils.h"
 #include "Visualizer.h"
 
 #ifdef NCURSESW
@@ -31,7 +31,6 @@ static std::string g_program_help =
     "\n"
     "  -c FILE     Config file path, defaults to ~/.config/vis/config\n"
     "  -h          Give this help list\n";
-
 
 int main(int argc, char *argv[])
 {

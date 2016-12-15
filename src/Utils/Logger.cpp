@@ -5,13 +5,13 @@
  *     Author: dpayne
  */
 
-#include <cstdarg>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iostream>
 #include "Utils/Logger.h"
 #include "Utils/Utils.h"
+#include <cstdarg>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
 namespace
 {

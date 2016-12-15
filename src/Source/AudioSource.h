@@ -8,8 +8,8 @@
 #ifndef _VIS_AUDIO_SOURCE_H
 #define _VIS_AUDIO_SOURCE_H
 
-#include <cstdint>
 #include "Domain/VisTypes.h"
+#include <cstdint>
 
 namespace vis
 {

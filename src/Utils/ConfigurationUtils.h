@@ -8,8 +8,8 @@
 #ifndef _VIS_CONFIGURATION_UTILS_H
 #define _VIS_CONFIGURATION_UTILS_H
 
-#include <unordered_map>
 #include <locale>
+#include <unordered_map>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"
@@ -21,13 +21,16 @@ class ConfigurationUtils
 {
   public:
     static void load_settings(Settings &settings,
-                              const std::string &config_path, const std::locale & loc);
+                              const std::string &config_path,
+                              const std::locale &loc);
 
-    static void load_settings(Settings &settings, const std::locale & loc);
+    static void load_settings(Settings &settings, const std::locale &loc);
+
+    static void load_color_settings(Settings &setttings);
 
   private:
     static std::unordered_map<std::string, std::wstring>
-    read_config(const std::string &config_path, const std::locale & loc);
+    read_config(const std::string &config_path, const std::locale &loc);
 
     static vis::SmoothingMode read_smoothing_mode(
         const std::unordered_map<std::string, std::wstring> &properties,

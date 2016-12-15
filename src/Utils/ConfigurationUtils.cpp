@@ -83,7 +83,8 @@ vis::ConfigurationUtils::~ConfigurationUtils()
 }
 
 std::unordered_map<std::string, std::wstring>
-vis::ConfigurationUtils::read_config(const std::string &config_path, const std::locale & loc)
+vis::ConfigurationUtils::read_config(const std::string &config_path,
+                                     const std::locale &loc)
 {
     std::unordered_map<std::string, std::wstring> properties_map;
 
@@ -102,14 +103,14 @@ vis::ConfigurationUtils::read_config(const std::string &config_path, const std::
 
     while (file.good() && std::getline(file, line))
     {
-        std::wcout << line << std::endl;
         if (!line.empty() && line[0] != L'#')
         {
             vis::Utils::split_first(line, L'=', split_line);
 
             if (!split_line.first.empty())
             {
-                properties_map[Utils::wstring_to_string(split_line.first)] = split_line.second;
+                properties_map[Utils::wstring_to_string(split_line.first)] =
+                    split_line.second;
             }
             else
             {
@@ -247,27 +248,66 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
     return smoothing_mode;
 }
 
-void vis::ConfigurationUtils::load_settings(Settings &settings, const std::locale & loc)
+void vis::ConfigurationUtils::load_settings(Settings &settings,
+                                            const std::locale &loc)
 {
     auto config_path = VisConstants::k_default_config_path;
     load_settings(settings, config_path, loc);
 }
 
-void vis::ConfigurationUtils::load_settings(Settings &settings,
-                                            const std::string &config_path, const std::locale & loc)
+void vis::ConfigurationUtils::load_color_settings(Settings &settings)
 {
-    const auto properties = vis::ConfigurationUtils::read_config(config_path, loc);
+    settings.set_colors(vis::ConfigurationUtils::read_colors(settings.get_colors_config_path()));
+
+    if (settings.get_colors().empty())
+    {
+        int32_t number_of_colors_supported =
+            NcursesUtils::number_of_colors_supported();
+        if (number_of_colors_supported <= 0)
+        {
+            settings.set_colors(VisConstants::k_default_colors);
+        }
+        else if (number_of_colors_supported <= 8)
+        {
+            settings.set_colors(VisConstants::k_default_8_colors);
+        }
+        else if (number_of_colors_supported <= 16)
+        {
+            settings.set_colors(VisConstants::k_default_16_colors);
+        }
+        else
+        {
+            settings.set_colors(VisConstants::k_default_colors);
+        }
+    }
+
+}
+
+void vis::ConfigurationUtils::load_settings(Settings &settings,
+                                            const std::string &config_path,
+                                            const std::locale &loc)
+{
+    const auto properties =
+        vis::ConfigurationUtils::read_config(config_path, loc);
 
     // setup mpd
     settings.set_mpd_fifo_path(
         Utils::get(properties, k_mpd_fifo_path_setting,
                    VisConstants::k_default_mpd_fifo_path));
 
+// enable pulse audio by default if available
+#ifdef _ENABLE_PULSE
+    const std::string default_audio_sources =
+        VisConstants::k_pulse_audio_source_name;
+#else
+    const std::string default_audio_sources =
+        VisConstants::k_mpd_audio_source_name;
+#endif
+
     // setup audio sources
-    settings.set_audio_sources(
-        Utils::split(Utils::get(properties, k_audio_sources_setting,
-                                VisConstants::k_default_audio_sources),
-                     ','));
+    settings.set_audio_sources(Utils::split(
+        Utils::get(properties, k_audio_sources_setting, default_audio_sources),
+        ','));
 
     settings.set_fps(
         Utils::get(properties, k_fps_setting, VisConstants::k_default_fps));
@@ -366,17 +406,16 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     auto colors_path = VisConstants::k_colors_directory;
     colors_path.append(Utils::get(properties, k_color_scheme_path_setting,
                                   VisConstants::k_default_colors_path));
-    settings.set_colors(vis::ConfigurationUtils::read_colors(colors_path));
 
-    if (settings.get_colors().empty())
-    {
-        settings.set_colors(VisConstants::k_default_colors);
-    }
+    settings.set_colors_config_path(colors_path);
 
     const auto visualizers =
         Utils::split(Utils::get(properties, k_visualizers_setting,
                                 VisConstants::k_default_visualizers),
                      ',');
 
+    load_color_settings(settings);
+
     settings.set_visualizers(visualizers);
 }
+

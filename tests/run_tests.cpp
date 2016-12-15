@@ -1,7 +1,7 @@
-#include <ncurses.h>
-#include <iostream>
-#include <gtest/gtest.h>
 #include <Writer/NcursesWriter.h>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <ncurses.h>
 
 int main(int ac, char *av[])
 {
