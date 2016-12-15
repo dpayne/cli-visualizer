@@ -22,6 +22,7 @@ namespace VisConstants
 static const std::string k_default_locale = "en_US.UTF8";
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
+static const wchar_t k_hash_wchar{L'#'};
 
 static const double k_pi = 3.14159265358979323846;
 
@@ -74,6 +75,8 @@ static const std::string k_default_colors_path{"colors"};
 static const wchar_t k_default_spectrum_character{k_space_wchar};
 static const wchar_t k_default_lorenz_character{k_full_block_wchar};
 static const wchar_t k_default_ellipse_character{k_full_block_wchar};
+static const wchar_t k_default_lorenz_character_osx{k_hash_wchar};
+static const wchar_t k_default_ellipse_character_osx{k_hash_wchar};
 
 // ellipse defaults
 static const uint32_t k_default_ellipse_radius{2};

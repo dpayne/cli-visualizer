@@ -380,13 +380,20 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::get(properties, k_sgs_smoothing_passes,
                    VisConstants::k_default_sgs_smoothing_passes));
 
+#ifdef _OS_OSX
+    // ncurses on Mac OS X doesn't support wide chars by default, so use a non-wide character for the default
+    wchar_t default_lorenz_char = VisConstants::k_default_lorenz_character_osx;
+    wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character_osx;
+#else
+    wchar_t default_lorenz_char = VisConstants::k_default_lorenz_character;
+    wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character;
+#endif
+
     settings.set_lorenz_character(
-        Utils::get(properties, k_lorenz_character,
-                   VisConstants::k_default_lorenz_character));
+        Utils::get(properties, k_lorenz_character, default_lorenz_char));
 
     settings.set_ellipse_character(
-        Utils::get(properties, k_ellipse_character,
-                   VisConstants::k_default_ellipse_character));
+        Utils::get(properties, k_ellipse_character, default_ellipse_char));
 
     settings.set_ellipse_radius(Utils::get(
         properties, k_ellipse_radius, VisConstants::k_default_ellipse_radius));
@@ -413,8 +420,6 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::split(Utils::get(properties, k_visualizers_setting,
                                 VisConstants::k_default_visualizers),
                      ',');
-
-    load_color_settings(settings);
 
     settings.set_visualizers(visualizers);
 }
