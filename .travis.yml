@@ -20,6 +20,7 @@ addons:
     - llvm-toolchain-precise-3.7
     - ubuntu-toolchain-r-test
     packages:
+    - libpulse-dev
     - libfftw3-dev
     - libncursesw5-dev
     - libgtest-dev

@@ -72,12 +72,14 @@ CXX_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
 else
 CXX_FLAGS += -D_LINUX
 
+ifndef ENABLE_PULSE
 CHECK_PULSE=$(shell ldconfig -p | grep libpulse-simple)
 ifeq ($(strip $(CHECK_PULSE)),)
 $(info Could not find libpulse-simple, disabling pulseaudio support)
 else
 $(info Found libpulse-simple, enabling pulseaudio support)
 ENABLE_PULSE=1
+endif
 endif
 
 endif
