@@ -257,7 +257,8 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
 void vis::ConfigurationUtils::load_color_settings(Settings &settings)
 {
-    settings.set_colors(vis::ConfigurationUtils::read_colors(settings.get_colors_config_path()));
+    settings.set_colors(vis::ConfigurationUtils::read_colors(
+        settings.get_colors_config_path()));
 
     if (settings.get_colors().empty())
     {
@@ -280,7 +281,6 @@ void vis::ConfigurationUtils::load_color_settings(Settings &settings)
             settings.set_colors(VisConstants::k_default_colors);
         }
     }
-
 }
 
 void vis::ConfigurationUtils::load_settings(Settings &settings,
@@ -381,9 +381,11 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
                    VisConstants::k_default_sgs_smoothing_passes));
 
 #ifdef _OS_OSX
-    // ncurses on Mac OS X doesn't support wide chars by default, so use a non-wide character for the default
+    // ncurses on Mac OS X doesn't support wide chars by default, so use a
+    // non-wide character for the default
     wchar_t default_lorenz_char = VisConstants::k_default_lorenz_character_osx;
-    wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character_osx;
+    wchar_t default_ellipse_char =
+        VisConstants::k_default_ellipse_character_osx;
 #else
     wchar_t default_lorenz_char = VisConstants::k_default_lorenz_character;
     wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character;
@@ -423,4 +425,3 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
     settings.set_visualizers(visualizers);
 }
-
