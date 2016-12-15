@@ -62,12 +62,12 @@ int main(int argc, char *argv[])
 
     try
     {
-        loc = std::locale(VisConstants::k_default_locale);
+        loc = std::locale{VisConstants::k_default_locale.c_str()};
         std::wcout.imbue(loc); // Use it for output
     }
     catch (std::runtime_error)
     {
-        loc = std::locale(loc, "", std::locale::ctype);
+        loc = std::locale{loc, "", std::locale::ctype};
     }
 
     try
