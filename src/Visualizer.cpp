@@ -191,6 +191,7 @@ void vis::Visualizer::process_user_input()
 void vis::Visualizer::reload_config()
 {
     vis::ConfigurationUtils::load_settings(*m_settings, m_loc);
+    vis::ConfigurationUtils::load_color_settings(*m_settings);
 }
 
 void vis::Visualizer::setup_audio_sources()
