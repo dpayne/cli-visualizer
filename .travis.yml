@@ -8,7 +8,7 @@ compiler:
     - clang++
     - g++
 before_install:
- - "export TMP_CC=$CC && export TMP_CXX=$CXX && export CXX=g++ && cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd - && export CXX=$TMP_CXX && export CC=$TMP_CC"
+ - "export ENABLE_PULSE=0 && export TMP_CC=$CC && export TMP_CXX=$CXX && export CXX=g++ && cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd - && export CXX=$TMP_CXX && export CC=$TMP_CC"
 
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
@@ -20,7 +20,6 @@ addons:
     - llvm-toolchain-precise-3.7
     - ubuntu-toolchain-r-test
     packages:
-    - libpulse-dev
     - libfftw3-dev
     - libncursesw5-dev
     - libgtest-dev
