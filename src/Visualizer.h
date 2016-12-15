@@ -9,6 +9,7 @@
 #define _VIS_VISUALIZER_H
 
 #include <memory>
+#include <locale>
 #include "Domain/Settings.h"
 #include "Domain/VisTypes.h"
 #include "Source/AudioSource.h"
@@ -21,7 +22,7 @@ namespace vis
 class Visualizer
 {
   public:
-    explicit Visualizer(vis::Settings *settings);
+    explicit Visualizer(vis::Settings *settings, const std::locale & loc);
 
     virtual ~Visualizer();
 
@@ -53,6 +54,8 @@ class Visualizer
     bool m_signal_handlers_setup;
 
     vis::Settings *m_settings;
+
+    std::locale m_loc;
 
     std::vector<std::unique_ptr<vis::AudioSource>> m_audio_sources;
 

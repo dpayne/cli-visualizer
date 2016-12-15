@@ -58,6 +58,19 @@ int main(int argc, char *argv[])
 
     vis::Logger::initialize(VisConstants::k_default_log_path);
 
+    std::locale loc; // initialized to locale::classic()
+    std::ios::sync_with_stdio(false);
+
+    try
+    {
+        loc = std::locale(VisConstants::k_default_locale);
+        std::wcout.imbue(loc); // Use it for output
+    }
+    catch (std::runtime_error)
+    {
+        loc = std::locale(loc, "", std::locale::ctype);
+    }
+
     try
     {
         vis::Settings settings;
@@ -65,15 +78,15 @@ int main(int argc, char *argv[])
         // use default config path if none given
         if (config_path.empty())
         {
-            vis::ConfigurationUtils::load_settings(settings);
+            vis::ConfigurationUtils::load_settings(settings, loc);
         }
         else
         {
-            vis::ConfigurationUtils::load_settings(settings, config_path);
+            vis::ConfigurationUtils::load_settings(settings, config_path, loc);
         }
 
         std::unique_ptr<vis::Visualizer> visualizer =
-            std::make_unique<vis::Visualizer>(&settings);
+            std::make_unique<vis::Visualizer>(&settings, loc);
 
         visualizer->run();
     }

@@ -18,6 +18,7 @@ namespace VisConstants
 {
 
 // Various constants
+static const std::string k_default_locale = "en_US.UTF8";
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
 

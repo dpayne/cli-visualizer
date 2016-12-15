@@ -82,13 +82,15 @@ vis::ConfigurationUtils::~ConfigurationUtils()
 {
 }
 
-std::unordered_map<std::string, std::string>
-vis::ConfigurationUtils::read_config(const std::string &config_path)
+std::unordered_map<std::string, std::wstring>
+vis::ConfigurationUtils::read_config(const std::string &config_path, const std::locale & loc)
 {
-    std::unordered_map<std::string, std::string> properties_map;
+    std::unordered_map<std::string, std::wstring> properties_map;
 
-    std::ifstream file(config_path.c_str(), std::ifstream::in);
-    std::string line;
+    std::wifstream file(config_path.c_str(), std::wifstream::in);
+    std::wstring line;
+    file.imbue(loc);
+
     if (!file.good())
     {
         VIS_LOG(vis::LogLevel::WARN, "Configuration not found at %s",
@@ -96,17 +98,18 @@ vis::ConfigurationUtils::read_config(const std::string &config_path)
         return properties_map;
     }
 
-    std::pair<std::string, std::string> split_line{"", ""};
+    std::pair<std::wstring, std::wstring> split_line{L"", L""};
 
     while (file.good() && std::getline(file, line))
     {
-        if (!line.empty() && line[0] != '#')
+        std::wcout << line << std::endl;
+        if (!line.empty() && line[0] != L'#')
         {
-            vis::Utils::split_first(line, '=', split_line);
+            vis::Utils::split_first(line, L'=', split_line);
 
             if (!split_line.first.empty())
             {
-                properties_map[split_line.first] = split_line.second;
+                properties_map[Utils::wstring_to_string(split_line.first)] = split_line.second;
             }
             else
             {
@@ -171,7 +174,7 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 }
 
 vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
-    const std::unordered_map<std::string, std::string> properties,
+    const std::unordered_map<std::string, std::wstring> &properties,
     const std::string &config_param,
     const vis::FalloffMode default_falloff_mode)
 {
@@ -208,7 +211,7 @@ vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
 }
 
 vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
-    const std::unordered_map<std::string, std::string> properties,
+    const std::unordered_map<std::string, std::wstring> &properties,
     const std::string &config_param,
     const vis::SmoothingMode default_smoothing_mode)
 {
@@ -244,16 +247,16 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
     return smoothing_mode;
 }
 
-void vis::ConfigurationUtils::load_settings(Settings &settings)
+void vis::ConfigurationUtils::load_settings(Settings &settings, const std::locale & loc)
 {
     auto config_path = VisConstants::k_default_config_path;
-    load_settings(settings, config_path);
+    load_settings(settings, config_path, loc);
 }
 
 void vis::ConfigurationUtils::load_settings(Settings &settings,
-                                            const std::string &config_path)
+                                            const std::string &config_path, const std::locale & loc)
 {
-    const auto properties = vis::ConfigurationUtils::read_config(config_path);
+    const auto properties = vis::ConfigurationUtils::read_config(config_path, loc);
 
     // setup mpd
     settings.set_mpd_fifo_path(

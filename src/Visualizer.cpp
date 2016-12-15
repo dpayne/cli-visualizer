@@ -30,9 +30,9 @@ const int16_t k_input_quit{'q'};
 const int16_t k_input_reload{'r'};
 }
 
-vis::Visualizer::Visualizer(vis::Settings *settings)
+vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale & loc)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
-      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings}, m_pcm_buffer{nullptr}
+      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings}, m_loc{loc}, m_pcm_buffer{nullptr}
 {
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
         calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
@@ -185,7 +185,7 @@ void vis::Visualizer::process_user_input()
 
 void vis::Visualizer::reload_config()
 {
-    vis::ConfigurationUtils::load_settings(*m_settings);
+    vis::ConfigurationUtils::load_settings(*m_settings, m_loc);
 }
 
 void vis::Visualizer::setup_audio_sources()
