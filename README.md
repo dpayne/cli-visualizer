@@ -252,7 +252,7 @@ The config can be reload while `vis` is running by either pressing the `r` key o
 ### Colors
 
 The display colors and their order can be changed by switching the color scheme in the config under `colors.scheme`.
-The color scheme must be defined at `~/.config/vis/colors/color_scheme` directory. There are three different ways to specific a color, by name, by hex number, and by index.
+The color scheme must be defined at `~/.config/vis/colors/<name_of_the_color_scheme>`. There are three different ways to specific a color, by name, by hex number, and by index.
 
 vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`. There are three different ways to specific a color, by name, by hex number, and by index.
 
