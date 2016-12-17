@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
         loc = std::locale{loc, "", std::locale::ctype};
     }
 
+    std::string error_msg;
     try
     {
         vis::Settings settings;
@@ -92,19 +93,29 @@ int main(int argc, char *argv[])
     catch (const vis::VisException &ex)
     {
         VIS_LOG(vis::LogLevel::ERROR, "vis exception: %s", ex.what());
+        error_msg.append(ex.what());
     }
     catch (const std::exception &ex)
     {
         VIS_LOG(vis::LogLevel::ERROR, "standard exception: %s", ex.what());
+        error_msg.append(ex.what());
     }
     catch (...)
     {
         VIS_LOG(vis::LogLevel::ERROR, "unknown exception");
+        error_msg.append("unknown exception");
     }
 
     vis::Logger::uninitialize();
 
     // Clears the terminal on exit
-    system("setterm -blank 10");
-    system("clear");
+    if (error_msg.empty())
+    {
+        system("clear");
+    }
+    // Do not clear the screen if and error needs to be printed
+    else
+    {
+        std::cout << error_msg << std::endl;
+    }
 }

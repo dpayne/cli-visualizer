@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "Domain/VisException.h"
 #include "Utils/ConfigurationUtils.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
@@ -134,7 +135,8 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
     {
         VIS_LOG(vis::LogLevel::WARN, "Colors configuration not found at %s",
                 colors_path.c_str());
-        return colors;
+        throw vis::VisException("Colors configuration not found at %s",
+                                colors_path.c_str());
     }
 
     std::vector<std::string> split_line;
@@ -257,8 +259,13 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
 
 void vis::ConfigurationUtils::load_color_settings(Settings &settings)
 {
-    settings.set_colors(vis::ConfigurationUtils::read_colors(
-        settings.get_colors_config_path()));
+    const auto colors_config_path = settings.get_colors_config_path();
+
+    if (!colors_config_path.empty())
+    {
+        settings.set_colors(
+            vis::ConfigurationUtils::read_colors(colors_config_path));
+    }
 
     if (settings.get_colors().empty())
     {
@@ -412,9 +419,15 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         Utils::get(properties, k_stereo_enabled_setting, true));
 
     // set color definitions
-    auto colors_path = VisConstants::k_colors_directory;
-    colors_path.append(Utils::get(properties, k_color_scheme_path_setting,
-                                  VisConstants::k_default_colors_path));
+    auto color_scheme =
+        Utils::get(properties, k_color_scheme_path_setting, std::string{""});
+    std::string colors_path;
+
+    if (!color_scheme.empty())
+    {
+        colors_path = VisConstants::k_colors_directory;
+        colors_path.append(color_scheme);
+    }
 
     settings.set_colors_config_path(colors_path);
 
