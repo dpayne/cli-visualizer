@@ -421,12 +421,6 @@ Bar spacing set to `0`.
 
 <br><br>
 
-During stereo mode off will show only one set of bars.
-
-    audio.stereo.enabled=false
-
-<br><br>
-
 The margin widths of the spectrum visualizer can also be controlled. The margins are set in percent of total screen for spectrum visualizer. All margin percentages default to `0.0`.
 
     visualizer.spectrum.top.margin=0.0
@@ -437,6 +431,12 @@ The margin widths of the spectrum visualizer can also be controlled. The margins
 ![spectrum_margins](http://i.imgur.com/t1t3cdjl.gif "Spectrum Margins")
 
 Spectrum with the top margin set to `0.30`, stereo mode set to false, and the left right margins set to `0.10`.
+
+<br>
+
+Turn stereo mode off to show only one set of bars.
+
+    audio.stereo.enabled=false
 
 <br><br>
 
