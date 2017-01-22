@@ -133,7 +133,13 @@ ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
 	CXX_FLAGS += -DNCURSESW
 	LD_FLAGS += -DNCURSESW
 else
+ifdef VIS_NCURSESW
+	LIBS += -lncursesw
+	CXX_FLAGS += -DNCURSESW
+	LD_FLAGS += -DNCURSESW
+else
 	LIBS += -lncurses
+endif
 endif
 
 #use jemalloc if available
