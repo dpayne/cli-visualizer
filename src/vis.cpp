@@ -22,7 +22,7 @@
 #ifdef NCURSESW
 #include <ncursesw/ncurses.h>
 #else
-#include <ncurses.h>
+#include <curses.h>
 #endif
 
 static std::string g_program_help =

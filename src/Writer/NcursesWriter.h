@@ -11,7 +11,7 @@
 #ifdef NCURSESW
 #include <ncursesw/ncurses.h>
 #else
-#include <ncurses.h>
+#include <curses.h>
 #endif
 
 #include "Domain/ColorDefinition.h"
