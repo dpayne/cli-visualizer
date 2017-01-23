@@ -9,6 +9,12 @@
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
 
+#ifdef NCURSESW
+#include <ncursesw/ncurses.h>
+#else
+#include <ncurses.h>
+#endif
+
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     : m_settings{settings}
 {
