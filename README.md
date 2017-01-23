@@ -242,6 +242,7 @@ Start with
 | <kbd>space</kbd> | switch visualizers |
 | <kbd>q</kbd> or <kbd>CTRL-C</kbd>| Quit |
 | <kbd>r</kbd>| Reload config |
+| <kbd>s</kbd>| Toggle Mono/Stereo Mode |
 
 ## Configuration
 

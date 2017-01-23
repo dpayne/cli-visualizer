@@ -28,6 +28,7 @@ namespace
 {
 const int16_t k_input_quit{'q'};
 const int16_t k_input_reload{'r'};
+const int16_t k_input_toggle_stereo{'s'};
 }
 
 vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale &loc)
@@ -178,6 +179,9 @@ void vis::Visualizer::process_user_input()
         break;
     case k_input_quit:
         shutdown();
+        break;
+    case k_input_toggle_stereo:
+        m_settings->set_is_stereo_enabled(!m_settings->is_stereo_enabled());
         break;
     case k_input_reload:
         reload_config();
