@@ -603,7 +603,7 @@ void vis::SpectrumTransformer::recalculate_cutoff_frequencies(
     (*high_cutoff_frequencies) = std::vector<uint32_t>(number_of_bars + 1);
     (*freqconst_per_bin) = std::vector<double>(number_of_bars + 1);
 
-    for (auto i = 0u; i < number_of_bars; ++i)
+    for (auto i = 0u; i <= number_of_bars; ++i)
     {
         (*freqconst_per_bin)[i] =
             static_cast<double>(m_settings->get_high_cutoff_frequency()) *
