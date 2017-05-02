@@ -14,7 +14,7 @@
  * which uses a 8 bit mask. This will work for colors since only 256 colors are
  * supported but it breaks color pairs since 2^16 color pairs are supported.
  */
-#define VIS_A_COLOR NCURSES_BITS(((1U) << 16) - 1U, 0)
+#define VIS_A_COLOR static_cast<uint16_t>(NCURSES_BITS(((1U) << 16) - 1U, 0))
 #define VIS_COLOR_PAIR(n) (NCURSES_BITS((n), 0) & VIS_A_COLOR)
 
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
@@ -56,7 +56,7 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    auto color_pair = VIS_COLOR_PAIR(color + COLORS);
+    const auto color_pair = VIS_COLOR_PAIR(color + COLORS);
     attron(color_pair);
 
     mvaddwstr(height, width, msg.c_str());
