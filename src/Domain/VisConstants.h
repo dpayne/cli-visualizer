@@ -38,6 +38,8 @@ static const std::string k_lorenz_visualizer_name{"lorenz"};
 static const int64_t k_default_visualizer_rotation_interval =
     0L; // 0 means disabled
 // Defaults
+static const double k_default_scaling_multiplier = 1.0;
+
 static const uint32_t k_default_fps = 20;
 
 const static std::string k_default_audio_sources{k_pulse_audio_source_name};

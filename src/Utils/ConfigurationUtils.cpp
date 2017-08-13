@@ -38,6 +38,8 @@ const static std::string k_low_cutoff_frequency_setting{
 const static std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
 
+const static std::string k_scaling_multiplier{"visualizer.scaling.multiplier"};
+
 const static std::string k_lorenz_character{"visualizer.lorenz.character"};
 
 const static std::string k_ellipse_character{"visualizer.ellipse.character"};
@@ -164,9 +166,10 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
                 }
                 else
                 {
-                    VIS_LOG(vis::LogLevel::WARN, "Configuration color "
-                                                 "definition line was not "
-                                                 "valid at %s",
+                    VIS_LOG(vis::LogLevel::WARN,
+                            "Configuration color "
+                            "definition line was not "
+                            "valid at %s",
                             line.c_str());
                 }
             }
@@ -315,6 +318,10 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     settings.set_audio_sources(Utils::split(
         Utils::get(properties, k_audio_sources_setting, default_audio_sources),
         ','));
+
+    settings.set_scaling_multiplier(
+        Utils::get(properties, k_scaling_multiplier,
+                   VisConstants::k_default_scaling_multiplier));
 
     settings.set_fps(
         Utils::get(properties, k_fps_setting, VisConstants::k_default_fps));

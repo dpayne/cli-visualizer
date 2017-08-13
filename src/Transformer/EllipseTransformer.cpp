@@ -75,15 +75,20 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     writer->clear();
 
+    const auto overridden_scaling_multiplier =
+        m_settings->get_scaling_multiplier();
+
     double x;
     double y;
     std::wstring msg{m_settings->get_ellipse_character()};
     for (auto i = 0ul; i < m_settings->get_sample_size(); ++i)
     {
-        x = static_cast<double>(static_cast<double>(buffer[i].l) / 32768.0) *
+        x = overridden_scaling_multiplier *
+            static_cast<double>(static_cast<double>(buffer[i].l) / 32768.0) *
             (buffer[i].l < 0 ? left_half_width : right_half_width);
 
-        y = static_cast<double>(static_cast<double>(buffer[i].r) / 32768.0) *
+        y = overridden_scaling_multiplier *
+            static_cast<double>(static_cast<double>(buffer[i].r) / 32768.0) *
             (buffer[i].r < 0 ? top_half_height : bottom_half_height);
 
         // The arguments to the to_color function roughly follow a circle

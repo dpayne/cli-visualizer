@@ -22,6 +22,16 @@ class Settings
 
     ~Settings();
 
+    double get_scaling_multiplier() const noexcept
+    {
+        return m_scaling_multiplier;
+    }
+
+    void set_scaling_multiplier(const double scaling_multiplier)
+    {
+        m_scaling_multiplier = scaling_multiplier;
+    }
+
     uint32_t get_sampling_frequency() const noexcept
     {
         return m_sampling_frequency;
@@ -319,6 +329,7 @@ class Settings
 
   private:
     std::string m_mpd_fifo_path;
+    double m_scaling_multiplier;
     uint32_t m_fps;
     uint32_t m_sampling_frequency;
     uint32_t m_low_cutoff_frequency;

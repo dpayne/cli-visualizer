@@ -29,12 +29,16 @@ namespace
 const int16_t k_input_quit{'q'};
 const int16_t k_input_reload{'r'};
 const int16_t k_input_toggle_stereo{'s'};
+const int16_t k_input_decrease_scaling{'-'};
+const int16_t k_input_increase_scaling{'+'};
+
+const double k_scaling_multiplier_interval{0.1};
 }
 
 vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale &loc)
     : m_current_audio_source_index{0}, m_current_transformer_index{0},
-      m_shutdown{false}, m_signal_handlers_setup{false}, m_settings{settings},
-      m_loc{loc}, m_pcm_buffer{nullptr}
+      m_shutdown{false}, m_signal_handlers_setup{false},
+      m_settings{settings}, m_loc{loc}, m_pcm_buffer{nullptr}
 {
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
         calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
@@ -185,6 +189,18 @@ void vis::Visualizer::process_user_input()
         break;
     case k_input_reload:
         reload_config();
+        break;
+    case k_input_decrease_scaling:
+        m_settings->set_scaling_multiplier(
+            m_settings->get_scaling_multiplier() -
+            (m_settings->get_scaling_multiplier() *
+             k_scaling_multiplier_interval));
+        break;
+    case k_input_increase_scaling:
+        m_settings->set_scaling_multiplier(
+            m_settings->get_scaling_multiplier() +
+            (m_settings->get_scaling_multiplier() *
+             k_scaling_multiplier_interval));
         break;
     default:
         // do nothing

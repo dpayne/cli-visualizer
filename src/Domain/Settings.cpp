@@ -9,7 +9,8 @@
 #include "Domain/VisConstants.h"
 
 vis::Settings::Settings()
-    : m_fps{VisConstants::k_default_fps},
+    : m_scaling_multiplier{VisConstants::k_default_scaling_multiplier},
+      m_fps{VisConstants::k_default_fps},
       m_sampling_frequency{VisConstants::k_default_sampling_frequency},
       m_low_cutoff_frequency{VisConstants::k_default_low_cutoff_frequency},
       m_high_cutoff_frequency{VisConstants::k_default_high_cutoff_frequency},

@@ -47,7 +47,8 @@ static const double k_lorenz_c = 8.0 / 3.0;
 
 vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
     : m_settings{settings}, m_rotation_count_left{0.0},
-      m_rotation_count_right{0.0}
+      m_rotation_count_right{0.0}, m_max_color_index{
+                                       k_max_color_index_for_lorenz}
 {
 }
 
@@ -93,7 +94,11 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         (average_left * (m_settings->get_fps() / 65536.0));
     const auto rotation_interval_right =
         (average_right * (m_settings->get_fps() / 65536.0));
-    const auto average = (average_left + average_right) / 2.0;
+
+    const auto overridden_scaling_multiplier =
+        m_settings->get_scaling_multiplier();
+    const auto average =
+        overridden_scaling_multiplier * (average_left + average_right) / 2.0;
 
     // lorenz_b will range from 11.7 to 64.4. Below 10 the lorenz is pretty much
     // just a disc and after 64.4 the size increases dramatically.
@@ -145,8 +150,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // k_max_color_index_for_lorenz was chosen mostly through experimentation on
     // what seemed to work well.
-    recalculate_colors(k_max_color_index_for_lorenz, m_precomputed_colors,
-                       writer);
+    recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
 
     std::wstring msg{m_settings->get_lorenz_character()};
     for (auto i = 0u; i < samples; ++i)
@@ -168,6 +172,12 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
                       std::pow(y0 + equilbria, 2) + std::pow(z0 - z_center, 2));
         auto color_distance =
             static_cast<size_t>(std::min(distance_p1, distance_p2));
+
+        if (color_distance > m_max_color_index)
+        {
+            m_max_color_index = color_distance;
+            recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
+        }
 
         // We want to rotate around the center of the lorenz. so we offset zaxis
         // so that the center of the lorenz is at point (0,0,0)
