@@ -16,6 +16,7 @@
       - [ALSA with dmix](#alsa-with-dmix)
     - [Pulse Audio Setup (Easy)](#pulse-audio-setup-easy)
   - [Usage](#usage)
+    - [Controls](#controls)
   - [Configuration](#configuration)
     - [Reloading Config](#reloading-config)
     - [Colors](#colors)
@@ -29,10 +30,11 @@
         - [No Smoothing](#no-smoothing)
       - [Falloff](#falloff)
       - [Spectrum Appearance](#spectrum-appearance)
+    - [Scaling](#scaling)
     - [Full configuration example](#full-configuration-example)
   - [Trouble Shooting](#trouble-shooting)
     - [Mac OSX](#mac-osx)
-        - [vis hangs with no output](#vis-hangs-with-no-output)
+      - [vis hangs with no output](#vis-hangs-with-no-output)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -243,6 +245,8 @@ Start with
 | <kbd>q</kbd> or <kbd>CTRL-C</kbd>| Quit |
 | <kbd>r</kbd>| Reload config |
 | <kbd>s</kbd>| Toggle Mono/Stereo Mode |
+| <kbd>+</kbd>| Increase scaling by 10% |
+| <kbd>-</kbd>| Decrease scaling by 10% |
 
 ## Configuration
 
@@ -450,6 +454,14 @@ The reversed option gives the option to reverse this so that the highest frequen
 
 Spectrum with reverse set to `true`.
 
+### Scaling
+
+The spectrum visualizer should auto-scale, but for lorenz and ellipse visualizers scaling is based off volume. If your music volume is a lot lower than the system volume then you can scale the visualizers with the settings
+
+    visualizer.scaling.multiplier=1.5
+
+This setting can also be controlled with `+/-` keys.
+
 ### Full configuration example
 
     #Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
@@ -470,6 +482,9 @@ Spectrum with reverse set to `true`.
     audio.low.cutoff.frequency=22050
     audio.high.cutoff.frequency=30
 
+    ##Applies scaling factor to both lorenz and ellipse visualizers. This is useful when the system audio is set
+    #to a low volume.
+    #visualizer.scaling.multiplier=1.0
 
     #Configures the visualizers and the order they are in. Available visualizers are spectrum,lorenz,ellipse.
     #Defaults to spectrum,ellipse,lorenz

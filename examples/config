@@ -25,6 +25,9 @@
 #audio.low.cutoff.frequency=22050
 #audio.high.cutoff.frequency=30
 
+##Applies scaling factor to both lorenz and ellipse visualizers. This is useful when the system audio is set
+#to a low volume.
+#visualizer.scaling.multiplier=1.0
 
 ##Configures the visualizers and the order they are in. Available visualizers are spectrum,lorenz,ellipse.
 ##Defaults to spectrum,ellipse,lorenz
