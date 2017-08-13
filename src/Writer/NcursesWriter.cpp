@@ -9,14 +9,6 @@
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
 
-/* Ncurses version 6.0.20170401 introduced an issue with COLOR_PAIR which broke
- * setting more than 256 color pairs. Specifically it uses an A_COLOR macro
- * which uses a 8 bit mask. This will work for colors since only 256 colors are
- * supported but it breaks color pairs since 2^16 color pairs are supported.
- */
-#define VIS_A_COLOR static_cast<uint16_t>(NCURSES_BITS(((1U) << 16) - 1U, 0))
-#define VIS_COLOR_PAIR(n) (NCURSES_BITS((n), 0) & VIS_A_COLOR)
-
 vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
     : m_settings{settings}
 {
@@ -56,7 +48,7 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    const auto color_pair = VIS_COLOR_PAIR(color + COLORS);
+    const auto color_pair = COLOR_PAIR(color + COLORS);
     attron(color_pair);
 
     mvaddwstr(height, width, msg.c_str());
@@ -68,11 +60,11 @@ void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
                                           vis::ColorIndex color,
                                           const std::wstring &msg)
 {
-    attron(VIS_COLOR_PAIR(color));
+    attron(COLOR_PAIR(color));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(VIS_COLOR_PAIR(color));
+    attroff(COLOR_PAIR(color));
 }
 
 void vis::NcursesWriter::write(const int32_t row, const int32_t column,
