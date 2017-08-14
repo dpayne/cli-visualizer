@@ -7,6 +7,7 @@
     - [256 Colors](#256-colors)
     - [Ubuntu](#ubuntu)
     - [Arch Linux](#arch-linux)
+    - [Fedora](#fedora)
     - [Mac OS X](#mac-os-x)
   - [Installing](#installing)
     - [Arch Linux](#arch-linux-1)
@@ -91,6 +92,10 @@ Older versions of Ubuntu also need newer a newer gcc compiler. Note, while this 
 In arch, the ncursesw is bundled with the ncurses package.
 
     sudo pacman -S ncurses fftw
+
+### Fedora
+
+	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel
 
 ### Mac OS X
 
