@@ -28,7 +28,7 @@ class SpectrumCircleTransformer : public SpectrumTransformer
 
     // Pre-compute colors calculations to avoid duplicate work
     // Note: this is only re-computed when screen height changes
-    std::vector<vis::ColorIndex> m_precomputed_colors;
+    std::vector<vis::ColorDefinition> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
 

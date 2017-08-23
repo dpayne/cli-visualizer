@@ -37,7 +37,7 @@ class LorenzTransformer : public GenericTransformer
 
     uint64_t m_max_color_index;
 
-    std::vector<vis::ColorIndex> m_precomputed_colors;
+    std::vector<vis::ColorDefinition> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
 

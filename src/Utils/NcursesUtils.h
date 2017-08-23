@@ -24,10 +24,15 @@
 namespace vis
 {
 
-const static std::map<std::string, int16_t> g_vis_color_map{
-    {"black", COLOR_BLACK},     {"blue", COLOR_BLUE},     {"cyan", COLOR_CYAN},
-    {"green", COLOR_GREEN},     {"yellow", COLOR_YELLOW}, {"red", COLOR_RED},
-    {"magenta", COLOR_MAGENTA}, {"white", COLOR_WHITE},
+const static std::map<std::string, vis::ColorDefinition> g_vis_color_map{
+    {"black", vis::ColorDefinition{COLOR_BLACK, 0, 0, 0}},
+    {"blue", vis::ColorDefinition{COLOR_BLUE, 0, 0, 255}},
+    {"cyan", vis::ColorDefinition{COLOR_CYAN, 0, 255, 255}},
+    {"green", vis::ColorDefinition{COLOR_GREEN, 0, 255, 0}},
+    {"yellow", vis::ColorDefinition{COLOR_YELLOW, 255, 255, 0}},
+    {"red", vis::ColorDefinition{COLOR_RED, 255, 0, 0}},
+    {"magenta", vis::ColorDefinition{COLOR_MAGENTA, 255, 0, 255}},
+    {"white", vis::ColorDefinition{COLOR_GREEN, 255, 255, 255}},
 };
 
 class NcursesUtils
@@ -36,18 +41,18 @@ class NcursesUtils
   public:
     /**
      * Convert a string to a color index. If the string is numeric the string is
-     * convert to a number and returned as a ColorIndex. A color can be called
+     * convert to a number and returned as a ColorDefinition. A color can be called
      * by name if it is one of the 8 basic colors:
      * black,red,green,yellow,blue,magenta,cyan,white.
      *
      * If the string is empty or if it is a name of a color that is not one of
      * the 8 basic colors, then black is returned.
      */
-    static inline vis::ColorIndex to_basic_color(const std::string &str)
+    static inline vis::ColorDefinition to_basic_color(const std::string &str)
     {
         if (str.empty())
         {
-            return COLOR_BLACK;
+            return vis::ColorDefinition{COLOR_BLACK, 0, 0, 0};
         }
 
         auto iter = g_vis_color_map.find(vis::Utils::lowercase(str));
@@ -58,10 +63,11 @@ class NcursesUtils
 
         if (!vis::Utils::is_numeric(str))
         {
-            return -1;
+            return vis::ColorDefinition{-1, 0, 0, 0};
         }
 
-        return static_cast<vis::ColorIndex>(std::atoi(str.c_str()));
+        return vis::ColorDefinition{
+            static_cast<vis::ColorIndex>(std::atoi(str.c_str())), -1, -1, -1};
     }
 
     /**

@@ -27,7 +27,7 @@ class NcursesWriter
 
     virtual ~NcursesWriter();
 
-    virtual void write(int32_t height, int32_t width, ColorIndex color,
+    virtual void write(int32_t height, int32_t width, ColorDefinition color,
                        const std::wstring &msg, const wchar_t character);
 
     virtual void clear();
@@ -38,7 +38,7 @@ class NcursesWriter
      * to true, colors will not loop from 0 to max. If "wrap" is set to true
      * then colors will wrap.
      */
-    virtual ColorIndex to_color_pair(int32_t number, int32_t max,
+    virtual ColorDefinition to_color_pair(int32_t number, int32_t max,
                                      bool wrap = true) const;
 
     virtual void flush();
@@ -54,13 +54,13 @@ class NcursesWriter
     /**
      * Write msg to ncurses window using background colors
      */
-    void write_background(int32_t height, int32_t width, vis::ColorIndex color,
+    void write_background(int32_t height, int32_t width, vis::ColorDefinition color,
                           const std::wstring &msg);
 
     /**
      * Write msg to ncurses window using foreground colors
      */
-    void write_foreground(int32_t height, int32_t width, vis::ColorIndex color,
+    void write_foreground(int32_t height, int32_t width, vis::ColorDefinition color,
                           const std::wstring &msg);
 };
 }

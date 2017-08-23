@@ -58,15 +58,6 @@ class ColorDefinition
         return *this;
     }
 
-    ColorDefinition &operator=(ColorDefinition &&other) noexcept
-    {
-        this->m_color_index = other.get_color_index();
-        this->m_red = other.get_red();
-        this->m_green = other.get_green();
-        this->m_blue = other.get_blue();
-        return *this;
-    }
-
   private:
     ColorIndex m_color_index;
 

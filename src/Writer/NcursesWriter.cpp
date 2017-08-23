@@ -55,12 +55,12 @@ void vis::NcursesWriter::setup_colors()
 }
 
 void vis::NcursesWriter::write_background(int32_t height, int32_t width,
-                                          vis::ColorIndex color,
+                                          vis::ColorDefinition color,
                                           const std::wstring &msg)
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    const auto color_pair = VIS_COLOR_PAIR(color + COLORS);
+    const auto color_pair = VIS_COLOR_PAIR(color.get_color_index() + COLORS);
     attron(color_pair);
 
     mvaddwstr(height, width, msg.c_str());
@@ -69,18 +69,18 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
-                                          vis::ColorIndex color,
+                                          vis::ColorDefinition color,
                                           const std::wstring &msg)
 {
-    attron(COLOR_PAIR(color));
+    attron(COLOR_PAIR(color.get_color_index()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(COLOR_PAIR(color));
+    attroff(COLOR_PAIR(color.get_color_index()));
 }
 
 void vis::NcursesWriter::write(const int32_t row, const int32_t column,
-                               const vis::ColorIndex color,
+                               const vis::ColorDefinition color,
                                const std::wstring &msg, const wchar_t character)
 {
     // This is a hack to achieve a solid bar look without using a custom font.
@@ -107,7 +107,7 @@ void vis::NcursesWriter::flush()
     refresh();
 }
 
-vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
+vis::ColorDefinition vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
                                                   bool wrap) const
 {
     const auto colors_size =
@@ -117,7 +117,7 @@ vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
     // no colors
     if (colors_size == 0)
     {
-        return 0;
+        return vis::ColorDefinition{0, 0, 0, 0};
     }
 
     const auto color = m_settings->get_colors()[static_cast<size_t>(

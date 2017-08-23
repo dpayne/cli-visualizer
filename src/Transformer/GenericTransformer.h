@@ -35,7 +35,7 @@ class GenericTransformer
      * Colors are re-calculated if max != precomputed_colors.size()
      */
     virtual void recalculate_colors(const size_t max,
-                                    std::vector<ColorIndex> &precomputed_colors,
+                                    std::vector<ColorDefinition> &precomputed_colors,
                                     const NcursesWriter *writer);
 };
 }

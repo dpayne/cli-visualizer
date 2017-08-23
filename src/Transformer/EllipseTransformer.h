@@ -33,7 +33,7 @@ class EllipseTransformer : public GenericTransformer
      * timees depending on how many rings there are.
      */
     void recalculate_colors(const size_t max,
-                            std::vector<ColorIndex> &precomputed_colors,
+                            std::vector<ColorDefinition> &precomputed_colors,
                             const NcursesWriter *writer) override;
 
   private:
@@ -43,7 +43,7 @@ class EllipseTransformer : public GenericTransformer
 
     // Pre-compute colors calculations to avoid duplicate work
     // Note: this is only re-computed when screen height changes
-    std::vector<vis::ColorIndex> m_precomputed_colors;
+    std::vector<vis::ColorDefinition> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
 

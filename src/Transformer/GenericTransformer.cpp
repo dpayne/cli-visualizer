@@ -16,7 +16,7 @@ vis::GenericTransformer::~GenericTransformer()
 }
 
 void vis::GenericTransformer::recalculate_colors(
-    const size_t max, std::vector<ColorIndex> &precomputed_colors,
+    const size_t max, std::vector<ColorDefinition> &precomputed_colors,
     const NcursesWriter *writer)
 {
     if (max != precomputed_colors.size())

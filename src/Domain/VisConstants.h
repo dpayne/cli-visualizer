@@ -114,17 +114,58 @@ static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 
 // rainbow colorscheme
-static const std::vector<vis::ColorIndex> k_default_colors = {
-    63,  69,  33,  39,  38,  44,  43,  49,  48,  84,  83,  119, 118, 154, 148,
-    184, 178, 214, 208, 209, 203, 204, 198, 199, 163, 164, 128, 129, 93,  99};
+// TODO: define RGB color values
+static const std::vector<vis::ColorDefinition> k_default_colors = {
+    vis::ColorDefinition{63 ,43 ,214 ,43},
+    vis::ColorDefinition{69 ,43 ,214 ,86},
+    vis::ColorDefinition{33 ,0 ,214 ,86},
+    vis::ColorDefinition{39 ,0 ,214 ,128},
+    vis::ColorDefinition{38 ,0 ,171 ,128},
+    vis::ColorDefinition{44 ,0 ,171 ,171},
+    vis::ColorDefinition{43 ,0 ,128 ,171},
+    vis::ColorDefinition{49 ,0 ,128 ,214},
+    vis::ColorDefinition{48 ,0 ,86 ,214},
+    vis::ColorDefinition{84 ,43 ,86 ,214},
+    vis::ColorDefinition{83 ,43 ,43 ,214},
+    vis::ColorDefinition{119 ,86 ,43 ,214},
+    vis::ColorDefinition{118 ,86 ,0 ,214},
+    vis::ColorDefinition{154 ,128 ,0 ,214},
+    vis::ColorDefinition{148 ,128 ,0 ,171},
+    vis::ColorDefinition{184 ,171 ,0 ,171},
+    vis::ColorDefinition{178 ,171 ,0 ,128},
+    vis::ColorDefinition{214 ,214 ,0 ,128},
+    vis::ColorDefinition{208 ,214 ,0 ,86},
+    vis::ColorDefinition{209 ,214 ,43 ,86},
+    vis::ColorDefinition{203 ,214 ,43 ,43},
+    vis::ColorDefinition{204 ,214 ,86 ,43},
+    vis::ColorDefinition{198 ,214 ,86 ,0},
+    vis::ColorDefinition{199 ,214 ,128 ,0},
+    vis::ColorDefinition{163 ,171 ,128 ,0},
+    vis::ColorDefinition{164 ,171 ,171 ,0},
+    vis::ColorDefinition{128 ,128 ,171 ,0},
+    vis::ColorDefinition{129 ,128 ,214 ,0},
+    vis::ColorDefinition{93 ,86 ,214 ,0},
+    vis::ColorDefinition{99 ,86 ,214 ,43}
+};
 
 // 16 bit colorscheme
-static const std::vector<vis::ColorIndex> k_default_16_colors = {
-    4, 12, 6, 14, 2, 10, 11, 3, 5, 1, 13, 9, 7, 15, 0};
+static const std::vector<vis::ColorDefinition> k_default_16_colors = {
+    vis::ColorDefinition{4, -1, -1, -1},  vis::ColorDefinition{12, -1, -1, -1},
+    vis::ColorDefinition{6, -1, -1, -1},  vis::ColorDefinition{14, -1, -1, -1},
+    vis::ColorDefinition{2, -1, -1, -1},  vis::ColorDefinition{10, -1, -1, -1},
+    vis::ColorDefinition{11, -1, -1, -1}, vis::ColorDefinition{3, -1, -1, -1},
+    vis::ColorDefinition{5, -1, -1, -1},  vis::ColorDefinition{1, -1, -1, -1},
+    vis::ColorDefinition{13, -1, -1, -1}, vis::ColorDefinition{9, -1, -1, -1},
+    vis::ColorDefinition{7, -1, -1, -1},  vis::ColorDefinition{15, -1, -1, -1},
+    vis::ColorDefinition{0, -1, -1, -1},
+};
 
 // 8 bit colorscheme
-static const std::vector<vis::ColorIndex> k_default_8_colors = {4, 6, 2, 3,
-                                                                5, 1, 7, 0};
+static const std::vector<vis::ColorDefinition> k_default_8_colors = {
+    vis::ColorDefinition{4, -1, -1, -1}, vis::ColorDefinition{6, -1, -1, -1},
+    vis::ColorDefinition{2, -1, -1, -1}, vis::ColorDefinition{3, -1, -1, -1},
+    vis::ColorDefinition{5, -1, -1, -1}, vis::ColorDefinition{1, -1, -1, -1},
+    vis::ColorDefinition{7, -1, -1, -1}, vis::ColorDefinition{0, -1, -1, -1}};
 }
 
 #endif

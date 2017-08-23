@@ -53,7 +53,7 @@ void vis::SpectrumCircleTransformer::draw_bars(
             const auto distance = std::sqrt(std::pow(x, 2) + std::pow(y, 2));
 
             // TODO(dpayne): precompute colors
-            const ColorIndex color_distance =
+            const ColorDefinition color_distance =
                 writer->to_color_pair(static_cast<int32_t>(distance),
                                       static_cast<int32_t>(max_distance));
 

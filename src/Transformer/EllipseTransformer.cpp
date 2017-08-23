@@ -38,7 +38,7 @@ void vis::EllipseTransformer::execute_mono(pcm_stereo_sample *buffer,
 }
 
 void vis::EllipseTransformer::recalculate_colors(
-    const size_t max, std::vector<ColorIndex> &precomputed_colors,
+    const size_t max, std::vector<ColorDefinition> &precomputed_colors,
     const NcursesWriter *writer)
 {
     // Makes the radius of each ring be approximately 2 cells wide.
@@ -47,7 +47,7 @@ void vis::EllipseTransformer::recalculate_colors(
 
     if (precomputed_colors.size() != max)
     {
-        precomputed_colors.resize(max, 0);
+        precomputed_colors.resize(max, vis::ColorDefinition{0, 0, 0, 0});
         for (size_t i = 0u; i < max; ++i)
         {
             precomputed_colors[i] =

@@ -42,7 +42,7 @@ class ConfigurationUtils
         const std::string &config_param,
         const vis::FalloffMode default_falloff_mode);
 
-    static std::vector<vis::ColorIndex>
+    static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);
 
     explicit ConfigurationUtils();

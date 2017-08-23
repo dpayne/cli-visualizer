@@ -126,10 +126,10 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
     return properties_map;
 }
 
-std::vector<vis::ColorIndex>
+std::vector<vis::ColorDefinition>
 vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 {
-    std::vector<vis::ColorIndex> colors;
+    std::vector<vis::ColorDefinition> colors;
 
     std::ifstream file(colors_path.c_str(), std::ifstream::in);
     std::string line;
@@ -155,12 +155,12 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
                 int16_t green = (hex_color >> 8) % 256;
                 int16_t blue = hex_color % 256;
 
-                colors.push_back(NcursesUtils::to_ansi_color(red, green, blue));
+                colors.push_back(vis::ColorDefinition{NcursesUtils::to_ansi_color(red, green, blue), red, green, blue});
             }
             else
             {
-                auto basic_color = NcursesUtils::to_basic_color(line);
-                if (basic_color >= 0)
+                const auto basic_color = NcursesUtils::to_basic_color(line);
+                if (basic_color.get_color_index() >= 0)
                 {
                     colors.push_back(basic_color);
                 }

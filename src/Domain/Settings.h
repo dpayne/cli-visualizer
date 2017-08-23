@@ -117,12 +117,12 @@ class Settings
         return m_is_stereo_enabled;
     }
 
-    const std::vector<vis::ColorIndex> &get_colors() const noexcept
+    const std::vector<vis::ColorDefinition> &get_colors() const noexcept
     {
         return m_colors;
     }
 
-    void set_colors(const std::vector<vis::ColorIndex> &colors)
+    void set_colors(const std::vector<vis::ColorDefinition> &colors)
     {
         m_colors = colors;
     }
@@ -337,7 +337,7 @@ class Settings
     bool m_is_stereo_enabled;
     std::vector<std::string> m_audio_sources;
     std::vector<std::string> m_visualizers;
-    std::vector<vis::ColorIndex> m_colors;
+    std::vector<vis::ColorDefinition> m_colors;
     wchar_t m_spectrum_character;
     wchar_t m_lorenz_character;
     wchar_t m_ellipse_character;
