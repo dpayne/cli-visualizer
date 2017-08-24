@@ -52,6 +52,11 @@ class NcursesWriter
     void setup_colors();
 
     /**
+     * Initialize extended color pairs for ncurses
+     */
+    void setup_extended_colors();
+
+    /**
      * Write msg to ncurses window using background colors
      */
     void write_background(int32_t height, int32_t width, vis::ColorDefinition color,

@@ -18,6 +18,11 @@
 namespace VisConstants
 {
 
+// max extended color values, assumes extended colors fit in signed shorts
+static const int16_t k_max_extended_color = 2 << 13; // 16384
+static const int16_t k_default_max_color = 256;
+static const std::string k_disabled_gradient_color_config{"gradient=false"};
+
 // Various constants
 static const std::string k_default_locale = "en_US.UTF8";
 static const wchar_t k_space_wchar{L' '};
@@ -112,41 +117,6 @@ static const bool k_default_spectrum_reversed = false;
 static const int64_t k_default_mpd_fifo_timeout = 1l;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
-
-// rainbow colorscheme
-// TODO: define RGB color values
-static const std::vector<vis::ColorDefinition> k_default_colors = {
-    vis::ColorDefinition{63 ,43 ,214 ,43},
-    vis::ColorDefinition{69 ,43 ,214 ,86},
-    vis::ColorDefinition{33 ,0 ,214 ,86},
-    vis::ColorDefinition{39 ,0 ,214 ,128},
-    vis::ColorDefinition{38 ,0 ,171 ,128},
-    vis::ColorDefinition{44 ,0 ,171 ,171},
-    vis::ColorDefinition{43 ,0 ,128 ,171},
-    vis::ColorDefinition{49 ,0 ,128 ,214},
-    vis::ColorDefinition{48 ,0 ,86 ,214},
-    vis::ColorDefinition{84 ,43 ,86 ,214},
-    vis::ColorDefinition{83 ,43 ,43 ,214},
-    vis::ColorDefinition{119 ,86 ,43 ,214},
-    vis::ColorDefinition{118 ,86 ,0 ,214},
-    vis::ColorDefinition{154 ,128 ,0 ,214},
-    vis::ColorDefinition{148 ,128 ,0 ,171},
-    vis::ColorDefinition{184 ,171 ,0 ,171},
-    vis::ColorDefinition{178 ,171 ,0 ,128},
-    vis::ColorDefinition{214 ,214 ,0 ,128},
-    vis::ColorDefinition{208 ,214 ,0 ,86},
-    vis::ColorDefinition{209 ,214 ,43 ,86},
-    vis::ColorDefinition{203 ,214 ,43 ,43},
-    vis::ColorDefinition{204 ,214 ,86 ,43},
-    vis::ColorDefinition{198 ,214 ,86 ,0},
-    vis::ColorDefinition{199 ,214 ,128 ,0},
-    vis::ColorDefinition{163 ,171 ,128 ,0},
-    vis::ColorDefinition{164 ,171 ,171 ,0},
-    vis::ColorDefinition{128 ,128 ,171 ,0},
-    vis::ColorDefinition{129 ,128 ,214 ,0},
-    vis::ColorDefinition{93 ,86 ,214 ,0},
-    vis::ColorDefinition{99 ,86 ,214 ,43}
-};
 
 // 16 bit colorscheme
 static const std::vector<vis::ColorDefinition> k_default_16_colors = {

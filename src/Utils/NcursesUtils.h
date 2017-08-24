@@ -120,6 +120,30 @@ class NcursesUtils
         return getch();
     }
 
+    static inline bool is_extended_colors_supported()
+    {
+        //TODO(dpayne): use a define to check for extended colors, maybe there's an ncurses variable???
+        return false;
+    }
+
+    /**
+     * Get max color supported by ncurses
+     */
+    static inline int32_t get_max_color()
+    {
+        const auto max_color = is_extended_colors_supported()
+                                   ? VisConstants::k_max_extended_color
+                                   : COLORS;
+        if (max_color == 0)
+        {
+            return VisConstants::k_default_max_color;
+        }
+        else
+        {
+            return max_color;
+        }
+    }
+
   private:
     explicit NcursesUtils();
 

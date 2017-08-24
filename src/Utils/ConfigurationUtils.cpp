@@ -8,6 +8,8 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <cmath>
+#include <set>
 
 #include "Domain/VisException.h"
 #include "Utils/ConfigurationUtils.h"
@@ -126,6 +128,53 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
     return properties_map;
 }
 
+void vis::ConfigurationUtils::add_color_gradients(
+    const vis::ColorDefinition color, const double gradient_interval,
+    std::vector<vis::ColorDefinition> &colors)
+{
+    if (colors.empty())
+    {
+        colors.push_back(color);
+        return;
+    }
+    else
+    {
+        auto previous_color = colors[colors.size() - 1];
+        auto start_color = previous_color;
+
+        const double red_diff =
+            (color.get_red() - previous_color.get_red()) / gradient_interval;
+        const double green_diff =
+            (color.get_green() - previous_color.get_green()) /
+            gradient_interval;
+        const double blue_diff =
+            (color.get_blue() - previous_color.get_blue()) / gradient_interval;
+
+        for (auto i = 0u; i < std::round(gradient_interval); ++i)
+        {
+            const auto red = static_cast<int16_t>(
+                std::round(start_color.get_red() + (red_diff * i)));
+
+            const auto green = static_cast<int16_t>(
+                std::round(start_color.get_green() + (green_diff * i)));
+
+            const auto blue = static_cast<int16_t>(
+                std::round(start_color.get_blue() + (blue_diff * i)));
+
+            const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
+
+            // gradients will generally result in a lot of duplicates
+            if (previous_color.get_color_index() != color_index)
+            {
+                previous_color =
+                    vis::ColorDefinition{color_index, red, green, blue};
+                colors.push_back(previous_color);
+            }
+        }
+        colors.push_back(color);
+    }
+}
+
 std::vector<vis::ColorDefinition>
 vis::ConfigurationUtils::read_colors(const std::string &colors_path)
 {
@@ -140,38 +189,71 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         throw vis::VisException("Colors configuration not found at %s",
                                 colors_path.c_str());
     }
-
-    std::vector<std::string> split_line;
+    std::vector<std::string> lines;
+    bool is_gradient_enabled = true;
 
     while (file.good() && std::getline(file, line))
     {
         if (!line.empty())
         {
-            if (line.size() >= 7)
+            // first line, check for disabling gradient
+            if (lines.empty() && line == VisConstants::k_disabled_gradient_color_config)
             {
-                auto hex_color = vis::Utils::hex_to_int(line.substr(1, 6));
-
-                int16_t red = (hex_color >> 16) % 256;
-                int16_t green = (hex_color >> 8) % 256;
-                int16_t blue = hex_color % 256;
-
-                colors.push_back(vis::ColorDefinition{NcursesUtils::to_ansi_color(red, green, blue), red, green, blue});
+                is_gradient_enabled = false;
             }
             else
             {
-                const auto basic_color = NcursesUtils::to_basic_color(line);
-                if (basic_color.get_color_index() >= 0)
+                lines.push_back(line);
+            }
+        }
+    }
+
+    double gradient_interval = static_cast<double>(NcursesUtils::get_max_color()) / static_cast<double>(lines.size());
+
+    std::vector<std::string> split_line;
+
+    for ( const auto & color_line : lines)
+    {
+        if (color_line.size() >= 7)
+        {
+            const auto hex_color = vis::Utils::hex_to_int(color_line.substr(1, 6));
+
+            const int16_t red = (hex_color >> 16) % 256;
+            const int16_t green = (hex_color >> 8) % 256;
+            const int16_t blue = hex_color % 256;
+
+            const auto color = vis::ColorDefinition{
+                NcursesUtils::to_ansi_color(red, green, blue), red, green,
+                blue};
+            if (is_gradient_enabled)
+            {
+                add_color_gradients(color, gradient_interval, colors);
+            }
+            else
+            {
+                colors.push_back(color);
+            }
+        }
+        else
+        {
+            const auto basic_color = NcursesUtils::to_basic_color(color_line);
+            if (basic_color.get_color_index() >= 0)
+            {
+                if (is_gradient_enabled)
                 {
-                    colors.push_back(basic_color);
+                    add_color_gradients(basic_color, gradient_interval, colors);
                 }
                 else
                 {
-                    VIS_LOG(vis::LogLevel::WARN,
-                            "Configuration color "
-                            "definition line was not "
-                            "valid at %s",
-                            line.c_str());
+                    colors.push_back(basic_color);
                 }
+            }
+            else
+            {
+                VIS_LOG(vis::LogLevel::WARN, "Configuration color "
+                                             "definition line was not "
+                                             "valid at %s",
+                        color_line.c_str());
             }
         }
     }
@@ -260,6 +342,39 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     load_settings(settings, config_path, loc);
 }
 
+void vis::ConfigurationUtils::setup_default_colors(Settings &settings)
+{
+    const auto max_color = static_cast<double>(NcursesUtils::get_max_color());
+    const double frequency = (M_PI * 2.0) / max_color;
+
+    // used to remove duplicates
+    std::set<int16_t> colors_uniq;
+    std::vector<vis::ColorDefinition> colors;
+
+    const auto width = 127.0;
+    const auto center = 128.0;
+
+    for (int16_t i = 0; i < static_cast<int16_t>(max_color); ++i)
+    {
+        const auto red = static_cast<int16_t>(
+            std::sin(frequency * i + 4.0) * width + center);
+        const auto green = static_cast<int16_t>(
+            std::sin(frequency * i + 0.0) * width + center);
+        const auto blue = static_cast<int16_t>(
+            std::sin(frequency * i + 2.0) * width + center);
+
+        const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
+
+        if (colors_uniq.find(color_index) == colors_uniq.end())
+        {
+            colors.push_back(ColorDefinition{color_index, red, green, blue});
+            colors_uniq.insert(color_index);
+        }
+    }
+
+    settings.set_colors(colors);
+}
+
 void vis::ConfigurationUtils::load_color_settings(Settings &settings)
 {
     const auto colors_config_path = settings.get_colors_config_path();
@@ -272,23 +387,32 @@ void vis::ConfigurationUtils::load_color_settings(Settings &settings)
 
     if (settings.get_colors().empty())
     {
-        int32_t number_of_colors_supported =
-            NcursesUtils::number_of_colors_supported();
-        if (number_of_colors_supported <= 0)
+        // Assume 16384 colors are supported, generate a rainbow of colors
+        if (NcursesUtils::is_extended_colors_supported())
         {
-            settings.set_colors(VisConstants::k_default_colors);
-        }
-        else if (number_of_colors_supported <= 8)
-        {
-            settings.set_colors(VisConstants::k_default_8_colors);
-        }
-        else if (number_of_colors_supported <= 16)
-        {
-            settings.set_colors(VisConstants::k_default_16_colors);
+            setup_default_colors(settings);
         }
         else
         {
-            settings.set_colors(VisConstants::k_default_colors);
+            int32_t number_of_colors_supported =
+                NcursesUtils::number_of_colors_supported();
+
+            if (number_of_colors_supported <= 0)
+            {
+                setup_default_colors(settings);
+            }
+            else if (number_of_colors_supported <= 8)
+            {
+                settings.set_colors(VisConstants::k_default_8_colors);
+            }
+            else if (number_of_colors_supported <= 16)
+            {
+                settings.set_colors(VisConstants::k_default_16_colors);
+            }
+            else
+            {
+                setup_default_colors(settings);
+            }
         }
     }
 }

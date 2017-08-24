@@ -4,9 +4,11 @@
  * Created on: Jul 30, 2015
  *     Author: dpayne
  */
+#include <cmath>
 
 #include "Writer/NcursesWriter.h"
 #include "Utils/Logger.h"
+#include "Domain/VisConstants.h"
 #include "Utils/NcursesUtils.h"
 
 #ifdef _LINUX
@@ -35,15 +37,36 @@ vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
         use_default_colors(); // uses default colors of terminal, which allows
                               // transparency to work
 
-        // initialize color pairs
-        setup_colors();
+        if (NcursesUtils::is_extended_colors_supported())
+        {
+            // initialize color pairs
+            //supports 32768 color pairs
+            setup_extended_colors();
+        }
+        else
+        {
+            //only supports max 256 colors
+            setup_colors();
+        }
+    }
+}
+
+void vis::NcursesWriter::setup_extended_colors()
+{
+    // assume their are 32768 color pairs available. Half for foreground and
+    // half for background color pairs.
+    for (int32_t color_index = 1; color_index <= VisConstants::k_max_extended_color; ++color_index)
+    {
+        init_extended_pair(color_index, color_index, -1);
+        init_extended_pair(color_index + VisConstants::k_max_extended_color,
+                           color_index, color_index);
     }
 }
 
 void vis::NcursesWriter::setup_colors()
 {
     // initialize colors
-    for (int16_t i = 0; i < COLORS; ++i)
+    for (int16_t i = 1; i <= COLORS; ++i)
     {
         init_pair(i, i, -1);
 
@@ -60,23 +83,22 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    const auto color_pair = VIS_COLOR_PAIR(color.get_color_index() + COLORS);
-    attron(color_pair);
+    attron(VIS_COLOR_PAIR(color.get_color_index() + NcursesUtils::get_max_color()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(color_pair);
+    attroff(VIS_COLOR_PAIR(color.get_color_index() + NcursesUtils::get_max_color()));
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
                                           vis::ColorDefinition color,
                                           const std::wstring &msg)
 {
-    attron(COLOR_PAIR(color.get_color_index()));
+    attron(VIS_COLOR_PAIR(color.get_color_index()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(COLOR_PAIR(color.get_color_index()));
+    attroff(VIS_COLOR_PAIR(color.get_color_index()));
 }
 
 void vis::NcursesWriter::write(const int32_t row, const int32_t column,

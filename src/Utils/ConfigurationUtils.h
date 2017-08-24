@@ -32,6 +32,8 @@ class ConfigurationUtils
     static std::unordered_map<std::string, std::wstring>
     read_config(const std::string &config_path, const std::locale &loc);
 
+    static void setup_default_colors(Settings &settings);
+
     static vis::SmoothingMode read_smoothing_mode(
         const std::unordered_map<std::string, std::wstring> &properties,
         const std::string &config_param,
@@ -41,6 +43,10 @@ class ConfigurationUtils
         const std::unordered_map<std::string, std::wstring> &properties,
         const std::string &config_param,
         const vis::FalloffMode default_falloff_mode);
+
+    static void add_color_gradients(
+        const vis::ColorDefinition color, const double gradient_interval,
+        std::vector<vis::ColorDefinition> &colors);
 
     static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);
