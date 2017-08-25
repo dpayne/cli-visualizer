@@ -24,6 +24,10 @@ class Visualizer
   public:
     explicit Visualizer(const std::string &config_path, const std::locale &loc);
 
+    Visualizer(const Visualizer &v) = delete;
+
+    Visualizer(const Visualizer &&v) = delete;
+
     virtual ~Visualizer();
 
     void run();
@@ -76,7 +80,7 @@ class Visualizer
 
     void setup_signal_handlers();
 
-    void rotate_transformer(const int64_t rotation_interval,
+    void rotate_transformer(int64_t rotation_interval,
                             int64_t *last_rotation_timestamp);
 
     void allocate_buffer();

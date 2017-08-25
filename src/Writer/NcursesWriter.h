@@ -24,6 +24,10 @@ class NcursesWriter
   public:
     explicit NcursesWriter();
 
+    NcursesWriter(const NcursesWriter &) = delete;
+
+    NcursesWriter(const NcursesWriter &&) = delete;
+
     virtual ~NcursesWriter();
 
     virtual void write(int32_t height, int32_t width, ColorDefinition color,
