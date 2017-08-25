@@ -19,14 +19,14 @@ namespace vis
 class MpdAudioSource : public vis::AudioSource
 {
   public:
-    explicit MpdAudioSource(const vis::Settings *const settings);
+    explicit MpdAudioSource(const std::shared_ptr<const Settings> settings);
 
     ~MpdAudioSource() override;
 
     bool read(pcm_stereo_sample *buffer, const uint32_t buffer_size) override;
 
   private:
-    const vis::Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     int32_t m_mpd_fifo_fd;
 

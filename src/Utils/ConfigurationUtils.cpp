@@ -335,14 +335,14 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
     return smoothing_mode;
 }
 
-void vis::ConfigurationUtils::load_settings(Settings &settings,
+void vis::ConfigurationUtils::load_settings(const std::shared_ptr<Settings> settings,
                                             const std::locale &loc)
 {
-    auto config_path = VisConstants::k_default_config_path;
+    const auto config_path = VisConstants::k_default_config_path;
     load_settings(settings, config_path, loc);
 }
 
-void vis::ConfigurationUtils::setup_default_colors(Settings &settings)
+void vis::ConfigurationUtils::setup_default_colors(const std::shared_ptr<Settings> settings)
 {
     const auto max_color = static_cast<double>(NcursesUtils::get_max_color());
     const double frequency = (M_PI * 2.0) / max_color;
@@ -372,20 +372,31 @@ void vis::ConfigurationUtils::setup_default_colors(Settings &settings)
         }
     }
 
-    settings.set_colors(colors);
+    settings->set_colors(colors);
 }
 
-void vis::ConfigurationUtils::load_color_settings(Settings &settings)
+void vis::ConfigurationUtils::load_color_settings_from_color_scheme(
+    const std::string &color_scheme, const std::shared_ptr<Settings> settings)
 {
-    const auto colors_config_path = settings.get_colors_config_path();
-
-    if (!colors_config_path.empty())
+    if (!color_scheme.empty())
     {
-        settings.set_colors(
-            vis::ConfigurationUtils::read_colors(colors_config_path));
+        const auto colors_config_path = VisConstants::k_colors_directory + color_scheme;
+        if (!colors_config_path.empty())
+        {
+            settings->set_colors(
+                vis::ConfigurationUtils::read_colors(colors_config_path));
+        }
+    }
+}
+
+void vis::ConfigurationUtils::load_color_settings(const std::shared_ptr<Settings> settings)
+{
+    if (!settings->get_color_schemes().empty())
+    {
+        load_color_settings_from_color_scheme(settings->get_color_schemes()[0], settings);
     }
 
-    if (settings.get_colors().empty())
+    if (settings->get_colors().empty())
     {
         // Assume 16384 colors are supported, generate a rainbow of colors
         if (NcursesUtils::is_extended_colors_supported())
@@ -403,11 +414,11 @@ void vis::ConfigurationUtils::load_color_settings(Settings &settings)
             }
             else if (number_of_colors_supported <= 8)
             {
-                settings.set_colors(VisConstants::k_default_8_colors);
+                settings->set_colors(VisConstants::k_default_8_colors);
             }
             else if (number_of_colors_supported <= 16)
             {
-                settings.set_colors(VisConstants::k_default_16_colors);
+                settings->set_colors(VisConstants::k_default_16_colors);
             }
             else
             {
@@ -417,7 +428,7 @@ void vis::ConfigurationUtils::load_color_settings(Settings &settings)
     }
 }
 
-void vis::ConfigurationUtils::load_settings(Settings &settings,
+void vis::ConfigurationUtils::load_settings(const std::shared_ptr<Settings> settings,
                                             const std::string &config_path,
                                             const std::locale &loc)
 {
@@ -425,96 +436,94 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
         vis::ConfigurationUtils::read_config(config_path, loc);
 
     // setup mpd
-    settings.set_mpd_fifo_path(
+    settings->set_mpd_fifo_path(
         Utils::get(properties, k_mpd_fifo_path_setting,
                    VisConstants::k_default_mpd_fifo_path));
 
 // enable pulse audio by default if available
 #ifdef _ENABLE_PULSE
-    const std::string default_audio_sources =
+    const std::string default_audio_source =
         VisConstants::k_pulse_audio_source_name;
 #else
-    const std::string default_audio_sources =
+    const std::string default_audio_source =
         VisConstants::k_mpd_audio_source_name;
 #endif
 
     // setup audio sources
-    settings.set_audio_sources(Utils::split(
-        Utils::get(properties, k_audio_sources_setting, default_audio_sources),
-        ','));
+    settings->set_audio_source(Utils::get(properties, k_audio_sources_setting, default_audio_source));
 
-    settings.set_scaling_multiplier(
+    settings->set_scaling_multiplier(
         Utils::get(properties, k_scaling_multiplier,
                    VisConstants::k_default_scaling_multiplier));
 
-    settings.set_fps(
+    settings->set_fps(
         Utils::get(properties, k_fps_setting, VisConstants::k_default_fps));
 
-    settings.set_sampling_frequency(
+    settings->set_sampling_frequency(
         Utils::get(properties, k_sampling_frequency_setting,
                    VisConstants::k_default_sampling_frequency));
 
-    settings.set_low_cutoff_frequency(
+    settings->set_low_cutoff_frequency(
         Utils::get(properties, k_low_cutoff_frequency_setting,
                    VisConstants::k_default_low_cutoff_frequency));
 
-    settings.set_high_cutoff_frequency(
+    settings->set_high_cutoff_frequency(
         Utils::get(properties, k_high_cutoff_frequency_setting,
                    VisConstants::k_default_high_cutoff_frequency));
 
-    settings.set_spectrum_character(
+    settings->set_spectrum_character(
         Utils::get(properties, k_spectrum_character,
                    VisConstants::k_default_spectrum_character));
 
-    settings.set_spectrum_bar_width(
+    settings->set_spectrum_bar_width(
         Utils::get(properties, k_spectrum_bar_width,
                    VisConstants::k_default_spectrum_bar_width));
 
-    settings.set_spectrum_bar_spacing(
+    settings->set_spectrum_bar_spacing(
         Utils::get(properties, k_spectrum_bar_spacing,
                    VisConstants::k_default_spectrum_bar_spacing));
 
-    settings.set_spectrum_smoothing_mode(
+    settings->set_spectrum_smoothing_mode(
         read_smoothing_mode(properties, k_spectrum_smoothing_mode,
                             VisConstants::k_default_spectrum_smoothing_mode));
 
-    settings.set_spectrum_falloff_mode(
+    settings->set_spectrum_falloff_mode(
         read_falloff_mode(properties, k_spectrum_falloff_mode,
                           VisConstants::k_default_spectrum_falloff_mode));
 
-    settings.set_spectrum_falloff_weight(
+    settings->set_spectrum_falloff_weight(
         Utils::get(properties, k_spectrum_falloff_weight,
                    VisConstants::k_default_spectrum_falloff_weight));
 
-    settings.set_spectrum_top_margin(
+    settings->set_spectrum_top_margin(
         Utils::get(properties, k_spectrum_top_margin,
                    VisConstants::k_default_spectrum_top_margin));
 
-    settings.set_spectrum_bottom_margin(
+    settings->set_spectrum_bottom_margin(
         Utils::get(properties, k_spectrum_bottom_margin,
                    VisConstants::k_default_spectrum_bottom_margin));
 
-    settings.set_spectrum_right_margin(
+    settings->set_spectrum_right_margin(
         Utils::get(properties, k_spectrum_right_margin,
                    VisConstants::k_default_spectrum_right_margin));
 
-    settings.set_spectrum_left_margin(
+    settings->set_spectrum_left_margin(
         Utils::get(properties, k_spectrum_left_margin,
                    VisConstants::k_default_spectrum_left_margin));
 
-    settings.set_is_spectrum_reversed(
+    settings->set_is_spectrum_reversed(
         Utils::get(properties, k_spectrum_reversed,
                    VisConstants::k_default_spectrum_reversed));
 
-    settings.set_monstercat_smoothing_factor(
+    settings->set_monstercat_smoothing_factor(
         Utils::get(properties, k_monstercat_smoothing_factor,
                    VisConstants::k_default_monstercat_smoothing_factor));
 
-    settings.set_sgs_smoothing_points(
+    settings->set_sgs_smoothing_points(
         Utils::get(properties, k_sgs_smoothing_points,
                    VisConstants::k_default_sgs_smoothing_points));
 
-    settings.set_sgs_smoothing_passes(
+    settings->set_sgs_smoothing_passes(
         Utils::get(properties, k_sgs_smoothing_passes,
                    VisConstants::k_default_sgs_smoothing_passes));
 
@@ -529,43 +538,34 @@ void vis::ConfigurationUtils::load_settings(Settings &settings,
     wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character;
 #endif
 
-    settings.set_lorenz_character(
+    settings->set_lorenz_character(
         Utils::get(properties, k_lorenz_character, default_lorenz_char));
 
-    settings.set_ellipse_character(
+    settings->set_ellipse_character(
         Utils::get(properties, k_ellipse_character, default_ellipse_char));
 
-    settings.set_ellipse_radius(Utils::get(
+    settings->set_ellipse_radius(Utils::get(
         properties, k_ellipse_radius, VisConstants::k_default_ellipse_radius));
 
-    settings.set_rotation_interval(
+    settings->set_rotation_interval(
         Utils::get(properties, k_vis_rotation_interval,
                    VisConstants::k_default_visualizer_rotation_interval));
 
-    settings.set_pulse_audio_source(
+    settings->set_pulse_audio_source(
         Utils::get(properties, k_vis_pulse_audio_source,
                    VisConstants::k_default_visualizer_pulse_audio_source));
 
-    settings.set_is_stereo_enabled(
+    settings->set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));
 
-    // set color definitions
-    auto color_scheme =
-        Utils::get(properties, k_color_scheme_path_setting, std::string{""});
-    std::string colors_path;
-
-    if (!color_scheme.empty())
-    {
-        colors_path = VisConstants::k_colors_directory;
-        colors_path.append(color_scheme);
-    }
-
-    settings.set_colors_config_path(colors_path);
+    settings->set_color_schemes(Utils::split(
+        Utils::get(properties, k_color_scheme_path_setting, std::string{""}),
+        ','));
 
     const auto visualizers =
         Utils::split(Utils::get(properties, k_visualizers_setting,
                                 VisConstants::k_default_visualizers),
                      ',');
 
-    settings.set_visualizers(visualizers);
+    settings->set_visualizers(visualizers);
 }

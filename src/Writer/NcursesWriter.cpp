@@ -23,47 +23,30 @@
 #define VIS_COLOR_PAIR(n) (COLOR_PAIR(n))
 #endif
 
-vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
-    : m_settings{settings}
+vis::NcursesWriter::NcursesWriter()
 {
     initscr();
     noecho();    // disable printing of pressed keys
     curs_set(0); // sets the cursor to invisible
     setlocale(LC_ALL, "");
-
-    if (has_colors() == TRUE)
-    {
-        start_color();        // turns on color
-        use_default_colors(); // uses default colors of terminal, which allows
-                              // transparency to work
-
-        if (NcursesUtils::is_extended_colors_supported())
-        {
-            // initialize color pairs
-            //supports 32768 color pairs
-            setup_extended_colors();
-        }
-        else
-        {
-            //only supports max 256 colors
-            setup_colors();
-        }
-    }
+    setup_colors();
 }
 
-void vis::NcursesWriter::setup_extended_colors()
+void vis::NcursesWriter::setup_extended_color_pairs()
 {
     // assume their are 32768 color pairs available. Half for foreground and
     // half for background color pairs.
     for (int32_t color_index = 1; color_index <= VisConstants::k_max_extended_color; ++color_index)
     {
+#if VIS_HAVE_EXT_COLORS
         init_extended_pair(color_index, color_index, -1);
         init_extended_pair(color_index + VisConstants::k_max_extended_color,
                            color_index, color_index);
+#endif
     }
 }
 
-void vis::NcursesWriter::setup_colors()
+void vis::NcursesWriter::setup_color_pairs()
 {
     // initialize colors
     for (int16_t i = 1; i <= COLORS; ++i)
@@ -74,6 +57,28 @@ void vis::NcursesWriter::setup_colors()
         // create a
         // full block effect without using a custom font
         init_pair(static_cast<int16_t>(i + COLORS), i, i);
+    }
+}
+
+void vis::NcursesWriter::setup_colors()
+{
+    if (has_colors() == TRUE)
+    {
+        start_color();        // turns on color
+        use_default_colors(); // uses default colors of terminal, which allows
+                              // transparency to work
+
+        if (NcursesUtils::is_extended_colors_supported())
+        {
+            // initialize color pairs
+            //supports 32768 color pairs
+            setup_extended_color_pairs();
+        }
+        else
+        {
+            //only supports max 256 colors
+            setup_color_pairs();
+        }
     }
 }
 
@@ -129,11 +134,13 @@ void vis::NcursesWriter::flush()
     refresh();
 }
 
-vis::ColorDefinition vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
-                                                  bool wrap) const
+vis::ColorDefinition
+vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
+                                  std::vector<ColorDefinition> colors,
+                                  bool wrap) const
 {
     const auto colors_size =
-        static_cast<vis::ColorIndex>(m_settings->get_colors().size());
+        static_cast<vis::ColorIndex>(colors.size());
     const auto index = (number * colors_size) / (max + 1);
 
     // no colors
@@ -142,7 +149,7 @@ vis::ColorDefinition vis::NcursesWriter::to_color_pair(int32_t number, int32_t m
         return vis::ColorDefinition{0, 0, 0, 0};
     }
 
-    const auto color = m_settings->get_colors()[static_cast<size_t>(
+    const auto color = colors[static_cast<size_t>(
         wrap ? index % colors_size : std::min(index, colors_size - 1))];
 
     return color;

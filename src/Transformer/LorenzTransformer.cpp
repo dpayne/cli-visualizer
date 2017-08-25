@@ -45,7 +45,7 @@ static const double k_lorenz_b2 = 0.000908845;
 static const double k_lorenz_c = 8.0 / 3.0;
 }
 
-vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
+vis::LorenzTransformer::LorenzTransformer(const std::shared_ptr<const Settings> settings)
     : m_settings{settings}, m_rotation_count_left{0.0},
       m_rotation_count_right{0.0}, m_max_color_index{
                                        k_max_color_index_for_lorenz}
@@ -150,7 +150,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // k_max_color_index_for_lorenz was chosen mostly through experimentation on
     // what seemed to work well.
-    recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
+    recalculate_colors(m_max_color_index, m_settings->get_colors(), m_precomputed_colors, writer);
 
     std::wstring msg{m_settings->get_lorenz_character()};
     for (auto i = 0u; i < samples; ++i)
@@ -176,7 +176,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
         if (color_distance > m_max_color_index)
         {
             m_max_color_index = color_distance;
-            recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
+            recalculate_colors(m_max_color_index, m_settings->get_colors(), m_precomputed_colors, writer);
         }
 
         // We want to rotate around the center of the lorenz. so we offset zaxis

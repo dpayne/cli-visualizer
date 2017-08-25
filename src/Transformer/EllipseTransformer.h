@@ -17,7 +17,7 @@ namespace vis
 class EllipseTransformer : public GenericTransformer
 {
   public:
-    explicit EllipseTransformer(const Settings *const settings);
+    explicit EllipseTransformer(const std::shared_ptr<const Settings> m_settings);
 
     ~EllipseTransformer() override;
 
@@ -33,11 +33,12 @@ class EllipseTransformer : public GenericTransformer
      * timees depending on how many rings there are.
      */
     void recalculate_colors(const size_t max,
+                            const std::vector<ColorDefinition> &colors,
                             std::vector<ColorDefinition> &precomputed_colors,
                             const NcursesWriter *writer) override;
 
   private:
-    const Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
 

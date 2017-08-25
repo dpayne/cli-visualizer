@@ -15,7 +15,6 @@
 #endif
 
 #include "Domain/ColorDefinition.h"
-#include "Domain/Settings.h"
 
 namespace vis
 {
@@ -23,7 +22,7 @@ namespace vis
 class NcursesWriter
 {
   public:
-    explicit NcursesWriter(const Settings *const settings);
+    explicit NcursesWriter();
 
     virtual ~NcursesWriter();
 
@@ -39,17 +38,26 @@ class NcursesWriter
      * then colors will wrap.
      */
     virtual ColorDefinition to_color_pair(int32_t number, int32_t max,
-                                     bool wrap = true) const;
-
-    virtual void flush();
-
-  private:
-    const Settings *const m_settings;
-
+                                          std::vector<ColorDefinition> colors,
+                                          bool wrap = true) const;
     /**
      * Initialize color pairs for ncurses
      */
     void setup_colors();
+
+    virtual void flush();
+
+  private:
+
+    /**
+     * Initialize color pairs for ncurses
+     */
+    void setup_color_pairs();
+
+    /**
+     * Initialize extended color pairs for ncurses
+     */
+    void setup_extended_color_pairs();
 
     /**
      * Initialize extended color pairs for ncurses

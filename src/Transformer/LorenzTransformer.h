@@ -17,7 +17,7 @@ namespace vis
 class LorenzTransformer : public GenericTransformer
 {
   public:
-    explicit LorenzTransformer(const Settings *const settings);
+    explicit LorenzTransformer(const std::shared_ptr<const Settings> m_settings);
 
     ~LorenzTransformer() override;
 
@@ -29,7 +29,7 @@ class LorenzTransformer : public GenericTransformer
   private:
     /** --- BEGIN MEMBER VARIABLES --- */
 
-    const Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     double m_rotation_count_left;
 

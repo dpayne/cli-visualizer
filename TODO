@@ -1,10 +1,16 @@
-- improve reading from alsa
-    -probably involves using the alsa api directly
-
-- add direct mac os x support
-    -involves hooking into CoreAudio probably with AVAudioSession  https://github.com/syedhali/EZAudio/blob/master/EZAudio/EZAudioDevice.m
-
 - use configure or something similar to check for libraries and which compiler to use and flags
+
+- add more visualizers
+    - add beat detection
+
+- add more color examples
+    - gradient
+    - no gradient
+    - simple names with gradient
+    - updated rainbow example
+
+- colors scheme improvements
+    - allow assigning different color schemes to different visualizers
 
 - add windows support
     - probably just ncurses through cygwin

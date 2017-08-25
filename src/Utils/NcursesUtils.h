@@ -21,6 +21,12 @@
 #include <ncurses.h>
 #endif
 
+#if (NCURSES_VERSION_MAJOR >= 6 && NCURSES_VERSION_MINOR >= 0 && NCURSES_VERSION_PATCH >= 20170401 )
+#define VIS_HAVE_EXT_COLORS true
+#else
+#define VIS_HAVE_EXT_COLORS false
+#endif
+
 namespace vis
 {
 
@@ -122,8 +128,7 @@ class NcursesUtils
 
     static inline bool is_extended_colors_supported()
     {
-        //TODO(dpayne): use a define to check for extended colors, maybe there's an ncurses variable???
-        return false;
+        return VIS_HAVE_EXT_COLORS;
     }
 
     /**

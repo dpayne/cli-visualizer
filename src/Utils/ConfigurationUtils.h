@@ -20,19 +20,24 @@ namespace vis
 class ConfigurationUtils
 {
   public:
-    static void load_settings(Settings &settings,
+    static void load_settings(const std::shared_ptr<Settings> settings,
                               const std::string &config_path,
                               const std::locale &loc);
 
-    static void load_settings(Settings &settings, const std::locale &loc);
+    static void load_settings(const std::shared_ptr<Settings> settings,
+                              const std::locale &loc);
 
-    static void load_color_settings(Settings &setttings);
+    static void load_color_settings(const std::shared_ptr<Settings> setttings);
+
+    static void load_color_settings_from_color_scheme(
+        const std::string &color_scheme,
+        const std::shared_ptr<Settings> settings);
 
   private:
     static std::unordered_map<std::string, std::wstring>
     read_config(const std::string &config_path, const std::locale &loc);
 
-    static void setup_default_colors(Settings &settings);
+    static void setup_default_colors(const std::shared_ptr<Settings> settings);
 
     static vis::SmoothingMode read_smoothing_mode(
         const std::unordered_map<std::string, std::wstring> &properties,

@@ -47,7 +47,7 @@ static const double k_default_scaling_multiplier = 1.0;
 
 static const uint32_t k_default_fps = 20;
 
-const static std::string k_default_audio_sources{k_pulse_audio_source_name};
+const static std::string k_default_audio_source{k_pulse_audio_source_name};
 const static std::string k_default_mpd_fifo_path{"/tmp/mpd.fifo"};
 const static std::string k_default_visualizers{"spectrum,ellipse,lorenz"};
 

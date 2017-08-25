@@ -25,7 +25,7 @@ namespace vis
 class PulseAudioSource : public vis::AudioSource
 {
   public:
-    explicit PulseAudioSource(const vis::Settings *const settings);
+    explicit PulseAudioSource(const std::shared_ptr<const Settings> settings);
 
     ~PulseAudioSource() override;
 
@@ -33,7 +33,7 @@ class PulseAudioSource : public vis::AudioSource
 
   private:
 #ifdef _ENABLE_PULSE
-    const vis::Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     pa_simple *m_pulseaudio_simple;
 

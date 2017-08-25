@@ -8,7 +8,7 @@
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"
 
-vis::Settings::Settings()
+vis::Settings::Settings(const std::string &config_path)
     : m_scaling_multiplier{VisConstants::k_default_scaling_multiplier},
       m_fps{VisConstants::k_default_fps},
       m_sampling_frequency{VisConstants::k_default_sampling_frequency},
@@ -35,7 +35,8 @@ vis::Settings::Settings()
       m_spectrum_right_margin{VisConstants::k_default_spectrum_right_margin},
       m_spectrum_left_margin{VisConstants::k_default_spectrum_left_margin},
       m_is_spectrum_reversed{VisConstants::k_default_spectrum_reversed},
-      m_rotation_interval{VisConstants::k_default_visualizer_rotation_interval}
+      m_rotation_interval{VisConstants::k_default_visualizer_rotation_interval},
+      m_config_path{config_path}
 {
 }
 

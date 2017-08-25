@@ -28,6 +28,7 @@ namespace
 {
 const int16_t k_input_quit{'q'};
 const int16_t k_input_reload{'r'};
+const int16_t k_input_rotate_color{'c'};
 const int16_t k_input_toggle_stereo{'s'};
 const int16_t k_input_decrease_scaling{'-'};
 const int16_t k_input_increase_scaling{'+'};
@@ -35,13 +36,11 @@ const int16_t k_input_increase_scaling{'+'};
 const double k_scaling_multiplier_interval{0.1};
 }
 
-vis::Visualizer::Visualizer(vis::Settings *settings, const std::locale &loc)
-    : m_current_audio_source_index{0}, m_current_transformer_index{0},
-      m_shutdown{false}, m_signal_handlers_setup{false},
-      m_settings{settings}, m_loc{loc}, m_pcm_buffer{nullptr}
+vis::Visualizer::Visualizer(const std::string &config_path, const std::locale &loc)
+    : m_settings{std::make_shared<vis::Settings>(config_path)}, m_current_color_scheme_index{0}, m_current_transformer_index{0}, m_shutdown{false},
+      m_signal_handlers_setup{false}, m_loc{loc}, m_pcm_buffer{nullptr}
 {
-    m_pcm_buffer = static_cast<pcm_stereo_sample *>(
-        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
+    vis::ConfigurationUtils::load_settings(m_settings, config_path, loc);
     g_vis = this;
 }
 
@@ -79,38 +78,49 @@ void vis::Visualizer::setup_signal_handlers()
     }
 }
 
-void vis::Visualizer::add_audio_source(const std::string &audio_source)
+void vis::Visualizer::allocate_buffer()
 {
+    if (m_pcm_buffer != nullptr)
+    {
+        free(m_pcm_buffer);
+    }
+
+    m_pcm_buffer = static_cast<pcm_stereo_sample *>(
+        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
+}
+
+void vis::Visualizer::setup_audio_source()
+{
+    const auto audio_source = m_settings->get_audio_source();
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
-        m_audio_sources.emplace_back(
-            std::make_unique<vis::MpdAudioSource>(m_settings));
+        m_audio_source =
+            std::make_unique<vis::MpdAudioSource>(m_settings);
     }
     else if (audio_source == VisConstants::k_pulse_audio_source_name)
     {
-        m_audio_sources.emplace_back(
-            std::make_unique<vis::PulseAudioSource>(m_settings));
+        m_audio_source =
+            std::make_unique<vis::MpdAudioSource>(m_settings);
     }
-    else if (audio_source == VisConstants::k_osx_audio_source_name)
+    else
     {
-        m_audio_sources.emplace_back(
-            std::make_unique<vis::MacOsXAudioSource>(m_settings));
+        // Throw an error if there are no audio sources
+        throw vis::VisException{"No audio sources defined"};
     }
 }
 
 void vis::Visualizer::run()
 {
-    setup_audio_sources();
+    allocate_buffer();
+
+    setup_audio_source();
 
     setup_transformers();
 
-    auto audioSource = get_current_audio_source();
-    auto transformer = get_current_transformer();
-
-    m_writer = std::make_unique<NcursesWriter>(m_settings);
+    m_writer = std::make_unique<NcursesWriter>();
 
     // color settings must be re-loaded after ncurses initialization
-    vis::ConfigurationUtils::load_color_settings(*m_settings);
+    vis::ConfigurationUtils::load_color_settings(m_settings);
 
     auto last_rotation_timestamp =
         std::chrono::system_clock::now().time_since_epoch() /
@@ -121,7 +131,9 @@ void vis::Visualizer::run()
         // Process user controls
         process_user_input();
 
-        if (audioSource->read(m_pcm_buffer, m_settings->get_sample_size()))
+        auto transformer = get_current_transformer();
+
+        if (m_audio_source->read(m_pcm_buffer, m_settings->get_sample_size()))
         {
             if (m_settings->is_stereo_enabled())
             {
@@ -144,7 +156,6 @@ void vis::Visualizer::run()
                            &last_rotation_timestamp);
 
         // update sources and transformers
-        audioSource = get_current_audio_source();
         transformer = get_current_transformer();
 
         // Only do this after at least one loop to prevent CTRL-C not killing
@@ -190,6 +201,9 @@ void vis::Visualizer::process_user_input()
     case k_input_reload:
         reload_config();
         break;
+    case k_input_rotate_color:
+        rotate_color_scheme();
+        break;
     case k_input_decrease_scaling:
         m_settings->set_scaling_multiplier(
             m_settings->get_scaling_multiplier() -
@@ -208,23 +222,51 @@ void vis::Visualizer::process_user_input()
     }
 }
 
-void vis::Visualizer::reload_config()
+void vis::Visualizer::rotate_color_scheme()
 {
-    vis::ConfigurationUtils::load_settings(*m_settings, m_loc);
-    vis::ConfigurationUtils::load_color_settings(*m_settings);
+    if (m_settings->get_color_schemes().size() > 1)
+    {
+        m_current_color_scheme_index = (m_current_color_scheme_index + 1) %
+                                       m_settings->get_color_schemes().size();
+
+        vis::ConfigurationUtils::load_color_settings_from_color_scheme(
+            m_settings->get_color_schemes()[m_current_color_scheme_index],
+            m_settings);
+    }
 }
 
-void vis::Visualizer::setup_audio_sources()
+void vis::Visualizer::reload_config()
 {
-    for (const auto &audioSource : m_settings->get_audio_sources())
+    // Re-use the same config path to preserve the invocation with -c
+    const auto config_path = m_settings->get_config_path();
+
+    // keep the same scaling multiplier
+    const auto scaling_multiplier = m_settings->get_scaling_multiplier();
+
+    m_transformers.clear();
+    m_audio_source.release();
+
+    // Note m_writer should not be reset, this is because it causes the screen
+    // to flash this is also why it does not hold a pointer to settings
+    m_settings.reset(new Settings{config_path});
+
+    vis::ConfigurationUtils::load_settings(m_settings, config_path, m_loc);
+    vis::ConfigurationUtils::load_color_settings(m_settings);
+
+    m_settings->set_scaling_multiplier(scaling_multiplier);
+
+    setup_audio_source();
+    setup_transformers();
+
+    // reset the transformers position if the size has shrunk smaller than the current position
+    if (m_current_transformer_index >= m_transformers.size())
     {
-        add_audio_source(audioSource);
+        m_current_transformer_index = 0;
     }
 
-    // Throw an error if there are no audio sources
-    if (m_audio_sources.size() < 1)
+    if (m_current_color_scheme_index >= m_settings->get_color_schemes().size())
     {
-        throw vis::VisException{"No audio sources defined"};
+        m_current_color_scheme_index = 0;
     }
 }
 
@@ -235,22 +277,22 @@ void vis::Visualizer::setup_transformers()
         if (visualizer == VisConstants::k_spectrum_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<SpectrumTransformer>(m_settings));
+                std::make_unique<SpectrumTransformer>(m_settings, visualizer));
         }
         else if (visualizer == VisConstants::k_spectrum_circle_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<SpectrumCircleTransformer>(m_settings));
+                std::make_unique<SpectrumCircleTransformer>(m_settings, visualizer));
         }
         else if (visualizer == VisConstants::k_ellipse_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<EllipseTransformer>(m_settings));
+                std::make_unique<EllipseTransformer>(m_settings, visualizer));
         }
         else if (visualizer == VisConstants::k_lorenz_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<LorenzTransformer>(m_settings));
+                std::make_unique<LorenzTransformer>(m_settings, visualizer));
         }
     }
 }

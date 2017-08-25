@@ -19,7 +19,7 @@ namespace vis
 class SpectrumTransformer : public GenericTransformer
 {
   public:
-    explicit SpectrumTransformer(const Settings *const settings);
+    explicit SpectrumTransformer(const std::shared_ptr<const Settings> settings);
 
     ~SpectrumTransformer() override;
 
@@ -31,7 +31,7 @@ class SpectrumTransformer : public GenericTransformer
   private:
     void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
                  const bool is_stereo);
-    const Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
 

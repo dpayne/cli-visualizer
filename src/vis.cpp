@@ -73,20 +73,14 @@ int main(int argc, char *argv[])
     std::string error_msg;
     try
     {
-        vis::Settings settings;
-
         // use default config path if none given
         if (config_path.empty())
         {
-            vis::ConfigurationUtils::load_settings(settings, loc);
-        }
-        else
-        {
-            vis::ConfigurationUtils::load_settings(settings, config_path, loc);
+            config_path = VisConstants::k_default_config_path;
         }
 
         std::unique_ptr<vis::Visualizer> visualizer =
-            std::make_unique<vis::Visualizer>(&settings, loc);
+            std::make_unique<vis::Visualizer>(config_path, loc);
 
         visualizer->run();
     }

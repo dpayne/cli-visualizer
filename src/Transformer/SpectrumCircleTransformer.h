@@ -17,12 +17,12 @@ namespace vis
 class SpectrumCircleTransformer : public SpectrumTransformer
 {
   public:
-    explicit SpectrumCircleTransformer(const Settings *const settings);
+    explicit SpectrumCircleTransformer(const std::shared_ptr<const Settings> settings);
 
     ~SpectrumCircleTransformer() override;
 
   private:
-    const Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
 
