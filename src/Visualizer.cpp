@@ -95,13 +95,14 @@ void vis::Visualizer::allocate_buffer()
 void vis::Visualizer::setup_audio_source()
 {
     const auto audio_source = m_settings->get_audio_source();
+    std::cout << audio_source << std::endl;
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
         m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
     }
     else if (audio_source == VisConstants::k_pulse_audio_source_name)
     {
-        m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
+        m_audio_source = std::make_unique<vis::PulseAudioSource>(m_settings);
     }
     else
     {

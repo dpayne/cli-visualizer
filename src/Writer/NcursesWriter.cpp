@@ -73,7 +73,7 @@ void vis::NcursesWriter::setup_colors()
         {
             // initialize color pairs
             // supports 32768 color pairs
-            setup_extended_color_pairs();
+            setup_color_pairs();
         }
         else
         {
