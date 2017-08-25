@@ -8,6 +8,8 @@
 #ifndef _LORENZ_TRANSFORMER_H
 #define _LORENZ_TRANSFORMER_H
 
+#include <memory>
+
 #include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 

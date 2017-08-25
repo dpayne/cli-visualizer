@@ -9,6 +9,7 @@
 #define _VIS_MPD_AUDIO_SOURCE_H
 
 #include <fstream>
+#include <memory>
 
 #include "Domain/Settings.h"
 #include "Source/AudioSource.h"

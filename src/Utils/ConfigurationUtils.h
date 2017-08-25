@@ -10,6 +10,7 @@
 
 #include <locale>
 #include <unordered_map>
+#include <memory>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"

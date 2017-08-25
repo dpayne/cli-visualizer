@@ -8,6 +8,8 @@
 #ifndef _SPECTRUM_TRANSFORMER_H
 #define _SPECTRUM_TRANSFORMER_H
 
+#include <memory>
+
 #include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"

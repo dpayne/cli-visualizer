@@ -9,6 +9,7 @@
 #define _VIS_PULSE_AUDIO_SOURCE_H
 
 #include <fstream>
+#include <memory>
 
 #ifdef _ENABLE_PULSE
 #include <pulse/error.h>

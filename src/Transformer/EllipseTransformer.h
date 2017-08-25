@@ -8,6 +8,8 @@
 #ifndef _ELLIPSE_TRANSFORMER_H
 #define _ELLIPSE_TRANSFORMER_H
 
+#include <memory>
+
 #include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 
