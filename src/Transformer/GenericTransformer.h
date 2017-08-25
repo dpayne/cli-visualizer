@@ -32,7 +32,6 @@ class GenericTransformer
     }
 
   protected:
-
     std::string m_name;
 
     /**

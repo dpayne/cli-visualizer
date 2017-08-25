@@ -21,7 +21,8 @@
 #include <ncurses.h>
 #endif
 
-#if (NCURSES_VERSION_MAJOR >= 6 && NCURSES_VERSION_MINOR >= 0 && NCURSES_VERSION_PATCH >= 20170401 )
+#if (NCURSES_VERSION_MAJOR >= 6 && NCURSES_VERSION_MINOR >= 0 &&               \
+     NCURSES_VERSION_PATCH >= 20170401)
 #define VIS_HAVE_EXT_COLORS true
 #else
 #define VIS_HAVE_EXT_COLORS false
@@ -47,8 +48,8 @@ class NcursesUtils
   public:
     /**
      * Convert a string to a color index. If the string is numeric the string is
-     * convert to a number and returned as a ColorDefinition. A color can be called
-     * by name if it is one of the 8 basic colors:
+     * convert to a number and returned as a ColorDefinition. A color can be
+     * called by name if it is one of the 8 basic colors:
      * black,red,green,yellow,blue,magenta,cyan,white.
      *
      * If the string is empty or if it is a name of a color that is not one of

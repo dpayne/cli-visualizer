@@ -17,7 +17,9 @@ namespace vis
 class SpectrumCircleTransformer : public SpectrumTransformer
 {
   public:
-    explicit SpectrumCircleTransformer(const std::shared_ptr<const Settings> settings);
+    explicit SpectrumCircleTransformer(
+        const std::shared_ptr<const Settings> settings,
+        const std::string &name);
 
     ~SpectrumCircleTransformer() override;
 

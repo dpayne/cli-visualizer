@@ -21,8 +21,9 @@ namespace
 {
 }
 
-vis::EllipseTransformer::EllipseTransformer(const std::shared_ptr<const Settings> settings)
-    : m_settings{settings}
+vis::EllipseTransformer::EllipseTransformer(
+    const std::shared_ptr<const Settings> settings, const std::string &name)
+    : GenericTransformer(name), m_settings{settings}
 {
 }
 
@@ -51,8 +52,8 @@ void vis::EllipseTransformer::recalculate_colors(
         precomputed_colors.resize(max, vis::ColorDefinition{0, 0, 0, 0});
         for (size_t i = 0u; i < max; ++i)
         {
-            precomputed_colors[i] =
-                writer->to_color_pair(static_cast<int32_t>(i), radius, colors, true);
+            precomputed_colors[i] = writer->to_color_pair(
+                static_cast<int32_t>(i), radius, colors, true);
         }
     }
 }
@@ -72,7 +73,8 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
     const auto max_color_index = static_cast<size_t>(std::floor(
         std::sqrt(win_width * win_width + 4 * win_height * win_height)));
 
-    recalculate_colors(max_color_index, m_settings->get_colors(), m_precomputed_colors, writer);
+    recalculate_colors(max_color_index, m_settings->get_colors(),
+                       m_precomputed_colors, writer);
 
     writer->clear();
 

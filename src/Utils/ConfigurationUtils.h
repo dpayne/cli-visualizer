@@ -49,9 +49,9 @@ class ConfigurationUtils
         const std::string &config_param,
         const vis::FalloffMode default_falloff_mode);
 
-    static void add_color_gradients(
-        const vis::ColorDefinition color, const double gradient_interval,
-        std::vector<vis::ColorDefinition> &colors);
+    static void add_color_gradients(const vis::ColorDefinition color,
+                                    const double gradient_interval,
+                                    std::vector<vis::ColorDefinition> &colors);
 
     static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);

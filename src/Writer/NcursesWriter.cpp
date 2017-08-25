@@ -6,10 +6,10 @@
  */
 #include <cmath>
 
-#include "Writer/NcursesWriter.h"
-#include "Utils/Logger.h"
 #include "Domain/VisConstants.h"
+#include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
+#include "Writer/NcursesWriter.h"
 
 #ifdef _LINUX
 /* Ncurses version 6.0.20170401 introduced an issue with COLOR_PAIR which broke
@@ -36,7 +36,8 @@ void vis::NcursesWriter::setup_extended_color_pairs()
 {
     // assume their are 32768 color pairs available. Half for foreground and
     // half for background color pairs.
-    for (int32_t color_index = 1; color_index <= VisConstants::k_max_extended_color; ++color_index)
+    for (int32_t color_index = 1;
+         color_index <= VisConstants::k_max_extended_color; ++color_index)
     {
 #if VIS_HAVE_EXT_COLORS
         init_extended_pair(color_index, color_index, -1);
@@ -71,12 +72,12 @@ void vis::NcursesWriter::setup_colors()
         if (NcursesUtils::is_extended_colors_supported())
         {
             // initialize color pairs
-            //supports 32768 color pairs
+            // supports 32768 color pairs
             setup_extended_color_pairs();
         }
         else
         {
-            //only supports max 256 colors
+            // only supports max 256 colors
             setup_color_pairs();
         }
     }
@@ -88,11 +89,13 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    attron(VIS_COLOR_PAIR(color.get_color_index() + NcursesUtils::get_max_color()));
+    attron(VIS_COLOR_PAIR(color.get_color_index() +
+                          NcursesUtils::get_max_color()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(VIS_COLOR_PAIR(color.get_color_index() + NcursesUtils::get_max_color()));
+    attroff(VIS_COLOR_PAIR(color.get_color_index() +
+                           NcursesUtils::get_max_color()));
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
@@ -139,8 +142,7 @@ vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
                                   std::vector<ColorDefinition> colors,
                                   bool wrap) const
 {
-    const auto colors_size =
-        static_cast<vis::ColorIndex>(colors.size());
+    const auto colors_size = static_cast<vis::ColorIndex>(colors.size());
     const auto index = (number * colors_size) / (max + 1);
 
     // no colors

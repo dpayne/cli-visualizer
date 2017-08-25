@@ -19,7 +19,8 @@ namespace vis
 class SpectrumTransformer : public GenericTransformer
 {
   public:
-    explicit SpectrumTransformer(const std::shared_ptr<const Settings> settings);
+    explicit SpectrumTransformer(const std::shared_ptr<const Settings> settings,
+                                 const std::string &name);
 
     ~SpectrumTransformer() override;
 

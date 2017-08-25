@@ -36,9 +36,12 @@ const int16_t k_input_increase_scaling{'+'};
 const double k_scaling_multiplier_interval{0.1};
 }
 
-vis::Visualizer::Visualizer(const std::string &config_path, const std::locale &loc)
-    : m_settings{std::make_shared<vis::Settings>(config_path)}, m_current_color_scheme_index{0}, m_current_transformer_index{0}, m_shutdown{false},
-      m_signal_handlers_setup{false}, m_loc{loc}, m_pcm_buffer{nullptr}
+vis::Visualizer::Visualizer(const std::string &config_path,
+                            const std::locale &loc)
+    : m_settings{std::make_shared<vis::Settings>(config_path)},
+      m_current_color_scheme_index{0}, m_current_transformer_index{0},
+      m_shutdown{false}, m_signal_handlers_setup{false}, m_loc{loc},
+      m_pcm_buffer{nullptr}
 {
     vis::ConfigurationUtils::load_settings(m_settings, config_path, loc);
     g_vis = this;
@@ -94,13 +97,11 @@ void vis::Visualizer::setup_audio_source()
     const auto audio_source = m_settings->get_audio_source();
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
-        m_audio_source =
-            std::make_unique<vis::MpdAudioSource>(m_settings);
+        m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
     }
     else if (audio_source == VisConstants::k_pulse_audio_source_name)
     {
-        m_audio_source =
-            std::make_unique<vis::MpdAudioSource>(m_settings);
+        m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
     }
     else
     {
@@ -258,7 +259,8 @@ void vis::Visualizer::reload_config()
     setup_audio_source();
     setup_transformers();
 
-    // reset the transformers position if the size has shrunk smaller than the current position
+    // reset the transformers position if the size has shrunk smaller than the
+    // current position
     if (m_current_transformer_index >= m_transformers.size())
     {
         m_current_transformer_index = 0;
@@ -282,7 +284,8 @@ void vis::Visualizer::setup_transformers()
         else if (visualizer == VisConstants::k_spectrum_circle_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<SpectrumCircleTransformer>(m_settings, visualizer));
+                std::make_unique<SpectrumCircleTransformer>(m_settings,
+                                                            visualizer));
         }
         else if (visualizer == VisConstants::k_ellipse_visualizer_name)
         {

@@ -1,5 +1,5 @@
-#include <Utils/Utils.h>
 #include <Utils/NcursesUtils.h>
+#include <Utils/Utils.h>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <ncurses.h>

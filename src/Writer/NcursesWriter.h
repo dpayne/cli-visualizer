@@ -48,7 +48,6 @@ class NcursesWriter
     virtual void flush();
 
   private:
-
     /**
      * Initialize color pairs for ncurses
      */
@@ -67,14 +66,14 @@ class NcursesWriter
     /**
      * Write msg to ncurses window using background colors
      */
-    void write_background(int32_t height, int32_t width, vis::ColorDefinition color,
-                          const std::wstring &msg);
+    void write_background(int32_t height, int32_t width,
+                          vis::ColorDefinition color, const std::wstring &msg);
 
     /**
      * Write msg to ncurses window using foreground colors
      */
-    void write_foreground(int32_t height, int32_t width, vis::ColorDefinition color,
-                          const std::wstring &msg);
+    void write_foreground(int32_t height, int32_t width,
+                          vis::ColorDefinition color, const std::wstring &msg);
 };
 }
 

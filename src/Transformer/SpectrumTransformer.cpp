@@ -35,11 +35,13 @@ static const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
-vis::SpectrumTransformer::SpectrumTransformer(const std::shared_ptr<const Settings> settings)
-    : m_settings{settings}, m_fftw_results{0}, m_fftw_input_left{nullptr},
-      m_fftw_input_right{nullptr}, m_fftw_output_left{nullptr},
-      m_fftw_output_right{nullptr}, m_fftw_plan_left{nullptr},
-      m_fftw_plan_right{nullptr}, m_previous_win_width{0}, m_silent_runs{0u}
+vis::SpectrumTransformer::SpectrumTransformer(
+    const std::shared_ptr<const Settings> settings, const std::string &name)
+    : GenericTransformer(name), m_settings{settings}, m_fftw_results{0},
+      m_fftw_input_left{nullptr}, m_fftw_input_right{nullptr},
+      m_fftw_output_left{nullptr}, m_fftw_output_right{nullptr},
+      m_fftw_plan_left{nullptr}, m_fftw_plan_right{nullptr},
+      m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
@@ -490,8 +492,8 @@ void vis::SpectrumTransformer::draw_bars(
     int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
     vis::NcursesWriter *writer)
 {
-    recalculate_colors(static_cast<size_t>(win_height), m_settings->get_colors(), m_precomputed_colors,
-                       writer);
+    recalculate_colors(static_cast<size_t>(win_height),
+                       m_settings->get_colors(), m_precomputed_colors, writer);
 
     const auto full_win_width = NcursesUtils::get_window_width();
     const auto full_win_height = NcursesUtils::get_window_height();

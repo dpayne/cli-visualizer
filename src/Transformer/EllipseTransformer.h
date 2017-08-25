@@ -17,7 +17,9 @@ namespace vis
 class EllipseTransformer : public GenericTransformer
 {
   public:
-    explicit EllipseTransformer(const std::shared_ptr<const Settings> m_settings);
+    explicit EllipseTransformer(
+        const std::shared_ptr<const Settings> m_settings,
+        const std::string &name);
 
     ~EllipseTransformer() override;
 

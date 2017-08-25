@@ -38,8 +38,9 @@ class Visualizer
         m_shutdown = true;
     }
 
-  private:
+    void reload_config();
 
+  private:
     std::shared_ptr<vis::Settings> m_settings;
 
     size_t m_current_color_scheme_index;
@@ -66,8 +67,6 @@ class Visualizer
     }
 
     void process_user_input();
-
-    void reload_config();
 
     void rotate_color_scheme();
 

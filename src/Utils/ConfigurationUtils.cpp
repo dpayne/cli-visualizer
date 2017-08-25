@@ -5,11 +5,11 @@
  *     Author: dpayne
  */
 
+#include <cmath>
 #include <fstream>
+#include <set>
 #include <string>
 #include <unordered_map>
-#include <cmath>
-#include <set>
 
 #include "Domain/VisException.h"
 #include "Utils/ConfigurationUtils.h"
@@ -161,7 +161,8 @@ void vis::ConfigurationUtils::add_color_gradients(
             const auto blue = static_cast<int16_t>(
                 std::round(start_color.get_blue() + (blue_diff * i)));
 
-            const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
+            const auto color_index =
+                NcursesUtils::to_ansi_color(red, green, blue);
 
             // gradients will generally result in a lot of duplicates
             if (previous_color.get_color_index() != color_index)
@@ -197,7 +198,8 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         if (!line.empty())
         {
             // first line, check for disabling gradient
-            if (lines.empty() && line == VisConstants::k_disabled_gradient_color_config)
+            if (lines.empty() &&
+                line == VisConstants::k_disabled_gradient_color_config)
             {
                 is_gradient_enabled = false;
             }
@@ -208,15 +210,18 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         }
     }
 
-    double gradient_interval = static_cast<double>(NcursesUtils::get_max_color()) / static_cast<double>(lines.size());
+    double gradient_interval =
+        static_cast<double>(NcursesUtils::get_max_color()) /
+        static_cast<double>(lines.size());
 
     std::vector<std::string> split_line;
 
-    for ( const auto & color_line : lines)
+    for (const auto &color_line : lines)
     {
         if (color_line.size() >= 7)
         {
-            const auto hex_color = vis::Utils::hex_to_int(color_line.substr(1, 6));
+            const auto hex_color =
+                vis::Utils::hex_to_int(color_line.substr(1, 6));
 
             const int16_t red = (hex_color >> 16) % 256;
             const int16_t green = (hex_color >> 8) % 256;
@@ -250,9 +255,10 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             }
             else
             {
-                VIS_LOG(vis::LogLevel::WARN, "Configuration color "
-                                             "definition line was not "
-                                             "valid at %s",
+                VIS_LOG(vis::LogLevel::WARN,
+                        "Configuration color "
+                        "definition line was not "
+                        "valid at %s",
                         color_line.c_str());
             }
         }
@@ -335,14 +341,15 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
     return smoothing_mode;
 }
 
-void vis::ConfigurationUtils::load_settings(const std::shared_ptr<Settings> settings,
-                                            const std::locale &loc)
+void vis::ConfigurationUtils::load_settings(
+    const std::shared_ptr<Settings> settings, const std::locale &loc)
 {
     const auto config_path = VisConstants::k_default_config_path;
     load_settings(settings, config_path, loc);
 }
 
-void vis::ConfigurationUtils::setup_default_colors(const std::shared_ptr<Settings> settings)
+void vis::ConfigurationUtils::setup_default_colors(
+    const std::shared_ptr<Settings> settings)
 {
     const auto max_color = static_cast<double>(NcursesUtils::get_max_color());
     const double frequency = (M_PI * 2.0) / max_color;
@@ -371,6 +378,12 @@ void vis::ConfigurationUtils::setup_default_colors(const std::shared_ptr<Setting
             colors_uniq.insert(color_index);
         }
     }
+    std::ofstream outputFile("~/rainbow.txt");
+    for (const auto &color : colors)
+    {
+        outputFile << "#" << color.get_red() << "," << color.get_green() << ","
+                   << color.get_blue() << "\n";
+    }
 
     settings->set_colors(colors);
 }
@@ -380,7 +393,8 @@ void vis::ConfigurationUtils::load_color_settings_from_color_scheme(
 {
     if (!color_scheme.empty())
     {
-        const auto colors_config_path = VisConstants::k_colors_directory + color_scheme;
+        const auto colors_config_path =
+            VisConstants::k_colors_directory + color_scheme;
         if (!colors_config_path.empty())
         {
             settings->set_colors(
@@ -389,11 +403,13 @@ void vis::ConfigurationUtils::load_color_settings_from_color_scheme(
     }
 }
 
-void vis::ConfigurationUtils::load_color_settings(const std::shared_ptr<Settings> settings)
+void vis::ConfigurationUtils::load_color_settings(
+    const std::shared_ptr<Settings> settings)
 {
     if (!settings->get_color_schemes().empty())
     {
-        load_color_settings_from_color_scheme(settings->get_color_schemes()[0], settings);
+        load_color_settings_from_color_scheme(settings->get_color_schemes()[0],
+                                              settings);
     }
 
     if (settings->get_colors().empty())
@@ -428,9 +444,9 @@ void vis::ConfigurationUtils::load_color_settings(const std::shared_ptr<Settings
     }
 }
 
-void vis::ConfigurationUtils::load_settings(const std::shared_ptr<Settings> settings,
-                                            const std::string &config_path,
-                                            const std::locale &loc)
+void vis::ConfigurationUtils::load_settings(
+    const std::shared_ptr<Settings> settings, const std::string &config_path,
+    const std::locale &loc)
 {
     const auto properties =
         vis::ConfigurationUtils::read_config(config_path, loc);
@@ -450,7 +466,8 @@ void vis::ConfigurationUtils::load_settings(const std::shared_ptr<Settings> sett
 #endif
 
     // setup audio sources
-    settings->set_audio_source(Utils::get(properties, k_audio_sources_setting, default_audio_source));
+    settings->set_audio_source(
+        Utils::get(properties, k_audio_sources_setting, default_audio_source));
 
     settings->set_scaling_multiplier(
         Utils::get(properties, k_scaling_multiplier,
