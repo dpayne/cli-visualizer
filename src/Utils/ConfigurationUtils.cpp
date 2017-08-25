@@ -378,12 +378,6 @@ void vis::ConfigurationUtils::setup_default_colors(
             colors_uniq.insert(color_index);
         }
     }
-    std::ofstream outputFile("~/rainbow.txt");
-    for (const auto &color : colors)
-    {
-        outputFile << "#" << color.get_red() << "," << color.get_green() << ","
-                   << color.get_blue() << "\n";
-    }
 
     settings->set_colors(colors);
 }
