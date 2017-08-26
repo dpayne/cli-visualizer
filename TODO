@@ -4,10 +4,7 @@
     - add beat detection
 
 - add more color examples
-    - gradient
-    - no gradient
-    - simple names with gradient
-    - updated rainbow example
+    - add gifs of gradients
 
 - colors scheme improvements
     - allow assigning different color schemes to different visualizers
