@@ -8,6 +8,8 @@
 #ifndef _SPECTRUM_TRANSFORMER_H
 #define _SPECTRUM_TRANSFORMER_H
 
+#include <memory>
+
 #include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 #include "Writer/NcursesWriter.h"
@@ -19,7 +21,17 @@ namespace vis
 class SpectrumTransformer : public GenericTransformer
 {
   public:
-    explicit SpectrumTransformer(const Settings *const settings);
+    explicit SpectrumTransformer(
+        const std::shared_ptr<const vis::Settings> settings,
+        const std::string &name);
+
+    SpectrumTransformer(const SpectrumTransformer &other) = delete;
+
+    SpectrumTransformer(const SpectrumTransformer &&other) = delete;
+
+    SpectrumTransformer &operator=(const SpectrumTransformer &v) = delete;
+
+    SpectrumTransformer &operator=(SpectrumTransformer &&v) = delete;
 
     ~SpectrumTransformer() override;
 
@@ -28,10 +40,15 @@ class SpectrumTransformer : public GenericTransformer
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
 
+    void clear_colors() override
+    {
+        m_precomputed_colors.clear();
+    }
+
   private:
     void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
-                 const bool is_stereo);
-    const Settings *const m_settings;
+                 bool is_stereo);
+    const std::shared_ptr<const Settings> m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
 
@@ -81,7 +98,7 @@ class SpectrumTransformer : public GenericTransformer
 
     // Pre-compute colors calculations to avoid duplicate work
     // Note: this is only re-computed when screen height changes
-    std::vector<vis::ColorIndex> m_precomputed_colors;
+    std::vector<vis::ColorDefinition> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
 
@@ -97,18 +114,17 @@ class SpectrumTransformer : public GenericTransformer
      * Populates "bars" and "bars_falloff" with the bar heights to be displayed
      */
     virtual void create_spectrum_bars(fftw_complex *fftw_output,
-                                      const size_t fftw_results,
-                                      const int32_t win_height,
-                                      const int32_t win_width,
-                                      const uint32_t number_of_bars,
-                                      std::vector<double> &bars,
-                                      std::vector<double> &bars_falloff);
+                                      size_t fftw_results, int32_t win_height,
+                                      int32_t win_width,
+                                      uint32_t number_of_bars,
+                                      std::vector<double> *bars,
+                                      std::vector<double> *bars_falloff);
 
-    void
-    generate_bars(std::vector<double> &bars, const uint32_t number_of_bars,
-                  const fftw_complex *fftw_output, const size_t fftw_results,
-                  const std::vector<uint32_t> &low_cutoff_frequencies,
-                  const std::vector<uint32_t> &high_cutoff_frequencies) const;
+    void generate_bars(uint32_t number_of_bars, size_t fftw_results,
+                       const std::vector<uint32_t> &low_cutoff_frequencies,
+                       const std::vector<uint32_t> &high_cutoff_frequencies,
+                       const fftw_complex *fftw_output,
+                       std::vector<double> *bars) const;
 
     void recalculate_cutoff_frequencies(
         uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
@@ -119,15 +135,15 @@ class SpectrumTransformer : public GenericTransformer
      * Applies the smoothing operations based on the settings in m_settings to
      * "bars"
      */
-    void smooth_bars(std::vector<double> &bars);
+    void smooth_bars(std::vector<double> *bars);
 
     /**
      * Applies the falloff effect based on the settings in m_settings to "bars".
      * The old falloff from the previous run should be in "falloff_bars". The
      * new falloff values will be updated in-place in "falloff_bars"
      */
-    std::vector<double> apply_falloff(const std::vector<double> &bars,
-                                      std::vector<double> &falloff_bars) const;
+    void apply_falloff(const std::vector<double> &bars,
+                       std::vector<double> *falloff_bars) const;
 
     /**
      * Calculates the moving average and the standard deviation for a given
@@ -138,10 +154,11 @@ class SpectrumTransformer : public GenericTransformer
      * If "old_values.size()" >  "max_number_of_elements" the first element of
      * old_values is erased.
      */
-    void calculate_moving_average_and_std_dev(
-        const double new_value, const size_t max_number_of_elements,
-        std::vector<double> &old_values, double *moving_average,
-        double *std_dev) const;
+    void calculate_moving_average_and_std_dev(double new_value,
+                                              size_t max_number_of_elements,
+                                              std::vector<double> *old_values,
+                                              double *moving_average,
+                                              double *std_dev) const;
 
     /**
      * A long term and short term running average are kept of the max bar
@@ -152,8 +169,8 @@ class SpectrumTransformer : public GenericTransformer
      * This happens commonly if a there is a new song that is a lot quieter
      * or louder than the previous song.
      */
-    void maybe_reset_scaling_window(const double current_max_height,
-                                    const size_t max_number_of_elements,
+    void maybe_reset_scaling_window(double current_max_height,
+                                    size_t max_number_of_elements,
                                     std::vector<double> *values,
                                     double *moving_average, double *std_dev);
 
@@ -162,7 +179,7 @@ class SpectrumTransformer : public GenericTransformer
      */
     virtual void draw_bars(const std::vector<double> &bars,
                            const std::vector<double> &bars_falloff,
-                           int32_t win_height, const bool flipped,
+                           int32_t win_height, bool flipped,
                            const std::wstring &bar_row_msg,
                            vis::NcursesWriter *writer);
 
@@ -170,15 +187,14 @@ class SpectrumTransformer : public GenericTransformer
      * Scaling the given vector of points "bars" to a fit a screen with a window
      * height of "height".
      */
-    virtual void scale_bars(std::vector<double> &bars, const int32_t height);
+    virtual void scale_bars(int32_t height, std::vector<double> *bars);
 
     /**
      * Creates the to be used for every section of the bar to be printed. For
      * example if the bar width is set to two, and the bar character to '#'.
      * Then the bar row msg would be "##";
      */
-    std::wstring create_bar_row_msg(const wchar_t character,
-                                    uint32_t bar_width);
+    std::wstring create_bar_row_msg(wchar_t character, uint32_t bar_width);
 
     /**
      * Savitzky-Golay smoothng. This type of smoothing is usually much faster
@@ -186,17 +202,17 @@ class SpectrumTransformer : public GenericTransformer
      *
      *  https://en.wikipedia.org/wiki/Savitzky%E2%80%93Golay_filter
      */
-    void sgs_smoothing(std::vector<double> &bars);
+    void sgs_smoothing(std::vector<double> *bars);
 
     /**
      * This type of smoothing is inspired by monstercat
      * (https://www.youtube.com/user/MonstercatMedia). The code was largely
      * taken from cava git@github.com:karlstav/cava.git
      */
-    void monstercat_smoothing(std::vector<double> &bars);
+    void monstercat_smoothing(std::vector<double> *bars);
 
     /** --- END MEMBER FUNCTIONS --- */
 };
-}
+} // namespace vis
 
 #endif

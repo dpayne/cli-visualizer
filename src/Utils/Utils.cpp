@@ -6,11 +6,3 @@
  */
 
 #include "Utils/Utils.h"
-
-vis::Utils::Utils()
-{
-}
-
-vis::Utils::~Utils()
-{
-}

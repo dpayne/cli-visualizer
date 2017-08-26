@@ -15,13 +15,9 @@
 
 namespace
 {
-const static uint64_t k_max_log_line = 4096;
-const static std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
-                                                       "ERROR"};
-}
-
-vis::Logger::Logger()
-{
+const uint64_t k_max_log_line = 4096;
+const std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
+                                                "ERROR"};
 }
 
 void vis::Logger::initialize(const std::string log_location)
@@ -29,7 +25,10 @@ void vis::Logger::initialize(const std::string log_location)
     std::string log_path{log_location};
 
     // redirect stderr to log file
-    std::freopen(log_path.c_str(), "w", stderr);
+    if ( std::freopen(log_path.c_str(), "w", stderr) == nullptr )
+    {
+        std::cerr << "Could not open log path " << log_path << std::endl;
+    }
 }
 
 void vis::Logger::uninitialize()
@@ -50,8 +49,4 @@ void vis::Logger::log(vis::LogLevel level, const char *file, uint16_t line,
                                  static_cast<uint8_t>(vis::LogLevel::ERROR))],
         message_text_buf);
     va_end(args);
-}
-
-vis::Logger::~Logger()
-{
 }

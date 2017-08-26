@@ -18,8 +18,13 @@
 namespace VisConstants
 {
 
+// max extended color values, assumes extended colors fit in signed shorts
+static const int16_t k_max_extended_color = 2 << 13; // 16384
+static const int16_t k_default_max_color = 256;
+static const std::string k_disabled_gradient_color_config{"gradient=false"};
+
 // Various constants
-static const std::string k_default_locale = "en_US.UTF8";
+static const std::string k_default_locale{"en_US.UTF8"};
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
 static const wchar_t k_hash_wchar{L'#'};
@@ -31,7 +36,7 @@ static const std::string k_false{"false"};
 static const std::string k_mpd_audio_source_name{"mpd"};
 static const std::string k_osx_audio_source_name{"osx"};
 static const std::string k_pulse_audio_source_name{"pulse"};
-static const std::string k_default_visualizer_pulse_audio_source = "";
+static const std::string k_default_visualizer_pulse_audio_source;
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
 static const std::string k_lorenz_visualizer_name{"lorenz"};
@@ -42,7 +47,7 @@ static const double k_default_scaling_multiplier = 1.0;
 
 static const uint32_t k_default_fps = 20;
 
-const static std::string k_default_audio_sources{k_pulse_audio_source_name};
+const static std::string k_default_audio_source{k_pulse_audio_source_name};
 const static std::string k_default_mpd_fifo_path{"/tmp/mpd.fifo"};
 const static std::string k_default_visualizers{"spectrum,ellipse,lorenz"};
 
@@ -113,18 +118,24 @@ static const int64_t k_default_mpd_fifo_timeout = 1l;
 static const int32_t k_default_user_input_timeout_milliseconds = 500;
 static const uint64_t k_silent_sleep_milliseconds = 100ul;
 
-// rainbow colorscheme
-static const std::vector<vis::ColorIndex> k_default_colors = {
-    63,  69,  33,  39,  38,  44,  43,  49,  48,  84,  83,  119, 118, 154, 148,
-    184, 178, 214, 208, 209, 203, 204, 198, 199, 163, 164, 128, 129, 93,  99};
-
 // 16 bit colorscheme
-static const std::vector<vis::ColorIndex> k_default_16_colors = {
-    4, 12, 6, 14, 2, 10, 11, 3, 5, 1, 13, 9, 7, 15, 0};
+static const std::vector<vis::ColorDefinition> k_default_16_colors = {
+    vis::ColorDefinition{4, -1, -1, -1},  vis::ColorDefinition{12, -1, -1, -1},
+    vis::ColorDefinition{6, -1, -1, -1},  vis::ColorDefinition{14, -1, -1, -1},
+    vis::ColorDefinition{2, -1, -1, -1},  vis::ColorDefinition{10, -1, -1, -1},
+    vis::ColorDefinition{11, -1, -1, -1}, vis::ColorDefinition{3, -1, -1, -1},
+    vis::ColorDefinition{5, -1, -1, -1},  vis::ColorDefinition{1, -1, -1, -1},
+    vis::ColorDefinition{13, -1, -1, -1}, vis::ColorDefinition{9, -1, -1, -1},
+    vis::ColorDefinition{7, -1, -1, -1},  vis::ColorDefinition{15, -1, -1, -1},
+    vis::ColorDefinition{0, -1, -1, -1},
+};
 
 // 8 bit colorscheme
-static const std::vector<vis::ColorIndex> k_default_8_colors = {4, 6, 2, 3,
-                                                                5, 1, 7, 0};
-}
+static const std::vector<vis::ColorDefinition> k_default_8_colors = {
+    vis::ColorDefinition{4, -1, -1, -1}, vis::ColorDefinition{6, -1, -1, -1},
+    vis::ColorDefinition{2, -1, -1, -1}, vis::ColorDefinition{3, -1, -1, -1},
+    vis::ColorDefinition{5, -1, -1, -1}, vis::ColorDefinition{1, -1, -1, -1},
+    vis::ColorDefinition{7, -1, -1, -1}, vis::ColorDefinition{0, -1, -1, -1}};
+} // namespace VisConstants
 
 #endif

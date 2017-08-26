@@ -16,30 +16,33 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <numeric>
-#include <stdio.h>
 #include <thread>
 
 namespace
 {
-static const size_t k_secs_for_autoscaling = 30;
-static const double k_autoscaling_reset_window_percent = 0.10;
-static const double k_autoscaling_erase_percent_on_reset = 0.75;
-static const double k_deviation_amount_to_reset =
+const size_t k_secs_for_autoscaling = 30;
+const double k_autoscaling_reset_window_percent = 0.10;
+const double k_autoscaling_erase_percent_on_reset = 0.75;
+const double k_deviation_amount_to_reset =
     1.0; // amount of deviation needed between short term and long term moving
          // max height averages to trigger an auto scaling reset
 
-static const double k_minimum_bar_height = 0.125;
-static const uint64_t k_max_silent_runs_before_sleep =
+const double k_minimum_bar_height = 0.125;
+const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
-vis::SpectrumTransformer::SpectrumTransformer(const Settings *const settings)
-    : m_settings{settings}, m_fftw_results{0}, m_fftw_input_left{nullptr},
-      m_fftw_input_right{nullptr}, m_fftw_output_left{nullptr},
-      m_fftw_output_right{nullptr}, m_fftw_plan_left{nullptr},
-      m_fftw_plan_right{nullptr}, m_previous_win_width{0}, m_silent_runs{0u}
+vis::SpectrumTransformer::SpectrumTransformer(
+    const std::shared_ptr<const vis::Settings> settings,
+    const std::string &name)
+    : GenericTransformer(name), m_settings{settings}, m_fftw_results{0},
+      m_fftw_input_left{nullptr}, m_fftw_input_right{nullptr},
+      m_fftw_output_left{nullptr}, m_fftw_output_right{nullptr},
+      m_fftw_plan_left{nullptr}, m_fftw_plan_right{nullptr},
+      m_previous_win_width{0}, m_silent_runs{0u}
 {
     m_fftw_results =
         (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
@@ -146,9 +149,11 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
             create_bar_row_msg(m_settings->get_spectrum_character(),
                                m_settings->get_spectrum_bar_width());
 
-        uint32_t number_of_bars = static_cast<uint32_t>(std::floor(
-            static_cast<uint32_t>(width) /
-            (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
+        auto number_of_bars = std::max(
+            static_cast<uint32_t>(std::floor(
+                static_cast<uint32_t>(width) /
+                (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing()))),
+            1u);
 
         fftw_execute(m_fftw_plan_left);
 
@@ -168,10 +173,11 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
         }
 
         create_spectrum_bars(m_fftw_output_left, m_fftw_results, height, width,
-                             number_of_bars, m_bars_left, m_bars_falloff_left);
+                             number_of_bars, &m_bars_left,
+                             &m_bars_falloff_left);
         create_spectrum_bars(m_fftw_output_right, m_fftw_results, height, width,
-                             number_of_bars, m_bars_right,
-                             m_bars_falloff_right);
+                             number_of_bars, &m_bars_right,
+                             &m_bars_falloff_right);
 
         // clear screen before writing
         writer->clear();
@@ -218,7 +224,7 @@ void vis::SpectrumTransformer::execute_mono(pcm_stereo_sample *buffer,
     execute(buffer, writer, false);
 }
 
-void vis::SpectrumTransformer::smooth_bars(std::vector<double> &bars)
+void vis::SpectrumTransformer::smooth_bars(std::vector<double> *bars)
 {
     switch (m_settings->get_spectrum_smoothing_mode())
     {
@@ -234,9 +240,9 @@ void vis::SpectrumTransformer::smooth_bars(std::vector<double> &bars)
     }
 }
 
-void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> &bars)
+void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> *bars)
 {
-    auto original_bars = bars;
+    auto original_bars = *bars;
 
     auto smoothing_passes = m_settings->get_sgs_smoothing_passes();
     auto smoothing_points = m_settings->get_sgs_smoothing_points();
@@ -247,8 +253,8 @@ void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> &bars)
 
         for (auto i = 0u; i < pivot; ++i)
         {
-            bars[i] = original_bars[i];
-            bars[original_bars.size() - i - 1] =
+            (*bars)[i] = original_bars[i];
+            (*bars)[original_bars.size() - i - 1] =
                 original_bars[original_bars.size() - i - 1];
         }
 
@@ -261,27 +267,27 @@ void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> &bars)
                 sum += (smoothing_constant * original_bars[i + j - pivot]) + j -
                        pivot;
             }
-            bars[i] = sum;
+            (*bars)[i] = sum;
         }
 
         // prepare for next pass
         if (pass < (smoothing_passes - 1))
         {
-            original_bars = bars;
+            original_bars = *bars;
         }
     }
 }
 
-void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
+void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> *bars)
 {
-    int64_t bars_length = static_cast<int64_t>(bars.size());
+    auto bars_length = static_cast<int64_t>(bars->size());
 
     // re-compute weights if needed, this is a performance tweak to computer the
     // smoothing considerably faster
-    if (m_monstercat_smoothing_weights.size() != bars.size())
+    if (m_monstercat_smoothing_weights.size() != bars->size())
     {
-        m_monstercat_smoothing_weights.reserve(bars.size());
-        for (auto i = 0u; i < bars.size(); ++i)
+        m_monstercat_smoothing_weights.reserve(bars->size());
+        for (auto i = 0u; i < bars->size(); ++i)
         {
             m_monstercat_smoothing_weights[i] =
                 std::pow(m_settings->get_monstercat_smoothing_factor(), i);
@@ -295,9 +301,9 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
     {
         auto outer_index = static_cast<size_t>(i);
 
-        if (bars[outer_index] < k_minimum_bar_height)
+        if ((*bars)[outer_index] < k_minimum_bar_height)
         {
-            bars[outer_index] = k_minimum_bar_height;
+            (*bars)[outer_index] = k_minimum_bar_height;
         }
         else
         {
@@ -305,19 +311,20 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
             {
                 if (i != j)
                 {
-                    const size_t index = static_cast<size_t>(j);
+                    const auto index = static_cast<size_t>(j);
                     const auto weighted_value =
-                        bars[outer_index] /
+                        (*bars)[outer_index] /
                         m_monstercat_smoothing_weights[static_cast<size_t>(
                             std::abs(i - j))];
 
                     // Note: do not use max here, since it's actually slower.
                     // Separating the assignment from the comparison avoids an
-                    // unneeded assignment when bars[index] is the largest which
+                    // unneeded assignment when (*bars)[index] is the largest
+                    // which
                     // is often
-                    if (bars[index] < weighted_value)
+                    if ((*bars)[index] < weighted_value)
                     {
-                        bars[index] = weighted_value;
+                        (*bars)[index] = weighted_value;
                     }
                 }
             }
@@ -325,59 +332,57 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
     }
 }
 
-std::vector<double>
-vis::SpectrumTransformer::apply_falloff(const std::vector<double> &bars,
-                                        std::vector<double> &falloff_bars) const
+void vis::SpectrumTransformer::apply_falloff(
+    const std::vector<double> &bars, std::vector<double> *falloff_bars) const
 {
     // Screen size has change which means previous falloff values are not valid
-    if (falloff_bars.size() != bars.size())
+    if (falloff_bars->size() != bars.size())
     {
-        return bars;
+        *falloff_bars = bars;
+        return;
     }
 
     for (auto i = 0u; i < bars.size(); ++i)
     {
         // falloff should always by at least one
         auto falloff_value = std::min(
-            falloff_bars[i] * m_settings->get_spectrum_falloff_weight(),
-            falloff_bars[i] - 1);
+            (*falloff_bars)[i] * m_settings->get_spectrum_falloff_weight(),
+            (*falloff_bars)[i] - 1);
 
-        falloff_bars[i] = std::max(falloff_value, bars[i]);
+        (*falloff_bars)[i] = std::max(falloff_value, bars[i]);
     }
-
-    return falloff_bars;
 }
 
 void vis::SpectrumTransformer::calculate_moving_average_and_std_dev(
     const double new_value, const size_t max_number_of_elements,
-    std::vector<double> &old_values, double *moving_average,
+    std::vector<double> *old_values, double *moving_average,
     double *std_dev) const
 {
-    if (old_values.size() > max_number_of_elements)
+    if (old_values->size() > max_number_of_elements)
     {
-        old_values.erase(old_values.begin());
+        old_values->erase(old_values->begin());
     }
 
-    old_values.push_back(new_value);
+    old_values->push_back(new_value);
 
-    auto sum = std::accumulate(old_values.begin(), old_values.end(), 0.0);
-    *moving_average = sum / old_values.size();
+    auto sum = std::accumulate(old_values->begin(), old_values->end(), 0.0);
+    *moving_average = sum / old_values->size();
 
     auto squared_summation = std::inner_product(
-        old_values.begin(), old_values.end(), old_values.begin(), 0.0);
-    *std_dev = std::sqrt((squared_summation / old_values.size()) -
+        old_values->begin(), old_values->end(), old_values->begin(), 0.0);
+    *std_dev = std::sqrt((squared_summation / old_values->size()) -
                          std::pow(*moving_average, 2));
 }
 
-void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
-                                          const int32_t height)
+void vis::SpectrumTransformer::scale_bars(const int32_t height,
+                                          std::vector<double> *bars)
 {
-    if (bars.empty())
+    if (bars->empty())
     {
         return;
     }
 
-    const auto max_height_iter = std::max_element(bars.begin(), bars.end());
+    const auto max_height_iter = std::max_element(bars->begin(), bars->end());
 
     // max number of elements to calculate for moving average
     const auto max_number_of_elements = static_cast<size_t>(
@@ -388,7 +393,7 @@ void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
     double std_dev = 0.0;
     double moving_average = 0.0;
     calculate_moving_average_and_std_dev(
-        *max_height_iter, max_number_of_elements, m_previous_max_heights,
+        *max_height_iter, max_number_of_elements, &m_previous_max_heights,
         &moving_average, &std_dev);
 
     maybe_reset_scaling_window(*max_height_iter, max_number_of_elements,
@@ -396,11 +401,15 @@ void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
                                &std_dev);
 
     auto max_height = moving_average + (2 * std_dev);
+    max_height =
+        std::max(max_height, 1.0); // avoid division by zero when height
+                                   // is zero, this happens when the
+                                   // sound is muted
 
-    for (auto i = 0u; i < bars.size(); ++i)
+    for (double &bar : *bars)
     {
-        bars[i] = std::min(static_cast<double>(height - 1),
-                           ((bars[i] / max_height) * height) - 1);
+        bar = std::min(static_cast<double>(height - 1),
+                       ((bar / max_height) * height) - 1);
     }
 }
 
@@ -433,9 +442,9 @@ void vis::SpectrumTransformer::maybe_reset_scaling_window(
                                   (static_cast<double>(values->size()) *
                                    k_autoscaling_erase_percent_on_reset)));
 
-            calculate_moving_average_and_std_dev(
-                current_max_height, max_number_of_elements, *values,
-                moving_average, std_dev);
+            calculate_moving_average_and_std_dev(current_max_height,
+                                                 max_number_of_elements, values,
+                                                 moving_average, std_dev);
         }
     }
 }
@@ -457,8 +466,8 @@ vis::SpectrumTransformer::create_bar_row_msg(const wchar_t character,
 void vis::SpectrumTransformer::create_spectrum_bars(
     fftw_complex *fftw_output, const size_t fftw_results,
     const int32_t win_height, const int32_t win_width,
-    const uint32_t number_of_bars, std::vector<double> &bars,
-    std::vector<double> &bars_falloff)
+    const uint32_t number_of_bars, std::vector<double> *bars,
+    std::vector<double> *bars_falloff)
 {
     // cut off frequencies only have to be re-calculated if number of bars
     // change
@@ -472,17 +481,17 @@ void vis::SpectrumTransformer::create_spectrum_bars(
 
     // Separate the frequency spectrum into bars, the number of bars is based on
     // screen width
-    generate_bars(bars, number_of_bars, fftw_output, fftw_results,
-                  m_low_cutoff_frequencies, m_high_cutoff_frequencies);
+    generate_bars(number_of_bars, fftw_results, m_low_cutoff_frequencies,
+                  m_high_cutoff_frequencies, fftw_output, bars);
 
     // smoothing
     smooth_bars(bars);
 
     // scale bars
-    scale_bars(bars, win_height);
+    scale_bars(win_height, bars);
 
     // falloff, save values for next falloff run
-    bars_falloff = apply_falloff(bars, bars_falloff);
+    apply_falloff(*bars, bars_falloff);
 }
 
 void vis::SpectrumTransformer::draw_bars(
@@ -490,8 +499,8 @@ void vis::SpectrumTransformer::draw_bars(
     int32_t win_height, const bool flipped, const std::wstring &bar_row_msg,
     vis::NcursesWriter *writer)
 {
-    recalculate_colors(static_cast<size_t>(win_height), m_precomputed_colors,
-                       writer);
+    recalculate_colors(static_cast<size_t>(win_height),
+                       m_settings->get_colors(), &m_precomputed_colors, writer);
 
     const auto full_win_width = NcursesUtils::get_window_width();
     const auto full_win_height = NcursesUtils::get_window_height();
@@ -557,8 +566,7 @@ void vis::SpectrumTransformer::draw_bars(
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
         {
-            int32_t row_index =
-                static_cast<int32_t>(bars_falloff[column_index]);
+            auto row_index = static_cast<int32_t>(bars_falloff[column_index]);
             int32_t top_row_height;
 
             // left channel grows up, right channel grows down
@@ -633,14 +641,14 @@ void vis::SpectrumTransformer::recalculate_cutoff_frequencies(
 }
 
 void vis::SpectrumTransformer::generate_bars(
-    std::vector<double> &bars, const uint32_t number_of_bars,
-    const fftw_complex *fftw_output, const size_t fftw_results,
+    const uint32_t number_of_bars, const size_t fftw_results,
     const std::vector<uint32_t> &low_cutoff_frequencies,
-    const std::vector<uint32_t> &high_cutoff_frequencies) const
+    const std::vector<uint32_t> &high_cutoff_frequencies,
+    const fftw_complex *fftw_output, std::vector<double> *bars) const
 {
-    if (bars.size() != number_of_bars)
+    if (bars->size() != number_of_bars)
     {
-        bars.resize(number_of_bars, 0.0);
+        bars->resize(number_of_bars, 0.0);
     }
 
     for (auto i = 0u; i < number_of_bars; ++i)
@@ -656,12 +664,12 @@ void vis::SpectrumTransformer::generate_bars(
                 (fftw_output[cutoff_freq][1] * fftw_output[cutoff_freq][1]));
         }
 
-        bars[i] = freq_magnitude /
-                  (high_cutoff_frequencies[i] - low_cutoff_frequencies[i] + 1);
+        (*bars)[i] = freq_magnitude / (high_cutoff_frequencies[i] -
+                                       low_cutoff_frequencies[i] + 1);
 
         // boost high frequencies
-        bars[i] *= (std::log2(2 + i) * (100.0 / number_of_bars));
-        bars[i] = std::pow(bars[i], 0.5);
+        (*bars)[i] *= (std::log2(2 + i) * (100.0 / number_of_bars));
+        (*bars)[i] = std::pow((*bars)[i], 0.5);
     }
 }
 

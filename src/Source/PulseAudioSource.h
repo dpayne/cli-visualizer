@@ -9,6 +9,7 @@
 #define _VIS_PULSE_AUDIO_SOURCE_H
 
 #include <fstream>
+#include <memory>
 
 #ifdef _ENABLE_PULSE
 #include <pulse/error.h>
@@ -25,15 +26,28 @@ namespace vis
 class PulseAudioSource : public vis::AudioSource
 {
   public:
-    explicit PulseAudioSource(const vis::Settings *const settings);
+    explicit PulseAudioSource(
+        const std::shared_ptr<const vis::Settings> settings);
 
+    PulseAudioSource(const PulseAudioSource &other) = delete;
+
+    PulseAudioSource(const PulseAudioSource &&other) = delete;
+
+    PulseAudioSource &operator=(const PulseAudioSource &v) = delete;
+
+    PulseAudioSource &operator=(PulseAudioSource &&v) = delete;
+
+#ifdef _ENABLE_PULSE
     ~PulseAudioSource() override;
+#else
+    ~PulseAudioSource() override = default;
+#endif
 
-    bool read(pcm_stereo_sample *buffer, const uint32_t buffer_size) override;
+    bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 
   private:
 #ifdef _ENABLE_PULSE
-    const vis::Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     pa_simple *m_pulseaudio_simple;
 
@@ -51,8 +65,8 @@ class PulseAudioSource : public vis::AudioSource
 
     void populate_default_source_name();
 
-    bool open_pulseaudio_source(const uint32_t max_buffer_size);
+    bool open_pulseaudio_source(uint32_t max_buffer_size);
 };
-}
+} // namespace vis
 
 #endif

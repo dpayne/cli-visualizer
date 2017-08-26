@@ -12,9 +12,9 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <numeric>
-#include <stdio.h>
 #include <thread>
 
 /**
@@ -33,28 +33,30 @@ namespace
 
 // The actual value of k_max_rotation_count doesn't matter that much. This is
 // just used to reset the rotation count so that the value never overflows.
-static const double k_max_rotation_count = 1000.0;
+const double k_max_rotation_count = 1000.0;
 
-static const size_t k_max_color_index_for_lorenz = 16;
+const size_t k_max_color_index_for_lorenz = 16;
+
+const size_t k_color_distance_limit = 16384;
 
 // These values were taken through experimentation on what seemed to work best.
-static const double k_lorenz_h = 0.01;
-static const double k_lorenz_a = 10.0;
-static const double k_lorenz_b1 = 7.1429;
-static const double k_lorenz_b2 = 0.000908845;
-static const double k_lorenz_c = 8.0 / 3.0;
+const double k_lorenz_h = 0.01;
+const double k_lorenz_a = 10.0;
+const double k_lorenz_b1 = 7.1429;
+const double k_lorenz_b2 = 0.000908845;
+const double k_lorenz_c = 8.0 / 3.0;
 }
 
-vis::LorenzTransformer::LorenzTransformer(const Settings *const settings)
-    : m_settings{settings}, m_rotation_count_left{0.0},
-      m_rotation_count_right{0.0}, m_max_color_index{
-                                       k_max_color_index_for_lorenz}
+vis::LorenzTransformer::LorenzTransformer(
+    const std::shared_ptr<const vis::Settings> settings,
+    const std::string &name)
+    : GenericTransformer(name), m_settings{settings},
+      m_rotation_count_left{0.0}, m_rotation_count_right{0.0},
+      m_max_color_index{k_max_color_index_for_lorenz}
 {
 }
 
-vis::LorenzTransformer::~LorenzTransformer()
-{
-}
+vis::LorenzTransformer::~LorenzTransformer() = default;
 
 void vis::LorenzTransformer::execute_mono(pcm_stereo_sample *buffer,
                                           vis::NcursesWriter *writer)
@@ -150,7 +152,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
     // k_max_color_index_for_lorenz was chosen mostly through experimentation on
     // what seemed to work well.
-    recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
+    recalculate_colors(m_max_color_index, m_settings->get_colors(),
+                       &m_precomputed_colors, writer);
 
     std::wstring msg{m_settings->get_lorenz_character()};
     for (auto i = 0u; i < samples; ++i)
@@ -175,8 +178,9 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
         if (color_distance > m_max_color_index)
         {
-            m_max_color_index = color_distance;
-            recalculate_colors(m_max_color_index, m_precomputed_colors, writer);
+            m_max_color_index = std::min(k_color_distance_limit, color_distance);
+            recalculate_colors(m_max_color_index, m_settings->get_colors(),
+                               &m_precomputed_colors, writer);
         }
 
         // We want to rotate around the center of the lorenz. so we offset zaxis

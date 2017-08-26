@@ -6,9 +6,9 @@
  */
 
 #include <csignal>
+#include <cstring>
 #include <iostream>
 #include <memory>
-#include <string.h>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         loc = std::locale{VisConstants::k_default_locale.c_str()};
         std::wcout.imbue(loc); // Use it for output
     }
-    catch (std::runtime_error)
+    catch (const std::runtime_error &)
     {
         loc = std::locale{loc, "", std::locale::ctype};
     }
@@ -73,20 +73,14 @@ int main(int argc, char *argv[])
     std::string error_msg;
     try
     {
-        vis::Settings settings;
-
         // use default config path if none given
         if (config_path.empty())
         {
-            vis::ConfigurationUtils::load_settings(settings, loc);
-        }
-        else
-        {
-            vis::ConfigurationUtils::load_settings(settings, config_path, loc);
+            config_path = VisConstants::k_default_config_path;
         }
 
         std::unique_ptr<vis::Visualizer> visualizer =
-            std::make_unique<vis::Visualizer>(&settings, loc);
+            std::make_unique<vis::Visualizer>(config_path, loc);
 
         visualizer->run();
     }

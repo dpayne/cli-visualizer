@@ -15,7 +15,6 @@
 #endif
 
 #include "Domain/ColorDefinition.h"
-#include "Domain/Settings.h"
 
 namespace vis
 {
@@ -23,12 +22,20 @@ namespace vis
 class NcursesWriter
 {
   public:
-    explicit NcursesWriter(const Settings *const settings);
+    explicit NcursesWriter();
+
+    NcursesWriter(const NcursesWriter &) = delete;
+
+    NcursesWriter(const NcursesWriter &&) = delete;
+
+    NcursesWriter &operator=(const NcursesWriter &) = delete;
+
+    NcursesWriter &operator=(const NcursesWriter &&) = delete;
 
     virtual ~NcursesWriter();
 
-    virtual void write(int32_t height, int32_t width, ColorIndex color,
-                       const std::wstring &msg, const wchar_t character);
+    virtual void write(int32_t row, int32_t column, ColorDefinition color,
+                       const std::wstring &msg, wchar_t character);
 
     virtual void clear();
 
@@ -38,31 +45,44 @@ class NcursesWriter
      * to true, colors will not loop from 0 to max. If "wrap" is set to true
      * then colors will wrap.
      */
-    virtual ColorIndex to_color_pair(int32_t number, int32_t max,
-                                     bool wrap = true) const;
-
-    virtual void flush();
-
-  private:
-    const Settings *const m_settings;
-
+    virtual ColorDefinition to_color_pair(int32_t number, int32_t max,
+                                          std::vector<ColorDefinition> colors,
+                                          bool wrap) const;
     /**
      * Initialize color pairs for ncurses
      */
     void setup_colors();
 
+    virtual void flush();
+
+  private:
+    /**
+     * Initialize color pairs for ncurses
+     */
+    void setup_color_pairs();
+
+    /**
+     * Initialize extended color pairs for ncurses
+     */
+    void setup_extended_color_pairs();
+
+    /**
+     * Initialize extended color pairs for ncurses
+     */
+    void setup_extended_colors();
+
     /**
      * Write msg to ncurses window using background colors
      */
-    void write_background(int32_t height, int32_t width, vis::ColorIndex color,
-                          const std::wstring &msg);
+    void write_background(int32_t height, int32_t width,
+                          vis::ColorDefinition color, const std::wstring &msg);
 
     /**
      * Write msg to ncurses window using foreground colors
      */
-    void write_foreground(int32_t height, int32_t width, vis::ColorIndex color,
-                          const std::wstring &msg);
+    void write_foreground(int32_t height, int32_t width,
+                          vis::ColorDefinition color, const std::wstring &msg);
 };
-}
+} // namespace vis
 
 #endif

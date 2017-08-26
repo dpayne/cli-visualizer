@@ -7,10 +7,10 @@
 
 #include "Source/MpdAudioSource.h"
 #include "Utils/Logger.h"
-#include <errno.h>
+#include <cerrno>
+#include <cstring>
 #include <fcntl.h>
 #include <iostream>
-#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -18,14 +18,15 @@
 
 namespace
 {
-static const int32_t k_read_attempts = 100;
-static const int64_t k_read_attempt_sleep_interval_nanosecs =
+const int32_t k_read_attempts = 100;
+const int64_t k_read_attempt_sleep_interval_nanosecs =
     1L * 1000000L; // 1 millisecond
-static struct timespec k_read_attempt_sleep_timespec = {
+struct timespec k_read_attempt_sleep_timespec = {
     0, k_read_attempt_sleep_interval_nanosecs};
 }
 
-vis::MpdAudioSource::MpdAudioSource(const Settings *const settings)
+vis::MpdAudioSource::MpdAudioSource(
+    const std::shared_ptr<const vis::Settings> settings)
     : m_settings{settings}
 {
     open_mpd_fifo();
@@ -64,7 +65,7 @@ bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer,
         open_mpd_fifo();
     }
 
-    size_t buffer_size_bytes =
+    auto buffer_size_bytes =
         static_cast<size_t>(sizeof(pcm_stereo_sample) * buffer_size);
     size_t bytes_left = buffer_size_bytes;
 
@@ -85,7 +86,7 @@ bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer,
             }
             // Error reading file. Since non-blocking is set, it's possible
             // there's not enough data yet
-            else if (bytes_read == -1)
+            if (bytes_read == -1)
             {
                 auto error_code = errno;
 
@@ -109,7 +110,7 @@ bool vis::MpdAudioSource::read(pcm_stereo_sample *buffer,
                         return false;
                     }
 
-                    nanosleep(&k_read_attempt_sleep_timespec, NULL);
+                    nanosleep(&k_read_attempt_sleep_timespec, nullptr);
                     ++attempts;
                 }
                 else

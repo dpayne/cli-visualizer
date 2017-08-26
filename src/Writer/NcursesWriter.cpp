@@ -4,10 +4,12 @@
  * Created on: Jul 30, 2015
  *     Author: dpayne
  */
+#include <cmath>
 
-#include "Writer/NcursesWriter.h"
+#include "Domain/VisConstants.h"
 #include "Utils/Logger.h"
 #include "Utils/NcursesUtils.h"
+#include "Writer/NcursesWriter.h"
 
 #ifdef _LINUX
 /* Ncurses version 6.0.20170401 introduced an issue with COLOR_PAIR which broke
@@ -21,29 +23,34 @@
 #define VIS_COLOR_PAIR(n) (COLOR_PAIR(n))
 #endif
 
-vis::NcursesWriter::NcursesWriter(const vis::Settings *const settings)
-    : m_settings{settings}
+vis::NcursesWriter::NcursesWriter()
 {
     initscr();
     noecho();    // disable printing of pressed keys
     curs_set(0); // sets the cursor to invisible
     setlocale(LC_ALL, "");
+    setup_colors();
+}
 
-    if (has_colors() == TRUE)
+void vis::NcursesWriter::setup_extended_color_pairs()
+{
+    // assume their are 32768 color pairs available. Half for foreground and
+    // half for background color pairs.
+    for (int32_t color_index = 1;
+         color_index <= VisConstants::k_max_extended_color; ++color_index)
     {
-        start_color();        // turns on color
-        use_default_colors(); // uses default colors of terminal, which allows
-                              // transparency to work
-
-        // initialize color pairs
-        setup_colors();
+#if VIS_HAVE_EXT_COLORS
+        init_extended_pair(color_index, color_index, -1);
+        init_extended_pair(color_index + VisConstants::k_max_extended_color,
+                           color_index, color_index);
+#endif
     }
 }
 
-void vis::NcursesWriter::setup_colors()
+void vis::NcursesWriter::setup_color_pairs()
 {
     // initialize colors
-    for (int16_t i = 0; i < COLORS; ++i)
+    for (int16_t i = 1; i <= COLORS; ++i)
     {
         init_pair(i, i, -1);
 
@@ -54,33 +61,56 @@ void vis::NcursesWriter::setup_colors()
     }
 }
 
+void vis::NcursesWriter::setup_colors()
+{
+    if (static_cast<int>(has_colors()) == TRUE)
+    {
+        start_color();        // turns on color
+        use_default_colors(); // uses default colors of terminal, which allows
+                              // transparency to work
+
+        if (NcursesUtils::is_extended_colors_supported())
+        {
+            // initialize color pairs
+            // supports 32768 color pairs
+            setup_color_pairs();
+        }
+        else
+        {
+            // only supports max 256 colors
+            setup_color_pairs();
+        }
+    }
+}
+
 void vis::NcursesWriter::write_background(int32_t height, int32_t width,
-                                          vis::ColorIndex color,
+                                          vis::ColorDefinition color,
                                           const std::wstring &msg)
 {
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
-    const auto color_pair = VIS_COLOR_PAIR(color + COLORS);
-    attron(color_pair);
+    attron(VIS_COLOR_PAIR(color.get_color_index() +
+                          NcursesUtils::get_max_color()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(color_pair);
+    attroff(VIS_COLOR_PAIR(color.get_color_index() +
+                           NcursesUtils::get_max_color()));
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
-                                          vis::ColorIndex color,
+                                          vis::ColorDefinition color,
                                           const std::wstring &msg)
 {
-    attron(COLOR_PAIR(color));
+    attron(VIS_COLOR_PAIR(color.get_color_index()));
 
     mvaddwstr(height, width, msg.c_str());
 
-    attroff(COLOR_PAIR(color));
+    attroff(VIS_COLOR_PAIR(color.get_color_index()));
 }
 
 void vis::NcursesWriter::write(const int32_t row, const int32_t column,
-                               const vis::ColorIndex color,
+                               const vis::ColorDefinition color,
                                const std::wstring &msg, const wchar_t character)
 {
     // This is a hack to achieve a solid bar look without using a custom font.
@@ -107,20 +137,21 @@ void vis::NcursesWriter::flush()
     refresh();
 }
 
-vis::ColorIndex vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
-                                                  bool wrap) const
+vis::ColorDefinition
+vis::NcursesWriter::to_color_pair(int32_t number, int32_t max,
+                                  std::vector<ColorDefinition> colors,
+                                  bool wrap) const
 {
-    const auto colors_size =
-        static_cast<vis::ColorIndex>(m_settings->get_colors().size());
+    const auto colors_size = static_cast<vis::ColorIndex>(colors.size());
     const auto index = (number * colors_size) / (max + 1);
 
     // no colors
     if (colors_size == 0)
     {
-        return 0;
+        return vis::ColorDefinition{0, 0, 0, 0};
     }
 
-    const auto color = m_settings->get_colors()[static_cast<size_t>(
+    const auto color = colors[static_cast<size_t>(
         wrap ? index % colors_size : std::min(index, colors_size - 1))];
 
     return color;

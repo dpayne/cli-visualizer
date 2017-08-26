@@ -23,11 +23,15 @@ class ColorDefinition
     ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green,
                     ColorValue blue);
 
-    ColorDefinition(const ColorDefinition &&other) noexcept;
+    ColorDefinition(ColorDefinition &&c) = default;
 
-    ColorDefinition(const ColorDefinition &other) noexcept;
+    ColorDefinition(const ColorDefinition &c) = default;
 
-    virtual ~ColorDefinition();
+    ColorDefinition &operator=(const ColorDefinition &other) = default;
+
+    ColorDefinition &operator=(ColorDefinition &&other) = default;
+
+    ~ColorDefinition() = default;
 
     inline ColorIndex get_color_index() const
     {
@@ -49,24 +53,6 @@ class ColorDefinition
         return m_blue;
     }
 
-    ColorDefinition &operator=(const ColorDefinition other) noexcept
-    {
-        this->m_color_index = other.get_color_index();
-        this->m_red = other.get_red();
-        this->m_green = other.get_green();
-        this->m_blue = other.get_blue();
-        return *this;
-    }
-
-    ColorDefinition &operator=(ColorDefinition &&other) noexcept
-    {
-        this->m_color_index = other.get_color_index();
-        this->m_red = other.get_red();
-        this->m_green = other.get_green();
-        this->m_blue = other.get_blue();
-        return *this;
-    }
-
   private:
     ColorIndex m_color_index;
 
@@ -74,6 +60,6 @@ class ColorDefinition
     ColorValue m_green;
     ColorValue m_blue;
 };
-}
+} // namespace vis
 
 #endif

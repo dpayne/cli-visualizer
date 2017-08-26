@@ -18,9 +18,7 @@ namespace vis
 class Settings
 {
   public:
-    explicit Settings();
-
-    ~Settings();
+    explicit Settings(std::string config_path);
 
     double get_scaling_multiplier() const noexcept
     {
@@ -77,7 +75,7 @@ class Settings
         return m_sampling_frequency / m_fps;
     }
 
-    std::string get_mpd_fifo_path() const noexcept
+    const std::string &get_mpd_fifo_path() const noexcept
     {
         return m_mpd_fifo_path;
     }
@@ -87,7 +85,7 @@ class Settings
         m_mpd_fifo_path = path;
     }
 
-    std::vector<std::string> get_visualizers() const noexcept
+    const std::vector<std::string> &get_visualizers() const noexcept
     {
         return m_visualizers;
     }
@@ -97,14 +95,14 @@ class Settings
         m_visualizers = visualizers;
     }
 
-    std::vector<std::string> get_audio_sources() const noexcept
+    const std::string &get_audio_source() const noexcept
     {
-        return m_audio_sources;
+        return m_audio_source;
     }
 
-    void set_audio_sources(const std::vector<std::string> &audio_sources)
+    void set_audio_source(const std::string &audio_source)
     {
-        m_audio_sources = audio_sources;
+        m_audio_source = audio_source;
     }
 
     void set_is_stereo_enabled(bool is_stereo_enabled)
@@ -117,12 +115,12 @@ class Settings
         return m_is_stereo_enabled;
     }
 
-    const std::vector<vis::ColorIndex> &get_colors() const noexcept
+    const std::vector<vis::ColorDefinition> &get_colors() const noexcept
     {
         return m_colors;
     }
 
-    void set_colors(const std::vector<vis::ColorIndex> &colors)
+    void set_colors(const std::vector<vis::ColorDefinition> &colors)
     {
         m_colors = colors;
     }
@@ -317,15 +315,27 @@ class Settings
         return m_pulse_audio_source;
     }
 
-    void set_colors_config_path(const std::string &colors_config_path)
+    void set_color_schemes(const std::vector<std::string> &color_schemes)
     {
-        m_colors_config_path = colors_config_path;
+        m_color_schemes = color_schemes;
     }
 
-    const std::string &get_colors_config_path() const noexcept
+    const std::vector<std::string> &get_color_schemes() const noexcept
     {
-        return m_colors_config_path;
+        return m_color_schemes;
     }
+
+    void set_config_path(const std::string &config_path)
+    {
+        m_config_path = config_path;
+    }
+
+    const std::string &get_config_path() const noexcept
+    {
+        return m_config_path;
+    }
+
+    void reset_reloadable_settings();
 
   private:
     std::string m_mpd_fifo_path;
@@ -335,9 +345,9 @@ class Settings
     uint32_t m_low_cutoff_frequency;
     uint32_t m_high_cutoff_frequency;
     bool m_is_stereo_enabled;
-    std::vector<std::string> m_audio_sources;
+    std::string m_audio_source;
     std::vector<std::string> m_visualizers;
-    std::vector<vis::ColorIndex> m_colors;
+    std::vector<vis::ColorDefinition> m_colors;
     wchar_t m_spectrum_character;
     wchar_t m_lorenz_character;
     wchar_t m_ellipse_character;
@@ -357,8 +367,9 @@ class Settings
     bool m_is_spectrum_reversed;
     int64_t m_rotation_interval;
     std::string m_pulse_audio_source;
-    std::string m_colors_config_path;
+    std::vector<std::string> m_color_schemes;
+    std::string m_config_path;
 };
-}
+} // namespace vis
 
 #endif

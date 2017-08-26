@@ -8,6 +8,8 @@
 #ifndef _LORENZ_TRANSFORMER_H
 #define _LORENZ_TRANSFORMER_H
 
+#include <memory>
+
 #include "Domain/Settings.h"
 #include "Transformer/GenericTransformer.h"
 
@@ -17,7 +19,17 @@ namespace vis
 class LorenzTransformer : public GenericTransformer
 {
   public:
-    explicit LorenzTransformer(const Settings *const settings);
+    explicit LorenzTransformer(
+        const std::shared_ptr<const vis::Settings> settings,
+        const std::string &name);
+
+    LorenzTransformer(const LorenzTransformer &other) = delete;
+
+    LorenzTransformer(const LorenzTransformer &&other) = delete;
+
+    LorenzTransformer &operator=(const LorenzTransformer &v) = delete;
+
+    LorenzTransformer &operator=(LorenzTransformer &&v) noexcept = delete;
 
     ~LorenzTransformer() override;
 
@@ -26,10 +38,15 @@ class LorenzTransformer : public GenericTransformer
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
 
+    void clear_colors() override
+    {
+        m_precomputed_colors.clear();
+    }
+
   private:
     /** --- BEGIN MEMBER VARIABLES --- */
 
-    const Settings *const m_settings;
+    const std::shared_ptr<const Settings> m_settings;
 
     double m_rotation_count_left;
 
@@ -37,7 +54,7 @@ class LorenzTransformer : public GenericTransformer
 
     uint64_t m_max_color_index;
 
-    std::vector<vis::ColorIndex> m_precomputed_colors;
+    std::vector<vis::ColorDefinition> m_precomputed_colors;
 
     /** --- END MEMBER VARIABLES --- */
 
@@ -45,6 +62,6 @@ class LorenzTransformer : public GenericTransformer
 
     /** --- END MEMBER FUNCTIONS --- */
 };
-}
+} // namespace vis
 
 #endif

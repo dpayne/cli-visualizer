@@ -96,7 +96,7 @@ endif
 
 # DEBUG Settings
 ifdef DEBUG
-OPT_LEVEL=0
+OPT_LEVEL=1
 CXX_FLAGS += -ggdb -g2 -DVIS_LOG_DEBUG
 LD_FLAGS += -DVIS_LOG_DEBUG
 endif
@@ -104,6 +104,7 @@ endif
 # Clang sanitize options
 ifdef SANITIZE
 #to get symbols from clang sanitize, run "export ASAN_SYMBOLIZER_PATH=<path_to_llvm_symbolizer>" on Arch Linux symbolizer is usually at"/usr/bin/llvm-symbolizer"
+#to enable stricter checks set ASAN_OPTIONS, for example "export ASAN_OPTIONS='detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:detect_leaks=1:color=always'"
 CXX_FLAGS += -fsanitize=$(SANITIZE)
 LD_FLAGS += -fsanitize=$(SANITIZE)
 endif
@@ -146,9 +147,6 @@ endif
 ifneq ("$(wildcard /usr/lib/libjemalloc.so)","")
 LIBS += -ljemalloc
 endif
-
-#clang tidy checks
-CLANG_TIDY_CHECKS=clang-analyzer-*,modernize-*,readability-*,misc-*,cppcoreguidelines-*,google-*,-google-readability-namespace-comments
 
 ###############################################################################
 ##  OBJECTS                                                                  ##
@@ -249,8 +247,8 @@ $(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
 	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
 	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
 
-clang_tidy: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
-	clang-tidy -checks=${CLANG_TIDY_CHECKS} $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
+clang_tidy: $(HEADERS) $(SOURCES)
+	clang-tidy $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
 
 clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
 	clang-format -i $?

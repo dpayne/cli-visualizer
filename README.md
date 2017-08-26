@@ -21,6 +21,8 @@
   - [Configuration](#configuration)
     - [Reloading Config](#reloading-config)
     - [Colors](#colors)
+      - [Color Schemes by Visualizer](#color-schemes-by-visualizer)
+      - [Color Gradients](#color-gradients)
       - [RGB colors](#rgb-colors)
       - [Color indexes](#color-indexes)
       - [Color names](#color-names)
@@ -246,9 +248,10 @@ Start with
 
 | Key | Description |
 | --- | ----------- |
-| <kbd>space</kbd> | switch visualizers |
+| <kbd>space</kbd> | Switch visualizers |
 | <kbd>q</kbd> or <kbd>CTRL-C</kbd>| Quit |
 | <kbd>r</kbd>| Reload config |
+| <kbd>c</kbd>| Next color scheme |
 | <kbd>s</kbd>| Toggle Mono/Stereo Mode |
 | <kbd>+</kbd>| Increase scaling by 10% |
 | <kbd>-</kbd>| Decrease scaling by 10% |
@@ -261,10 +264,43 @@ The config can be reload while `vis` is running by either pressing the `r` key o
 
 ### Colors
 
-The display colors and their order can be changed by switching the color scheme in the config under `colors.scheme`.
-The color scheme must be defined at `~/.config/vis/colors/<name_of_the_color_scheme>`. There are three different ways to specific a color, by name, by hex number, and by index.
+The display colors and their order can be changed by switching the color scheme in the config under `colors.scheme`. This is a comma separated list of color schemes.
+Each color scheme must be defined at `~/.config/vis/colors/<name_of_the_color_scheme>`. There are three different ways to specific a color within the scheme: by name, by hex number, and by index.
 
-vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`. There are three different ways to specific a color, by name, by hex number, and by index.
+An example color scheme configuration with only one scheme would be
+
+    colors.scheme=rainbow
+
+Using two color schemes
+
+    colors.scheme=rainbow,blue
+
+Note, vis does not override or change any of the terminal colors. All colors will be influenced by whatever terminal settings are set by the users terminal. Usually these colors are specified in `.Xdefaults`.
+
+#### Color Schemes by Visualizer
+
+Each visualizer supports its own list of color schemes. This will control the colors of a particular visualizer without effecting the others and will override the global defined by `colors.scheme`.
+
+An example of settings the spectrums visualizer to rainbow color scheme and the default for other visualizers to the blue color scheme.
+
+    visualizer.spectrum.color.scheme=rainbow
+    color.scheme=blue
+
+#### Color Gradients
+
+Gradients are turned on by default. To disable gradients add `gradient=false` to the top of the color scheme file. Note this is NOT in the main config but instead in the color scheme file.
+
+Color scheme example with gradients disabled.
+
+    gradient=false
+    #4040ff
+    #03d2aa
+    #56fc2d
+
+Color scheme example with gradients enabled that blends red to blue.
+
+    red
+    blue
 
 #### RGB colors
 
