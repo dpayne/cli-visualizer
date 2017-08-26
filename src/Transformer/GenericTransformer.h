@@ -34,6 +34,8 @@ class GenericTransformer
     virtual void execute_mono(pcm_stereo_sample *buffer,
                               vis::NcursesWriter *writer) = 0;
 
+    virtual void clear_colors() = 0;
+
     const inline std::string &get_name()
     {
         return m_name;

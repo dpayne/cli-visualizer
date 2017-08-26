@@ -19,10 +19,16 @@ namespace vis
 class SpectrumCircleTransformer : public SpectrumTransformer
 {
   public:
-    explicit SpectrumCircleTransformer(const std::shared_ptr<Settings> settings,
-                                       const std::string &name);
+    explicit SpectrumCircleTransformer(
+        const std::shared_ptr<const vis::Settings> settings,
+        const std::string &name);
 
     ~SpectrumCircleTransformer() override = default;
+
+    void clear_colors() override
+    {
+        m_precomputed_colors.clear();
+    }
 
   private:
     const std::shared_ptr<const Settings> m_settings;

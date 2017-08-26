@@ -25,9 +25,9 @@ const std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
 
 const std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
-const std::string k_vis_rotation_interval{"visualizer.rotation.secs"};
+const std::string k_rotation_interval_setting{"visualizer.rotation.secs"};
 
-const std::string k_vis_pulse_audio_source{"audio.pulse.source"};
+const std::string k_vis_pulse_audio_source_setting{"audio.pulse.source"};
 
 const std::string k_visualizers_setting{"visualizers"};
 const std::string k_fps_setting{"visualizer.fps"};
@@ -38,35 +38,43 @@ const std::string k_low_cutoff_frequency_setting{"audio.low.cutoff.frequency"};
 const std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
 
-const std::string k_scaling_multiplier{"visualizer.scaling.multiplier"};
+const std::string k_scaling_multiplier_setting{"visualizer.scaling.multiplier"};
 
-const std::string k_lorenz_character{"visualizer.lorenz.character"};
+const std::string k_lorenz_character_setting{"visualizer.lorenz.character"};
 
-const std::string k_ellipse_character{"visualizer.ellipse.character"};
-const std::string k_ellipse_radius{"visualizer.ellipse.radius"};
+const std::string k_ellipse_character_setting{"visualizer.ellipse.character"};
+const std::string k_ellipse_radius_setting{"visualizer.ellipse.radius"};
 
 // Spectrum settings
-const std::string k_spectrum_character{"visualizer.spectrum.character"};
-const std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
-const std::string k_spectrum_bar_spacing{"visualizer.spectrum.bar.spacing"};
-const std::string k_spectrum_smoothing_mode{
+const std::string k_spectrum_character_setting{"visualizer.spectrum.character"};
+const std::string k_spectrum_bar_width_setting{"visualizer.spectrum.bar.width"};
+const std::string k_spectrum_bar_spacing_setting{
+    "visualizer.spectrum.bar.spacing"};
+const std::string k_spectrum_smoothing_mode_setting{
     "visualizer.spectrum.smoothing.mode"};
-const std::string k_spectrum_falloff_mode{"visualizer.spectrum.falloff.mode"};
-const std::string k_spectrum_falloff_weight{
+const std::string k_spectrum_falloff_mode_setting{
+    "visualizer.spectrum.falloff.mode"};
+const std::string k_spectrum_falloff_weight_setting{
     "visualizer.spectrum.falloff.weight"};
 
-const std::string k_spectrum_top_margin{"visualizer.spectrum.top.margin"};
-const std::string k_spectrum_bottom_margin{"visualizer.spectrum.bottom.margin"};
-const std::string k_spectrum_right_margin{"visualizer.spectrum.right.margin"};
-const std::string k_spectrum_left_margin{"visualizer.spectrum.left.margin"};
+const std::string k_spectrum_top_margin_setting{
+    "visualizer.spectrum.top.margin"};
+const std::string k_spectrum_bottom_margin_setting{
+    "visualizer.spectrum.bottom.margin"};
+const std::string k_spectrum_right_margin_setting{
+    "visualizer.spectrum.right.margin"};
+const std::string k_spectrum_left_margin_setting{
+    "visualizer.spectrum.left.margin"};
 
-const std::string k_spectrum_reversed{"visualizer.spectrum.reversed"};
+const std::string k_spectrum_reversed_setting{"visualizer.spectrum.reversed"};
 
-const std::string k_monstercat_smoothing_factor{
+const std::string k_monstercat_smoothing_factor_setting{
     "visualizer.monstercat.smoothing.factor"};
 
-const std::string k_sgs_smoothing_points{"visualizer.sgs.smoothing.points"};
-const std::string k_sgs_smoothing_passes{"visualizer.sgs.smoothing.passes"};
+const std::string k_sgs_smoothing_points_setting{
+    "visualizer.sgs.smoothing.points"};
+const std::string k_sgs_smoothing_passes_setting{
+    "visualizer.sgs.smoothing.passes"};
 } // namespace
 
 vis::ConfigurationUtils::ConfigurationUtils() = default;
@@ -253,8 +261,8 @@ vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
     const std::string &config_param,
     const vis::FalloffMode default_falloff_mode)
 {
-    auto falloff_mode_str =
-        vis::Utils::get(properties, k_spectrum_falloff_mode, std::string{""});
+    auto falloff_mode_str = vis::Utils::get(
+        properties, k_spectrum_falloff_mode_setting, std::string{""});
 
     vis::FalloffMode falloff_mode = default_falloff_mode;
 
@@ -290,8 +298,8 @@ vis::SmoothingMode vis::ConfigurationUtils::read_smoothing_mode(
     const std::string &config_param,
     const vis::SmoothingMode default_smoothing_mode)
 {
-    auto smoothing_mode_str =
-        vis::Utils::get(properties, k_spectrum_smoothing_mode, std::string{""});
+    auto smoothing_mode_str = vis::Utils::get(
+        properties, k_spectrum_smoothing_mode_setting, std::string{""});
 
     vis::SmoothingMode smoothing_mode = default_smoothing_mode;
 
@@ -419,6 +427,24 @@ void vis::ConfigurationUtils::load_color_settings(
     }
 }
 
+void vis::ConfigurationUtils::validate_setting_is_not_negative(
+    const double t, const std::string &setting)
+{
+    if (t < 0.0)
+    {
+        throw vis::VisException("Invalid settings %s=%d", setting.c_str(), t);
+    }
+}
+
+void vis::ConfigurationUtils::validate_setting_is_greater_than_zero(
+    const double t, const std::string &setting)
+{
+    if (t <= 0.0)
+    {
+        throw vis::VisException("Invalid settings %s=%d", setting.c_str(), t);
+    }
+}
+
 void vis::ConfigurationUtils::load_settings(
     const std::shared_ptr<Settings> settings, const std::string &config_path,
     const std::locale &loc)
@@ -445,79 +471,108 @@ void vis::ConfigurationUtils::load_settings(
         Utils::get(properties, k_audio_sources_setting, default_audio_source));
 
     settings->set_scaling_multiplier(
-        Utils::get(properties, k_scaling_multiplier,
+        Utils::get(properties, k_scaling_multiplier_setting,
                    VisConstants::k_default_scaling_multiplier));
 
     settings->set_fps(
         Utils::get(properties, k_fps_setting, VisConstants::k_default_fps));
+    validate_setting_is_greater_than_zero(settings->get_fps(), k_fps_setting);
 
     settings->set_sampling_frequency(
         Utils::get(properties, k_sampling_frequency_setting,
                    VisConstants::k_default_sampling_frequency));
+    validate_setting_is_greater_than_zero(settings->get_sampling_frequency(),
+                                          k_sampling_frequency_setting);
 
     settings->set_low_cutoff_frequency(
         Utils::get(properties, k_low_cutoff_frequency_setting,
                    VisConstants::k_default_low_cutoff_frequency));
+    validate_setting_is_greater_than_zero(settings->get_low_cutoff_frequency(),
+                                          k_low_cutoff_frequency_setting);
 
     settings->set_high_cutoff_frequency(
         Utils::get(properties, k_high_cutoff_frequency_setting,
                    VisConstants::k_default_high_cutoff_frequency));
+    validate_setting_is_greater_than_zero(settings->get_high_cutoff_frequency(),
+                                          k_high_cutoff_frequency_setting);
 
     settings->set_spectrum_character(
-        Utils::get(properties, k_spectrum_character,
+        Utils::get(properties, k_spectrum_character_setting,
                    VisConstants::k_default_spectrum_character));
 
     settings->set_spectrum_bar_width(
-        Utils::get(properties, k_spectrum_bar_width,
+        Utils::get(properties, k_spectrum_bar_width_setting,
                    VisConstants::k_default_spectrum_bar_width));
+    validate_setting_is_greater_than_zero(settings->get_spectrum_bar_width(),
+                                          k_spectrum_bar_width_setting);
 
     settings->set_spectrum_bar_spacing(
-        Utils::get(properties, k_spectrum_bar_spacing,
+        Utils::get(properties, k_spectrum_bar_spacing_setting,
                    VisConstants::k_default_spectrum_bar_spacing));
+    validate_setting_is_greater_than_zero(settings->get_spectrum_bar_spacing(),
+                                          k_spectrum_bar_spacing_setting);
 
     settings->set_spectrum_smoothing_mode(
-        read_smoothing_mode(properties, k_spectrum_smoothing_mode,
+        read_smoothing_mode(properties, k_spectrum_smoothing_mode_setting,
                             VisConstants::k_default_spectrum_smoothing_mode));
 
     settings->set_spectrum_falloff_mode(
-        read_falloff_mode(properties, k_spectrum_falloff_mode,
+        read_falloff_mode(properties, k_spectrum_falloff_mode_setting,
                           VisConstants::k_default_spectrum_falloff_mode));
 
     settings->set_spectrum_falloff_weight(
-        Utils::get(properties, k_spectrum_falloff_weight,
+        Utils::get(properties, k_spectrum_falloff_weight_setting,
                    VisConstants::k_default_spectrum_falloff_weight));
+    validate_setting_is_greater_than_zero(
+        settings->get_spectrum_falloff_weight(),
+        k_spectrum_falloff_weight_setting);
 
     settings->set_spectrum_top_margin(
-        Utils::get(properties, k_spectrum_top_margin,
+        Utils::get(properties, k_spectrum_top_margin_setting,
                    VisConstants::k_default_spectrum_top_margin));
+    validate_setting_is_not_negative(settings->get_spectrum_top_margin(),
+                                     k_spectrum_top_margin_setting);
 
     settings->set_spectrum_bottom_margin(
-        Utils::get(properties, k_spectrum_bottom_margin,
+        Utils::get(properties, k_spectrum_bottom_margin_setting,
                    VisConstants::k_default_spectrum_bottom_margin));
+    validate_setting_is_not_negative(settings->get_spectrum_bottom_margin(),
+                                     k_spectrum_bottom_margin_setting);
 
     settings->set_spectrum_right_margin(
-        Utils::get(properties, k_spectrum_right_margin,
+        Utils::get(properties, k_spectrum_right_margin_setting,
                    VisConstants::k_default_spectrum_right_margin));
+    validate_setting_is_not_negative(settings->get_spectrum_right_margin(),
+                                     k_spectrum_right_margin_setting);
 
     settings->set_spectrum_left_margin(
-        Utils::get(properties, k_spectrum_left_margin,
+        Utils::get(properties, k_spectrum_left_margin_setting,
                    VisConstants::k_default_spectrum_left_margin));
+    validate_setting_is_not_negative(settings->get_spectrum_left_margin(),
+                                     k_spectrum_left_margin_setting);
 
     settings->set_is_spectrum_reversed(
-        Utils::get(properties, k_spectrum_reversed,
+        Utils::get(properties, k_spectrum_reversed_setting,
                    VisConstants::k_default_spectrum_reversed));
 
     settings->set_monstercat_smoothing_factor(
-        Utils::get(properties, k_monstercat_smoothing_factor,
+        Utils::get(properties, k_monstercat_smoothing_factor_setting,
                    VisConstants::k_default_monstercat_smoothing_factor));
+    validate_setting_is_greater_than_zero(
+        settings->get_monstercat_smoothing_factor(),
+        k_monstercat_smoothing_factor_setting);
 
     settings->set_sgs_smoothing_points(
-        Utils::get(properties, k_sgs_smoothing_points,
+        Utils::get(properties, k_sgs_smoothing_points_setting,
                    VisConstants::k_default_sgs_smoothing_points));
+    validate_setting_is_greater_than_zero(settings->get_sgs_smoothing_points(),
+                                          k_sgs_smoothing_points_setting);
 
     settings->set_sgs_smoothing_passes(
-        Utils::get(properties, k_sgs_smoothing_passes,
+        Utils::get(properties, k_sgs_smoothing_passes_setting,
                    VisConstants::k_default_sgs_smoothing_passes));
+    validate_setting_is_greater_than_zero(settings->get_sgs_smoothing_passes(),
+                                          k_sgs_smoothing_passes_setting);
 
 #ifdef _OS_OSX
     // ncurses on Mac OS X doesn't support wide chars by default, so use a
@@ -530,21 +585,26 @@ void vis::ConfigurationUtils::load_settings(
     wchar_t default_ellipse_char = VisConstants::k_default_ellipse_character;
 #endif
 
-    settings->set_lorenz_character(
-        Utils::get(properties, k_lorenz_character, default_lorenz_char));
+    settings->set_lorenz_character(Utils::get(
+        properties, k_lorenz_character_setting, default_lorenz_char));
 
-    settings->set_ellipse_character(
-        Utils::get(properties, k_ellipse_character, default_ellipse_char));
+    settings->set_ellipse_character(Utils::get(
+        properties, k_ellipse_character_setting, default_ellipse_char));
 
-    settings->set_ellipse_radius(Utils::get(
-        properties, k_ellipse_radius, VisConstants::k_default_ellipse_radius));
+    settings->set_ellipse_radius(
+        Utils::get(properties, k_ellipse_radius_setting,
+                   VisConstants::k_default_ellipse_radius));
+    validate_setting_is_greater_than_zero(settings->get_ellipse_radius(),
+                                          k_ellipse_radius_setting);
 
     settings->set_rotation_interval(
-        Utils::get(properties, k_vis_rotation_interval,
+        Utils::get(properties, k_rotation_interval_setting,
                    VisConstants::k_default_visualizer_rotation_interval));
+    validate_setting_is_not_negative(settings->get_rotation_interval(),
+                                     k_rotation_interval_setting);
 
     settings->set_pulse_audio_source(
-        Utils::get(properties, k_vis_pulse_audio_source,
+        Utils::get(properties, k_vis_pulse_audio_source_setting,
                    VisConstants::k_default_visualizer_pulse_audio_source));
 
     settings->set_is_stereo_enabled(

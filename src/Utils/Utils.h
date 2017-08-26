@@ -169,7 +169,12 @@ class Utils
         auto iter = map.find(key);
         if (iter != map.end())
         {
-            return to_uint(wstring_to_string(iter->second));
+            const auto num = to_int(wstring_to_string(iter->second));
+            if (num < 0)
+            {
+                return default_value;
+            }
+            return static_cast<uint32_t>(num);
         }
 
         return default_value;
@@ -300,20 +305,6 @@ class Utils
         }
 
         return std::atoi(str.c_str());
-    }
-
-    /**
-     * Helper method to convert string to unsigned int. If string is empty, 0 is
-     * returned.
-     */
-    static inline uint32_t to_uint(const std::string &str)
-    {
-        if (str.empty())
-        {
-            return 0;
-        }
-
-        return static_cast<uint32_t>(std::strtoul(str.c_str(), nullptr, 0));
     }
 
     /**

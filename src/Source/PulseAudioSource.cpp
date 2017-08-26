@@ -32,7 +32,7 @@ static const std::string k_default_monitor_postfix = ".monitor";
 }
 
 vis::PulseAudioSource::PulseAudioSource(
-    const std::shared_ptr<Settings> settings)
+    const std::shared_ptr<const vis::Settings> settings)
 #ifdef _ENABLE_PULSE
     : m_settings{settings}, m_pulseaudio_simple{nullptr}, m_pulseaudio_mainloop
 {

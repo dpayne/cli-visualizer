@@ -46,7 +46,8 @@ const double k_lorenz_c = 8.0 / 3.0;
 }
 
 vis::LorenzTransformer::LorenzTransformer(
-    const std::shared_ptr<Settings> settings, const std::string &name)
+    const std::shared_ptr<const vis::Settings> settings,
+    const std::string &name)
     : GenericTransformer(name), m_settings{settings},
       m_rotation_count_left{0.0}, m_rotation_count_right{0.0},
       m_max_color_index{k_max_color_index_for_lorenz}

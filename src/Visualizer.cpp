@@ -233,6 +233,11 @@ void vis::Visualizer::rotate_color_scheme()
         vis::ConfigurationUtils::load_color_settings_from_color_scheme(
             m_settings->get_color_schemes()[m_current_color_scheme_index],
             m_settings);
+
+        for (const auto &transformer : m_transformers)
+        {
+            transformer->clear_colors();
+        }
     }
 }
 
@@ -245,7 +250,6 @@ void vis::Visualizer::reload_config()
     const auto scaling_multiplier = m_settings->get_scaling_multiplier();
 
     m_transformers.clear();
-    m_audio_source.release();
 
     // Note m_writer should not be reset, this is because it causes the screen
     // to flash this is also why it does not hold a pointer to settings
@@ -255,7 +259,6 @@ void vis::Visualizer::reload_config()
 
     m_settings->set_scaling_multiplier(scaling_multiplier);
 
-    setup_audio_source();
     setup_transformers();
 
     // reset the transformers position if the size has shrunk smaller than the
@@ -308,6 +311,11 @@ void vis::Visualizer::setup_transformers()
             m_transformers.emplace_back(
                 std::make_unique<LorenzTransformer>(m_settings, visualizer));
         }
+    }
+
+    if (m_transformers.empty())
+    {
+        throw vis::VisException{"No visualizers defined"};
     }
 }
 

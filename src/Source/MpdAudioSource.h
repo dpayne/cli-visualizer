@@ -20,7 +20,8 @@ namespace vis
 class MpdAudioSource : public vis::AudioSource
 {
   public:
-    explicit MpdAudioSource(const std::shared_ptr<Settings> settings);
+    explicit MpdAudioSource(
+        const std::shared_ptr<const vis::Settings> settings);
 
     ~MpdAudioSource() override;
 

@@ -19,8 +19,9 @@ namespace vis
 class LorenzTransformer : public GenericTransformer
 {
   public:
-    explicit LorenzTransformer(const std::shared_ptr<Settings> settings,
-                               const std::string &name);
+    explicit LorenzTransformer(
+        const std::shared_ptr<const vis::Settings> settings,
+        const std::string &name);
 
     ~LorenzTransformer() override;
 
@@ -28,6 +29,11 @@ class LorenzTransformer : public GenericTransformer
                       vis::NcursesWriter *writer) override;
     void execute_stereo(pcm_stereo_sample *buffer,
                         vis::NcursesWriter *writer) override;
+
+    void clear_colors() override
+    {
+        m_precomputed_colors.clear();
+    }
 
   private:
     /** --- BEGIN MEMBER VARIABLES --- */

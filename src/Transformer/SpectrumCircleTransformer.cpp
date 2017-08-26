@@ -16,7 +16,8 @@ namespace
 }
 
 vis::SpectrumCircleTransformer::SpectrumCircleTransformer(
-    const std::shared_ptr<Settings> settings, const std::string &name)
+    const std::shared_ptr<const vis::Settings> settings,
+    const std::string &name)
     : SpectrumTransformer(settings, name), m_settings{settings}
 {
 }

@@ -26,7 +26,7 @@ struct timespec k_read_attempt_sleep_timespec = {
 }
 
 vis::MpdAudioSource::MpdAudioSource(
-    const std::shared_ptr<Settings> settings)
+    const std::shared_ptr<const vis::Settings> settings)
     : m_settings{settings}
 {
     open_mpd_fifo();

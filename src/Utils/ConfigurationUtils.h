@@ -10,6 +10,7 @@
 
 #include <locale>
 #include <memory>
+#include <type_traits>
 #include <unordered_map>
 
 #include "Domain/Settings.h"
@@ -55,6 +56,13 @@ class ConfigurationUtils
 
     static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);
+
+    static void validate_setting_is_not_negative(const double t,
+                                                 const std::string &setting);
+
+    static void
+    validate_setting_is_greater_than_zero(const double t,
+                                          const std::string &setting);
 
     explicit ConfigurationUtils();
 
