@@ -136,6 +136,6 @@ static const std::vector<vis::ColorDefinition> k_default_8_colors = {
     vis::ColorDefinition{2, -1, -1, -1}, vis::ColorDefinition{3, -1, -1, -1},
     vis::ColorDefinition{5, -1, -1, -1}, vis::ColorDefinition{1, -1, -1, -1},
     vis::ColorDefinition{7, -1, -1, -1}, vis::ColorDefinition{0, -1, -1, -1}};
-}
+} // namespace VisConstants
 
 #endif

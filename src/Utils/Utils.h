@@ -424,10 +424,10 @@ class Utils
     }
 
   private:
-    explicit Utils();
+    explicit Utils() = delete;
 
-    virtual ~Utils();
+    virtual ~Utils() = delete;
 };
-}
+} // namespace vis
 
 #endif

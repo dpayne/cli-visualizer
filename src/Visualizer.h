@@ -89,6 +89,6 @@ class Visualizer
 
     void allocate_buffer();
 };
-}
+} // namespace vis
 
 #endif

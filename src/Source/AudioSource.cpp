@@ -7,10 +7,6 @@
 
 #include "Source/AudioSource.h"
 
-vis::AudioSource::AudioSource()
-{
-}
+vis::AudioSource::AudioSource() = default;
 
-vis::AudioSource::~AudioSource()
-{
-}
+vis::AudioSource::~AudioSource() = default;

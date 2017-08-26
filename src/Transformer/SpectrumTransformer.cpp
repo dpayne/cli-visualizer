@@ -16,22 +16,22 @@
 #include <algorithm>
 #include <climits>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <numeric>
-#include <stdio.h>
 #include <thread>
 
 namespace
 {
-static const size_t k_secs_for_autoscaling = 30;
-static const double k_autoscaling_reset_window_percent = 0.10;
-static const double k_autoscaling_erase_percent_on_reset = 0.75;
-static const double k_deviation_amount_to_reset =
+const size_t k_secs_for_autoscaling = 30;
+const double k_autoscaling_reset_window_percent = 0.10;
+const double k_autoscaling_erase_percent_on_reset = 0.75;
+const double k_deviation_amount_to_reset =
     1.0; // amount of deviation needed between short term and long term moving
          // max height averages to trigger an auto scaling reset
 
-static const double k_minimum_bar_height = 0.125;
-static const uint64_t k_max_silent_runs_before_sleep =
+const double k_minimum_bar_height = 0.125;
+const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
@@ -148,7 +148,7 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
             create_bar_row_msg(m_settings->get_spectrum_character(),
                                m_settings->get_spectrum_bar_width());
 
-        uint32_t number_of_bars = static_cast<uint32_t>(std::floor(
+        auto number_of_bars = static_cast<uint32_t>(std::floor(
             static_cast<uint32_t>(width) /
             (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing())));
 
@@ -276,7 +276,7 @@ void vis::SpectrumTransformer::sgs_smoothing(std::vector<double> &bars)
 
 void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
 {
-    int64_t bars_length = static_cast<int64_t>(bars.size());
+    auto bars_length = static_cast<int64_t>(bars.size());
 
     // re-compute weights if needed, this is a performance tweak to computer the
     // smoothing considerably faster
@@ -307,7 +307,7 @@ void vis::SpectrumTransformer::monstercat_smoothing(std::vector<double> &bars)
             {
                 if (i != j)
                 {
-                    const size_t index = static_cast<size_t>(j);
+                    const auto index = static_cast<size_t>(j);
                     const auto weighted_value =
                         bars[outer_index] /
                         m_monstercat_smoothing_weights[static_cast<size_t>(
@@ -399,10 +399,10 @@ void vis::SpectrumTransformer::scale_bars(std::vector<double> &bars,
 
     auto max_height = moving_average + (2 * std_dev);
 
-    for (auto i = 0u; i < bars.size(); ++i)
+    for (double &bar : bars)
     {
-        bars[i] = std::min(static_cast<double>(height - 1),
-                           ((bars[i] / max_height) * height) - 1);
+        bar = std::min(static_cast<double>(height - 1),
+                       ((bar / max_height) * height) - 1);
     }
 }
 
@@ -493,7 +493,7 @@ void vis::SpectrumTransformer::draw_bars(
     vis::NcursesWriter *writer)
 {
     recalculate_colors(static_cast<size_t>(win_height),
-                       m_settings->get_colors(), m_precomputed_colors, writer);
+                       m_settings->get_colors(), &m_precomputed_colors, writer);
 
     const auto full_win_width = NcursesUtils::get_window_width();
     const auto full_win_height = NcursesUtils::get_window_height();
@@ -559,8 +559,7 @@ void vis::SpectrumTransformer::draw_bars(
 
         if (m_settings->get_spectrum_falloff_mode() == vis::FalloffMode::Top)
         {
-            int32_t row_index =
-                static_cast<int32_t>(bars_falloff[column_index]);
+            auto row_index = static_cast<int32_t>(bars_falloff[column_index]);
             int32_t top_row_height;
 
             // left channel grows up, right channel grows down

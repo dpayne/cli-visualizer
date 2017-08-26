@@ -19,7 +19,7 @@ namespace vis
 class LorenzTransformer : public GenericTransformer
 {
   public:
-    explicit LorenzTransformer(const std::shared_ptr<const Settings> m_settings,
+    explicit LorenzTransformer(const std::shared_ptr<Settings> settings,
                                const std::string &name);
 
     ~LorenzTransformer() override;
@@ -48,6 +48,6 @@ class LorenzTransformer : public GenericTransformer
 
     /** --- END MEMBER FUNCTIONS --- */
 };
-}
+} // namespace vis
 
 #endif

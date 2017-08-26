@@ -19,9 +19,8 @@ namespace vis
 class EllipseTransformer : public GenericTransformer
 {
   public:
-    explicit EllipseTransformer(
-        const std::shared_ptr<const Settings> m_settings,
-        const std::string &name);
+    explicit EllipseTransformer(const std::shared_ptr<Settings> settings,
+                                const std::string &name);
 
     ~EllipseTransformer() override;
 
@@ -36,9 +35,9 @@ class EllipseTransformer : public GenericTransformer
      * other visualizers because the colors might be repeated several
      * timees depending on how many rings there are.
      */
-    void recalculate_colors(const size_t max,
+    void recalculate_colors(size_t max,
                             const std::vector<ColorDefinition> &colors,
-                            std::vector<ColorDefinition> &precomputed_colors,
+                            std::vector<ColorDefinition> *precomputed_colors,
                             const NcursesWriter *writer) override;
 
   private:
@@ -56,6 +55,6 @@ class EllipseTransformer : public GenericTransformer
 
     /** --- END MEMBER FUNCTIONS --- */
 };
-}
+} // namespace vis
 
 #endif

@@ -7,10 +7,6 @@
 
 #include "Utils/Utils.h"
 
-vis::Utils::Utils()
-{
-}
+vis::Utils::Utils() = default;
 
-vis::Utils::~Utils()
-{
-}
+vis::Utils::~Utils() = default;

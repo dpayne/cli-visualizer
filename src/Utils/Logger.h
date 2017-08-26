@@ -52,7 +52,7 @@ class Logger
         return LogLevel::ERROR;
     }
 
-    static void initialize(const std::string log_location);
+    static void initialize(std::string log_location);
 
     static void uninitialize();
 
@@ -61,6 +61,6 @@ class Logger
 
     virtual ~Logger();
 };
-}
+} // namespace vis
 
 #endif

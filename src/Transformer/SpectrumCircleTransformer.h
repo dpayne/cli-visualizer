@@ -19,9 +19,8 @@ namespace vis
 class SpectrumCircleTransformer : public SpectrumTransformer
 {
   public:
-    explicit SpectrumCircleTransformer(
-        const std::shared_ptr<const Settings> settings,
-        const std::string &name);
+    explicit SpectrumCircleTransformer(const std::shared_ptr<Settings> settings,
+                                       const std::string &name);
 
     ~SpectrumCircleTransformer() override;
 
@@ -40,11 +39,11 @@ class SpectrumCircleTransformer : public SpectrumTransformer
 
     void draw_bars(const std::vector<double> &bars,
                    const std::vector<double> &bars_falloff, int32_t win_height,
-                   const bool flipped, const std::wstring &bar_row_msg,
+                   bool flipped, const std::wstring &bar_row_msg,
                    vis::NcursesWriter *writer) override;
 
     /** --- END MEMBER FUNCTIONS --- */
 };
-}
+} // namespace vis
 
 #endif

@@ -23,13 +23,9 @@ class ColorDefinition
     ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green,
                     ColorValue blue);
 
-    ColorDefinition(const ColorDefinition &&other) noexcept;
+    ColorDefinition(const ColorDefinition &&c) noexcept;
 
-    ColorDefinition(const ColorDefinition &other) noexcept;
-
-    ColorDefinition &operator=(const ColorDefinition &c) = default;
-
-    ColorDefinition &operator=(ColorDefinition &&c) noexcept = default;
+    ColorDefinition(const ColorDefinition &c) noexcept;
 
     virtual ~ColorDefinition();
 
@@ -69,6 +65,6 @@ class ColorDefinition
     ColorValue m_green;
     ColorValue m_blue;
 };
-}
+} // namespace vis
 
 #endif

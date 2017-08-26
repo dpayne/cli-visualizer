@@ -26,6 +26,4 @@ vis::ColorDefinition::ColorDefinition(const ColorDefinition &c) noexcept
 {
 }
 
-vis::ColorDefinition::~ColorDefinition()
-{
-}
+vis::ColorDefinition::~ColorDefinition() = default;

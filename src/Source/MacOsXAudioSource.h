@@ -23,7 +23,7 @@ namespace vis
 class MacOsXAudioSource : public vis::AudioSource
 {
   public:
-    explicit MacOsXAudioSource(const vis::Settings *const settings);
+    explicit MacOsXAudioSource(const vis::Settings *settings);
 
     ~MacOsXAudioSource() override;
 
@@ -37,6 +37,6 @@ class MacOsXAudioSource : public vis::AudioSource
 // TODO: put mac os x specific features here
 #endif
 };
-}
+} // namespace vis
 
 #endif

@@ -34,7 +34,7 @@ class NcursesWriter
 
     virtual ~NcursesWriter();
 
-    virtual void write(int32_t height, int32_t width, ColorDefinition color,
+    virtual void write(int32_t row, int32_t column, ColorDefinition color,
                        const std::wstring &msg, wchar_t character);
 
     virtual void clear();
@@ -83,6 +83,6 @@ class NcursesWriter
     void write_foreground(int32_t height, int32_t width,
                           vis::ColorDefinition color, const std::wstring &msg);
 };
-}
+} // namespace vis
 
 #endif

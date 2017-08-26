@@ -7,10 +7,10 @@
 
 #include "Source/PulseAudioSource.h"
 #include "Utils/Logger.h"
-#include <errno.h>
+#include <cerrno>
+#include <cstring>
 #include <fcntl.h>
 #include <iostream>
-#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -195,7 +195,7 @@ bool vis::PulseAudioSource::open_pulseaudio_source(
 bool vis::PulseAudioSource::read(pcm_stereo_sample *buffer,
                                  const uint32_t buffer_size)
 {
-    size_t buffer_size_bytes =
+    auto buffer_size_bytes =
         static_cast<size_t>(sizeof(pcm_stereo_sample) * buffer_size);
 
 #ifdef _ENABLE_PULSE

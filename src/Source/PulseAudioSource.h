@@ -26,11 +26,11 @@ namespace vis
 class PulseAudioSource : public vis::AudioSource
 {
   public:
-    explicit PulseAudioSource(const std::shared_ptr<const Settings> settings);
+    explicit PulseAudioSource(const std::shared_ptr<Settings> settings);
 
     ~PulseAudioSource() override;
 
-    bool read(pcm_stereo_sample *buffer, const uint32_t buffer_size) override;
+    bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 
   private:
 #ifdef _ENABLE_PULSE
@@ -52,8 +52,8 @@ class PulseAudioSource : public vis::AudioSource
 
     void populate_default_source_name();
 
-    bool open_pulseaudio_source(const uint32_t max_buffer_size);
+    bool open_pulseaudio_source(uint32_t max_buffer_size);
 };
-}
+} // namespace vis
 
 #endif

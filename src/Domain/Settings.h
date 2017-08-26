@@ -18,15 +18,7 @@ namespace vis
 class Settings
 {
   public:
-    explicit Settings(const std::string &config_path);
-
-    Settings(const Settings &other) noexcept = default;
-
-    Settings(const Settings &&other) noexcept = default;
-
-    Settings &operator=(const Settings &s) = default;
-
-    Settings &operator=(Settings &&s) noexcept = default;
+    explicit Settings(std::string config_path);
 
     ~Settings();
 
@@ -380,6 +372,6 @@ class Settings
     std::vector<std::string> m_color_schemes;
     std::string m_config_path;
 };
-}
+} // namespace vis
 
 #endif

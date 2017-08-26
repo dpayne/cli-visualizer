@@ -12,9 +12,7 @@ vis::MacOsXAudioSource::MacOsXAudioSource(const vis::Settings *const settings)
     settings->get_visualizers();
 }
 
-vis::MacOsXAudioSource::~MacOsXAudioSource()
-{
-}
+vis::MacOsXAudioSource::~MacOsXAudioSource() = default;
 
 bool vis::MacOsXAudioSource::read(pcm_stereo_sample *buffer,
                                   const uint32_t buffer_size)

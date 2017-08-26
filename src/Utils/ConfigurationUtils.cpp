@@ -19,73 +19,59 @@
 
 namespace
 {
-const static std::string k_audio_sources_setting{"audio.sources"}; // mpd,alsa
+const std::string k_audio_sources_setting{"audio.sources"}; // mpd,alsa
 
-const static std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
+const std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
 
-const static std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
+const std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
-const static std::string k_vis_rotation_interval{"visualizer.rotation.secs"};
+const std::string k_vis_rotation_interval{"visualizer.rotation.secs"};
 
-const static std::string k_vis_pulse_audio_source{"audio.pulse.source"};
+const std::string k_vis_pulse_audio_source{"audio.pulse.source"};
 
-const static std::string k_visualizers_setting{"visualizers"};
-const static std::string k_fps_setting{"visualizer.fps"};
+const std::string k_visualizers_setting{"visualizers"};
+const std::string k_fps_setting{"visualizer.fps"};
 
-const static std::string k_color_scheme_path_setting{"colors.scheme"};
-const static std::string k_sampling_frequency_setting{
-    "audio.sampling.frequency"};
-const static std::string k_low_cutoff_frequency_setting{
-    "audio.low.cutoff.frequency"};
-const static std::string k_high_cutoff_frequency_setting{
+const std::string k_color_scheme_path_setting{"colors.scheme"};
+const std::string k_sampling_frequency_setting{"audio.sampling.frequency"};
+const std::string k_low_cutoff_frequency_setting{"audio.low.cutoff.frequency"};
+const std::string k_high_cutoff_frequency_setting{
     "audio.high.cutoff.frequency"};
 
-const static std::string k_scaling_multiplier{"visualizer.scaling.multiplier"};
+const std::string k_scaling_multiplier{"visualizer.scaling.multiplier"};
 
-const static std::string k_lorenz_character{"visualizer.lorenz.character"};
+const std::string k_lorenz_character{"visualizer.lorenz.character"};
 
-const static std::string k_ellipse_character{"visualizer.ellipse.character"};
-const static std::string k_ellipse_radius{"visualizer.ellipse.radius"};
+const std::string k_ellipse_character{"visualizer.ellipse.character"};
+const std::string k_ellipse_radius{"visualizer.ellipse.radius"};
 
 // Spectrum settings
-const static std::string k_spectrum_character{"visualizer.spectrum.character"};
-const static std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
-const static std::string k_spectrum_bar_spacing{
-    "visualizer.spectrum.bar.spacing"};
-const static std::string k_spectrum_smoothing_mode{
+const std::string k_spectrum_character{"visualizer.spectrum.character"};
+const std::string k_spectrum_bar_width{"visualizer.spectrum.bar.width"};
+const std::string k_spectrum_bar_spacing{"visualizer.spectrum.bar.spacing"};
+const std::string k_spectrum_smoothing_mode{
     "visualizer.spectrum.smoothing.mode"};
-const static std::string k_spectrum_falloff_mode{
-    "visualizer.spectrum.falloff.mode"};
-const static std::string k_spectrum_falloff_weight{
+const std::string k_spectrum_falloff_mode{"visualizer.spectrum.falloff.mode"};
+const std::string k_spectrum_falloff_weight{
     "visualizer.spectrum.falloff.weight"};
 
-const static std::string k_spectrum_top_margin{
-    "visualizer.spectrum.top.margin"};
-const static std::string k_spectrum_bottom_margin{
-    "visualizer.spectrum.bottom.margin"};
-const static std::string k_spectrum_right_margin{
-    "visualizer.spectrum.right.margin"};
-const static std::string k_spectrum_left_margin{
-    "visualizer.spectrum.left.margin"};
+const std::string k_spectrum_top_margin{"visualizer.spectrum.top.margin"};
+const std::string k_spectrum_bottom_margin{"visualizer.spectrum.bottom.margin"};
+const std::string k_spectrum_right_margin{"visualizer.spectrum.right.margin"};
+const std::string k_spectrum_left_margin{"visualizer.spectrum.left.margin"};
 
-const static std::string k_spectrum_reversed{"visualizer.spectrum.reversed"};
+const std::string k_spectrum_reversed{"visualizer.spectrum.reversed"};
 
-const static std::string k_monstercat_smoothing_factor{
+const std::string k_monstercat_smoothing_factor{
     "visualizer.monstercat.smoothing.factor"};
 
-const static std::string k_sgs_smoothing_points{
-    "visualizer.sgs.smoothing.points"};
-const static std::string k_sgs_smoothing_passes{
-    "visualizer.sgs.smoothing.passes"};
-}
+const std::string k_sgs_smoothing_points{"visualizer.sgs.smoothing.points"};
+const std::string k_sgs_smoothing_passes{"visualizer.sgs.smoothing.passes"};
+} // namespace
 
-vis::ConfigurationUtils::ConfigurationUtils()
-{
-}
+vis::ConfigurationUtils::ConfigurationUtils() = default;
 
-vis::ConfigurationUtils::~ConfigurationUtils()
-{
-}
+vis::ConfigurationUtils::~ConfigurationUtils() = default;
 
 std::unordered_map<std::string, std::wstring>
 vis::ConfigurationUtils::read_config(const std::string &config_path,
@@ -137,43 +123,39 @@ void vis::ConfigurationUtils::add_color_gradients(
         colors.push_back(color);
         return;
     }
-    else
+
+    auto previous_color = colors[colors.size() - 1];
+    auto start_color = previous_color;
+
+    const double red_diff =
+        (color.get_red() - previous_color.get_red()) / gradient_interval;
+    const double green_diff =
+        (color.get_green() - previous_color.get_green()) / gradient_interval;
+    const double blue_diff =
+        (color.get_blue() - previous_color.get_blue()) / gradient_interval;
+
+    for (auto i = 0u; i < std::round(gradient_interval); ++i)
     {
-        auto previous_color = colors[colors.size() - 1];
-        auto start_color = previous_color;
+        const auto red = static_cast<int16_t>(
+            std::round(start_color.get_red() + (red_diff * i)));
 
-        const double red_diff =
-            (color.get_red() - previous_color.get_red()) / gradient_interval;
-        const double green_diff =
-            (color.get_green() - previous_color.get_green()) /
-            gradient_interval;
-        const double blue_diff =
-            (color.get_blue() - previous_color.get_blue()) / gradient_interval;
+        const auto green = static_cast<int16_t>(
+            std::round(start_color.get_green() + (green_diff * i)));
 
-        for (auto i = 0u; i < std::round(gradient_interval); ++i)
+        const auto blue = static_cast<int16_t>(
+            std::round(start_color.get_blue() + (blue_diff * i)));
+
+        const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
+
+        // gradients will generally result in a lot of duplicates
+        if (previous_color.get_color_index() != color_index)
         {
-            const auto red = static_cast<int16_t>(
-                std::round(start_color.get_red() + (red_diff * i)));
-
-            const auto green = static_cast<int16_t>(
-                std::round(start_color.get_green() + (green_diff * i)));
-
-            const auto blue = static_cast<int16_t>(
-                std::round(start_color.get_blue() + (blue_diff * i)));
-
-            const auto color_index =
-                NcursesUtils::to_ansi_color(red, green, blue);
-
-            // gradients will generally result in a lot of duplicates
-            if (previous_color.get_color_index() != color_index)
-            {
-                previous_color =
-                    vis::ColorDefinition{color_index, red, green, blue};
-                colors.push_back(previous_color);
-            }
+            previous_color =
+                vis::ColorDefinition{color_index, red, green, blue};
+            colors.push_back(previous_color);
         }
-        colors.push_back(color);
     }
+    colors.push_back(color);
 }
 
 std::vector<vis::ColorDefinition>
@@ -373,7 +355,7 @@ void vis::ConfigurationUtils::setup_default_colors(
 
         if (colors_uniq.find(color_index) == colors_uniq.end())
         {
-            colors.push_back(ColorDefinition{color_index, red, green, blue});
+            colors.emplace_back(color_index, red, green, blue);
             colors_uniq.insert(color_index);
         }
     }

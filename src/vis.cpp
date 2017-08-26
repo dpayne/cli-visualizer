@@ -6,9 +6,9 @@
  */
 
 #include <csignal>
+#include <cstring>
 #include <iostream>
 #include <memory>
-#include <string.h>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"

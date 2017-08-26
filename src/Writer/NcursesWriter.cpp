@@ -63,7 +63,7 @@ void vis::NcursesWriter::setup_color_pairs()
 
 void vis::NcursesWriter::setup_colors()
 {
-    if (has_colors() == TRUE)
+    if (static_cast<int>(has_colors()) == TRUE)
     {
         start_color();        // turns on color
         use_default_colors(); // uses default colors of terminal, which allows

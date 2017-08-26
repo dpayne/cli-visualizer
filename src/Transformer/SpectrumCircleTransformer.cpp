@@ -21,9 +21,7 @@ vis::SpectrumCircleTransformer::SpectrumCircleTransformer(
 {
 }
 
-vis::SpectrumCircleTransformer::~SpectrumCircleTransformer()
-{
-}
+vis::SpectrumCircleTransformer::~SpectrumCircleTransformer() = default;
 
 void vis::SpectrumCircleTransformer::draw_bars(
     const std::vector<double> &bars, const std::vector<double> &bars_falloff,

@@ -24,6 +24,4 @@ vis::VisException::VisException(const char *format, ...) noexcept
     m_message = std::string{buffer};
 }
 
-vis::VisException::~VisException() noexcept
-{
-}
+vis::VisException::~VisException() noexcept = default;

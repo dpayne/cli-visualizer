@@ -15,14 +15,12 @@
 
 namespace
 {
-const static uint64_t k_max_log_line = 4096;
-const static std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
-                                                       "ERROR"};
+const uint64_t k_max_log_line = 4096;
+const std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
+                                                "ERROR"};
 }
 
-vis::Logger::Logger()
-{
-}
+vis::Logger::Logger() = default;
 
 void vis::Logger::initialize(const std::string log_location)
 {
@@ -52,6 +50,4 @@ void vis::Logger::log(vis::LogLevel level, const char *file, uint16_t line,
     va_end(args);
 }
 
-vis::Logger::~Logger()
-{
-}
+vis::Logger::~Logger() = default;

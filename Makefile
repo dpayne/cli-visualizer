@@ -247,7 +247,7 @@ $(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
 	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
 
 clang_tidy: $(HEADERS) $(SOURCES)
-	clang-tidy $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
+	clang-tidy -fix $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
 
 clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
 	clang-format -i $?

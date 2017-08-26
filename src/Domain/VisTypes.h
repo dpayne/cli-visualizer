@@ -48,5 +48,5 @@ enum class ChannelMode
     Right,
     Both
 };
-}
+} // namespace vis
 #endif

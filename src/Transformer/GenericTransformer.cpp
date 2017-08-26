@@ -7,14 +7,14 @@
 
 #include "Transformer/GenericTransformer.h"
 
-vis::GenericTransformer::GenericTransformer(const std::string &name)
-    : m_name{name}
+#include <utility>
+
+vis::GenericTransformer::GenericTransformer(std::string name)
+    : m_name{std::move(name)}
 {
 }
 
-vis::GenericTransformer::~GenericTransformer()
-{
-}
+vis::GenericTransformer::~GenericTransformer() = default;
 
 void vis::GenericTransformer::recalculate_colors(
     const size_t max, const std::vector<ColorDefinition> &colors,

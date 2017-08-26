@@ -7,10 +7,6 @@
 
 #include "Utils/NcursesUtils.h"
 
-vis::NcursesUtils::NcursesUtils()
-{
-}
+vis::NcursesUtils::NcursesUtils() = default;
 
-vis::NcursesUtils::~NcursesUtils()
-{
-}
+vis::NcursesUtils::~NcursesUtils() = default;

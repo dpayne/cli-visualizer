@@ -38,6 +38,6 @@ class VisException : public std::exception
   private:
     std::string m_message;
 };
-}
+} // namespace vis
 
 #endif

@@ -17,7 +17,7 @@ namespace vis
 class GenericTransformer
 {
   public:
-    explicit GenericTransformer(const std::string &name);
+    explicit GenericTransformer(std::string name);
 
     GenericTransformer(const GenericTransformer &other) = delete;
 
@@ -50,11 +50,10 @@ class GenericTransformer
      * Colors are re-calculated if max != precomputed_colors.size()
      */
     virtual void
-    recalculate_colors(const size_t max,
-                       const std::vector<ColorDefinition> &colors,
+    recalculate_colors(size_t max, const std::vector<ColorDefinition> &colors,
                        std::vector<ColorDefinition> *precomputed_colors,
                        const NcursesWriter *writer);
 };
-}
+} // namespace vis
 
 #endif
