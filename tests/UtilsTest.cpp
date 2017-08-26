@@ -138,7 +138,7 @@ TEST(UtilsTest, SplitFirstEmptyString)
     std::pair<std::string, std::string> p{"hello", "world"};
     std::string s{""};
 
-    vis::Utils::split_first(s, '=', p);
+    vis::Utils::split_first(s, '=', &p);
 
     EXPECT_EQ("", p.first);
     EXPECT_EQ("", p.second);
@@ -149,7 +149,7 @@ TEST(UtilsTest, SplitFirstSingleDelimString)
     std::pair<std::string, std::string> p{"hello", "world"};
     std::string s{"this=isatest"};
 
-    vis::Utils::split_first(s, '=', p);
+    vis::Utils::split_first(s, '=', &p);
 
     EXPECT_EQ("this", p.first);
     EXPECT_EQ("isatest", p.second);
@@ -160,7 +160,7 @@ TEST(UtilsTest, SplitFirstMultiDelimString)
     std::pair<std::string, std::string> p{"hello", "world"};
     std::string s{"this=isatest=with=more=than=one=delimiter"};
 
-    vis::Utils::split_first(s, '=', p);
+    vis::Utils::split_first(s, '=', &p);
 
     EXPECT_EQ("this", p.first);
     EXPECT_EQ("isatest=with=more=than=one=delimiter", p.second);
@@ -171,7 +171,7 @@ TEST(UtilsTest, SplitEmptyString)
     std::vector<std::string> v{"hello", "world"};
     std::string s{""};
 
-    vis::Utils::split(s, '=', v);
+    vis::Utils::split(s, '=', &v);
 
     EXPECT_TRUE(v.empty());
 }
@@ -181,7 +181,7 @@ TEST(UtilsTest, SplitSingleDelimString)
     std::vector<std::string> v{"hello", "world"};
     std::string s{"this=isatest"};
 
-    vis::Utils::split(s, '=', v);
+    vis::Utils::split(s, '=', &v);
 
     EXPECT_EQ(2, v.size());
     EXPECT_EQ("this", v[0]);
@@ -193,7 +193,7 @@ TEST(UtilsTest, SplitMultiDelimString)
     std::vector<std::string> v{"hello", "world"};
     std::string s{"this=isatest=with=more=than=one=delimiter"};
 
-    vis::Utils::split(s, '=', v);
+    vis::Utils::split(s, '=', &v);
 
     EXPECT_EQ(7, v.size());
     EXPECT_EQ("this", v[0]);
@@ -223,24 +223,4 @@ TEST(UtilsTest, ToIntMaxInt)
 TEST(UtilsTest, ToIntZero)
 {
     EXPECT_EQ(0, vis::Utils::to_int("0"));
-}
-
-TEST(UtilsTest, ToUIntEmptyString)
-{
-    EXPECT_EQ(0, vis::Utils::to_uint(""));
-}
-
-TEST(UtilsTest, ToUIntMaxInt)
-{
-    EXPECT_EQ(4294967295, vis::Utils::to_uint("4294967295"));
-}
-
-TEST(UtilsTest, ToUInt)
-{
-    EXPECT_EQ(1337, vis::Utils::to_uint("1337"));
-}
-
-TEST(UtilsTest, ToUIntZero)
-{
-    EXPECT_EQ(0, vis::Utils::to_uint("0"));
 }
