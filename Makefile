@@ -147,9 +147,6 @@ ifneq ("$(wildcard /usr/lib/libjemalloc.so)","")
 LIBS += -ljemalloc
 endif
 
-#clang tidy checks
-CLANG_TIDY_CHECKS=clang-analyzer-*,modernize-*,readability-*,misc-*,cppcoreguidelines-*,google-*,-google-readability-namespace-comments
-
 ###############################################################################
 ##  OBJECTS                                                                  ##
 ###############################################################################
@@ -249,8 +246,8 @@ $(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
 	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
 	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
 
-clang_tidy: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
-	clang-tidy -checks=${CLANG_TIDY_CHECKS} $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
+clang_tidy: $(HEADERS) $(SOURCES)
+	clang-tidy $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)
 
 clang_format: $(HEADERS) $(SOURCES) $(TEST_SOURCES) $(PERF_TEST_SOURCES)
 	clang-format -i $?

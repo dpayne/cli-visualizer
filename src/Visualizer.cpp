@@ -95,7 +95,6 @@ void vis::Visualizer::allocate_buffer()
 void vis::Visualizer::setup_audio_source()
 {
     const auto audio_source = m_settings->get_audio_source();
-    std::cout << audio_source << std::endl;
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
         m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
@@ -253,7 +252,6 @@ void vis::Visualizer::reload_config()
     m_settings.reset(new Settings{config_path});
 
     vis::ConfigurationUtils::load_settings(m_settings, config_path, m_loc);
-    vis::ConfigurationUtils::load_color_settings(m_settings);
 
     m_settings->set_scaling_multiplier(scaling_multiplier);
 
@@ -270,6 +268,18 @@ void vis::Visualizer::reload_config()
     if (m_current_color_scheme_index >= m_settings->get_color_schemes().size())
     {
         m_current_color_scheme_index = 0;
+    }
+
+    // try to reload the same color scheme
+    if (!m_settings->get_color_schemes().empty())
+    {
+        vis::ConfigurationUtils::load_color_settings_from_color_scheme(
+            m_settings->get_color_schemes()[m_current_color_scheme_index],
+            m_settings);
+    }
+    else
+    {
+        vis::ConfigurationUtils::load_color_settings(m_settings);
     }
 }
 

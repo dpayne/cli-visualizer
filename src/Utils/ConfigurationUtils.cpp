@@ -255,10 +255,9 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             }
             else
             {
-                VIS_LOG(vis::LogLevel::WARN,
-                        "Configuration color "
-                        "definition line was not "
-                        "valid at %s",
+                VIS_LOG(vis::LogLevel::WARN, "Configuration color "
+                                             "definition line was not "
+                                             "valid at %s",
                         color_line.c_str());
             }
         }

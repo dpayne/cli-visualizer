@@ -20,6 +20,14 @@ class Settings
   public:
     explicit Settings(const std::string &config_path);
 
+    Settings(const Settings &other) noexcept = default;
+
+    Settings(const Settings &&other) noexcept = default;
+
+    Settings &operator=(const Settings &s) = default;
+
+    Settings &operator=(Settings &&s) noexcept = default;
+
     ~Settings();
 
     double get_scaling_multiplier() const noexcept

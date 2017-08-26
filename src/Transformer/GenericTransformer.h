@@ -19,6 +19,14 @@ class GenericTransformer
   public:
     explicit GenericTransformer(const std::string &name);
 
+    GenericTransformer(const GenericTransformer &other) = delete;
+
+    GenericTransformer(const GenericTransformer &&other) = delete;
+
+    GenericTransformer &operator=(const GenericTransformer &v) = default;
+
+    GenericTransformer &operator=(GenericTransformer &&v) noexcept = default;
+
     virtual ~GenericTransformer();
 
     virtual void execute_stereo(pcm_stereo_sample *buffer,
@@ -44,7 +52,7 @@ class GenericTransformer
     virtual void
     recalculate_colors(const size_t max,
                        const std::vector<ColorDefinition> &colors,
-                       std::vector<ColorDefinition> &precomputed_colors,
+                       std::vector<ColorDefinition> *precomputed_colors,
                        const NcursesWriter *writer);
 };
 }

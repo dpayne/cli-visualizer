@@ -22,6 +22,12 @@ class VisException : public std::exception
 
     VisException(const VisException &other) noexcept;
 
+    VisException(const VisException &&other) noexcept;
+
+    VisException &operator=(const VisException &v) = default;
+
+    VisException &operator=(VisException &&v) noexcept = default;
+
     ~VisException() noexcept override;
 
     const char *what() const noexcept override

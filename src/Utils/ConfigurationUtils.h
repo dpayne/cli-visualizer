@@ -9,8 +9,8 @@
 #define _VIS_CONFIGURATION_UTILS_H
 
 #include <locale>
-#include <unordered_map>
 #include <memory>
+#include <unordered_map>
 
 #include "Domain/Settings.h"
 #include "Domain/VisConstants.h"

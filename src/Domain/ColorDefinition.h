@@ -27,6 +27,10 @@ class ColorDefinition
 
     ColorDefinition(const ColorDefinition &other) noexcept;
 
+    ColorDefinition &operator=(const ColorDefinition &c) = default;
+
+    ColorDefinition &operator=(ColorDefinition &&c) noexcept = default;
+
     virtual ~ColorDefinition();
 
     inline ColorIndex get_color_index() const

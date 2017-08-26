@@ -24,7 +24,7 @@ static const int16_t k_default_max_color = 256;
 static const std::string k_disabled_gradient_color_config{"gradient=false"};
 
 // Various constants
-static const std::string k_default_locale = "en_US.UTF8";
+static const std::string k_default_locale{"en_US.UTF8"};
 static const wchar_t k_space_wchar{L' '};
 static const wchar_t k_full_block_wchar{L'\u2588'};
 static const wchar_t k_hash_wchar{L'#'};
@@ -36,7 +36,7 @@ static const std::string k_false{"false"};
 static const std::string k_mpd_audio_source_name{"mpd"};
 static const std::string k_osx_audio_source_name{"osx"};
 static const std::string k_pulse_audio_source_name{"pulse"};
-static const std::string k_default_visualizer_pulse_audio_source = "";
+static const std::string k_default_visualizer_pulse_audio_source;
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
 static const std::string k_lorenz_visualizer_name{"lorenz"};

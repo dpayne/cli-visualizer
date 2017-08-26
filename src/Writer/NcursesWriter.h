@@ -28,10 +28,14 @@ class NcursesWriter
 
     NcursesWriter(const NcursesWriter &&) = delete;
 
+    NcursesWriter &operator=(const NcursesWriter &) = delete;
+
+    NcursesWriter &operator=(const NcursesWriter &&) = delete;
+
     virtual ~NcursesWriter();
 
     virtual void write(int32_t height, int32_t width, ColorDefinition color,
-                       const std::wstring &msg, const wchar_t character);
+                       const std::wstring &msg, wchar_t character);
 
     virtual void clear();
 
@@ -43,7 +47,7 @@ class NcursesWriter
      */
     virtual ColorDefinition to_color_pair(int32_t number, int32_t max,
                                           std::vector<ColorDefinition> colors,
-                                          bool wrap = true) const;
+                                          bool wrap) const;
     /**
      * Initialize color pairs for ncurses
      */

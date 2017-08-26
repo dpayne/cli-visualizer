@@ -28,6 +28,10 @@ class Visualizer
 
     Visualizer(const Visualizer &&v) = delete;
 
+    Visualizer &operator=(const Visualizer &v) = delete;
+
+    Visualizer &operator=(const Visualizer &&v) = delete;
+
     virtual ~Visualizer();
 
     void run();
