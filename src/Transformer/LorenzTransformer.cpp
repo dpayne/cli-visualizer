@@ -37,7 +37,7 @@ const double k_max_rotation_count = 1000.0;
 
 const size_t k_max_color_index_for_lorenz = 16;
 
-const size_t k_color_distance_limit = 4096;
+const size_t k_color_distance_limit = 16384;
 
 // These values were taken through experimentation on what seemed to work best.
 const double k_lorenz_h = 0.01;
