@@ -224,3 +224,33 @@ TEST(UtilsTest, ToIntZero)
 {
     EXPECT_EQ(0, vis::Utils::to_int("0"));
 }
+
+TEST(UtilsTest, IsNumericZero)
+{
+    EXPECT_TRUE(vis::Utils::is_numeric("0"));
+}
+
+TEST(UtilsTest, IsNumericOne)
+{
+    EXPECT_TRUE(vis::Utils::is_numeric("1"));
+}
+
+TEST(UtilsTest, IsNumericNegative)
+{
+    EXPECT_TRUE(vis::Utils::is_numeric("-1"));
+}
+
+TEST(UtilsTest, IsNumericMaxInt)
+{
+    EXPECT_TRUE(vis::Utils::is_numeric("2147483647"));
+}
+
+TEST(UtilsTest, IsNumericLetter)
+{
+    EXPECT_FALSE(vis::Utils::is_numeric("A"));
+}
+
+TEST(UtilsTest, IsNumericWords)
+{
+    EXPECT_FALSE(vis::Utils::is_numeric("hello world"));
+}
