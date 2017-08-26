@@ -28,6 +28,7 @@ addons:
     - gcc
     - g++-6
     - clang-4.0
+    - clang
   coverity_scan:
     project:
       name: dpayne/cli-visualizer
