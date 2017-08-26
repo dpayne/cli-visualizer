@@ -25,7 +25,7 @@ class GenericTransformer
 
     GenericTransformer &operator=(const GenericTransformer &v) = default;
 
-    GenericTransformer &operator=(GenericTransformer &&v) noexcept = default;
+    GenericTransformer &operator=(GenericTransformer &&v) = default;
 
     virtual ~GenericTransformer() = default;
 

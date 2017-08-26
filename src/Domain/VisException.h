@@ -26,7 +26,7 @@ class VisException : public std::exception
 
     VisException &operator=(const VisException &v) = default;
 
-    VisException &operator=(VisException &&v) noexcept = default;
+    VisException &operator=(VisException &&v) = default;
 
     ~VisException() noexcept override;
 
