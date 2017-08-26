@@ -22,7 +22,7 @@ namespace
 }
 
 vis::EllipseTransformer::EllipseTransformer(
-    const std::shared_ptr<const Settings> settings, const std::string &name)
+    const std::shared_ptr<Settings> settings, const std::string &name)
     : GenericTransformer(name), m_settings{settings}
 {
 }

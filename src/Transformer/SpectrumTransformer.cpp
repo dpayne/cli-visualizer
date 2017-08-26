@@ -36,7 +36,7 @@ const uint64_t k_max_silent_runs_before_sleep =
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(
-    const std::shared_ptr<const Settings> settings, const std::string &name)
+    const std::shared_ptr<Settings> settings, const std::string &name)
     : GenericTransformer(name), m_settings{settings}, m_fftw_results{0},
       m_fftw_input_left{nullptr}, m_fftw_input_right{nullptr},
       m_fftw_output_left{nullptr}, m_fftw_output_right{nullptr},

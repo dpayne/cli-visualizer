@@ -22,7 +22,7 @@ class SpectrumCircleTransformer : public SpectrumTransformer
     explicit SpectrumCircleTransformer(const std::shared_ptr<Settings> settings,
                                        const std::string &name);
 
-    ~SpectrumCircleTransformer() override;
+    ~SpectrumCircleTransformer() override = default;
 
   private:
     const std::shared_ptr<const Settings> m_settings;

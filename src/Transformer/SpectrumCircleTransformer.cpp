@@ -16,12 +16,10 @@ namespace
 }
 
 vis::SpectrumCircleTransformer::SpectrumCircleTransformer(
-    const std::shared_ptr<const Settings> settings, const std::string &name)
+    const std::shared_ptr<Settings> settings, const std::string &name)
     : SpectrumTransformer(settings, name), m_settings{settings}
 {
 }
-
-vis::SpectrumCircleTransformer::~SpectrumCircleTransformer() = default;
 
 void vis::SpectrumCircleTransformer::draw_bars(
     const std::vector<double> &bars, const std::vector<double> &bars_falloff,

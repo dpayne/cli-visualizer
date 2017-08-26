@@ -6,7 +6,3 @@
  */
 
 #include "Utils/Utils.h"
-
-vis::Utils::Utils() = default;
-
-vis::Utils::~Utils() = default;
