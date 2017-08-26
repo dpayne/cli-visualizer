@@ -37,6 +37,8 @@ const double k_max_rotation_count = 1000.0;
 
 const size_t k_max_color_index_for_lorenz = 16;
 
+const size_t k_color_distance_limit = 4096;
+
 // These values were taken through experimentation on what seemed to work best.
 const double k_lorenz_h = 0.01;
 const double k_lorenz_a = 10.0;
@@ -176,7 +178,7 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
         if (color_distance > m_max_color_index)
         {
-            m_max_color_index = color_distance;
+            m_max_color_index = std::min(k_color_distance_limit, color_distance);
             recalculate_colors(m_max_color_index, m_settings->get_colors(),
                                &m_precomputed_colors, writer);
         }
