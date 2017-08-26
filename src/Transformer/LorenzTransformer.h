@@ -23,6 +23,14 @@ class LorenzTransformer : public GenericTransformer
         const std::shared_ptr<const vis::Settings> settings,
         const std::string &name);
 
+    LorenzTransformer(const LorenzTransformer &other) = delete;
+
+    LorenzTransformer(const LorenzTransformer &&other) = delete;
+
+    LorenzTransformer &operator=(const LorenzTransformer &v) = delete;
+
+    LorenzTransformer &operator=(LorenzTransformer &&v) noexcept = delete;
+
     ~LorenzTransformer() override;
 
     void execute_mono(pcm_stereo_sample *buffer,

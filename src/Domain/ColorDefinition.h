@@ -23,11 +23,13 @@ class ColorDefinition
     ColorDefinition(ColorIndex color_index, ColorValue red, ColorValue green,
                     ColorValue blue);
 
-    ColorDefinition(ColorDefinition &&c) noexcept = default;
+    ColorDefinition(ColorDefinition &&c) = default;
 
-    ColorDefinition(const ColorDefinition &c) noexcept = default;
+    ColorDefinition(const ColorDefinition &c) = default;
 
-    ColorDefinition &operator=(const ColorDefinition &other) noexcept = default;
+    ColorDefinition &operator=(const ColorDefinition &other) = default;
+
+    ColorDefinition &operator=(ColorDefinition &&other) = default;
 
     ~ColorDefinition() = default;
 

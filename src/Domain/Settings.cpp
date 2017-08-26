@@ -41,5 +41,3 @@ vis::Settings::Settings(std::string config_path)
       m_config_path{std::move(config_path)}
 {
 }
-
-vis::Settings::~Settings() = default;

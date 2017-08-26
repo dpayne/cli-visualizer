@@ -20,8 +20,6 @@ const std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
                                                 "ERROR"};
 }
 
-vis::Logger::Logger() = default;
-
 void vis::Logger::initialize(const std::string log_location)
 {
     std::string log_path{log_location};
@@ -49,5 +47,3 @@ void vis::Logger::log(vis::LogLevel level, const char *file, uint16_t line,
         message_text_buf);
     va_end(args);
 }
-
-vis::Logger::~Logger() = default;

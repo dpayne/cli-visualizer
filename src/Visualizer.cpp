@@ -8,7 +8,6 @@
 #include "Visualizer.h"
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
-#include "Source/MacOsXAudioSource.h"
 #include "Source/MpdAudioSource.h"
 #include "Source/PulseAudioSource.h"
 #include "Transformer/EllipseTransformer.h"
@@ -85,11 +84,11 @@ void vis::Visualizer::allocate_buffer()
 {
     if (m_pcm_buffer != nullptr)
     {
-        free(m_pcm_buffer);
+        free(m_pcm_buffer); // NOLINT
     }
 
     m_pcm_buffer = static_cast<pcm_stereo_sample *>(
-        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample)));
+        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample))); // NOLINT
 }
 
 void vis::Visualizer::setup_audio_source()
@@ -155,9 +154,6 @@ void vis::Visualizer::run()
 
         rotate_transformer(m_settings->get_rotation_interval(),
                            &last_rotation_timestamp);
-
-        // update sources and transformers
-        transformer = get_current_transformer();
 
         // Only do this after at least one loop to prevent CTRL-C not killing
         // the process if audio cannot be read
@@ -323,6 +319,6 @@ vis::Visualizer::~Visualizer()
 {
     if (m_pcm_buffer != nullptr)
     {
-        free(m_pcm_buffer);
+        free(m_pcm_buffer); // NOLINT
     }
 }

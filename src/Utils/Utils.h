@@ -216,67 +216,61 @@ class Utils
      * Split a string by the first delimiter. Note, the delimiter will not be
      * included in either the first or second string in the pair.
      */
-    static inline std::pair<std::string, std::string> &
-    split_first(const std::string &s, char delim,
-                std::pair<std::string, std::string> &elems)
+    static inline void split_first(const std::string &s, char delim,
+                                   std::pair<std::string, std::string> *elems)
     {
         auto index_of_first_elem = s.find_first_of(delim);
 
         // delimiter not found
         if (index_of_first_elem == std::string::npos)
         {
-            elems.first = s;
-            elems.second.clear();
-            return elems;
+            elems->first = s;
+            elems->second.clear();
+            return;
         }
 
-        elems.first = s.substr(0, index_of_first_elem);
+        elems->first = s.substr(0, index_of_first_elem);
 
         // nothing after the delimiter
         if (index_of_first_elem == (s.size() - 1))
         {
-            elems.second.clear();
+            elems->second.clear();
         }
         else
         {
-            elems.second = s.substr(index_of_first_elem + 1, std::string::npos);
+            elems->second = s.substr(index_of_first_elem + 1, std::string::npos);
         }
-
-        return elems;
     }
 
     /**
      * Split a string by the first delimiter. Note, the delimiter will not be
      * included in either the first or second string in the pair.
      */
-    static inline std::pair<std::wstring, std::wstring> &
-    split_first(const std::wstring &s, char delim,
-                std::pair<std::wstring, std::wstring> &elems)
+    static inline void split_first(const std::wstring &s, char delim,
+                                   std::pair<std::wstring, std::wstring> *elems)
     {
         auto index_of_first_elem = s.find_first_of(delim);
 
         // delimiter not found
         if (index_of_first_elem == std::wstring::npos)
         {
-            elems.first = s;
-            elems.second.clear();
-            return elems;
+            elems->first = s;
+            elems->second.clear();
+            return;
         }
 
-        elems.first = s.substr(0, index_of_first_elem);
+        elems->first = s.substr(0, index_of_first_elem);
 
         // nothing after the delimiter
         if (index_of_first_elem == (s.size() - 1))
         {
-            elems.second.clear();
+            elems->second.clear();
         }
         else
         {
-            elems.second =
+            elems->second =
                 s.substr(index_of_first_elem + 1, std::wstring::npos);
         }
-
-        return elems;
     }
 
     /**
@@ -314,27 +308,26 @@ class Utils
                                                  char delim)
     {
         std::vector<std::string> result;
-        return split(s, delim, result);
+        split(s, delim, &result);
+        return result;
     }
 
     /**
      * Helper method to split a string by the delimiter "delim", contents are
      * put input the vector "elems"
      */
-    static inline std::vector<std::string> &
-    split(const std::string &s, char delim, std::vector<std::string> &elems)
+    static inline void
+    split(const std::string &s, char delim, std::vector<std::string> *elems)
     {
         std::stringstream ss(s);
         std::string item;
 
-        elems.clear();
+        elems->clear();
 
         while (std::getline(ss, item, delim))
         {
-            elems.push_back(item);
+            elems->push_back(item);
         }
-
-        return elems;
     }
 
     /**
@@ -344,28 +337,27 @@ class Utils
                                                   wchar_t delim)
     {
         std::vector<std::wstring> result;
-        return split(s, delim, result);
+        split(s, delim, &result);
+        return result;
     }
 
     /**
      * Helper method to split a wstring by the delimiter "delim", contents are
      * put input the vector "elems"
      */
-    static inline std::vector<std::wstring> &
+    static inline void
     split(const std::wstring &s, wchar_t delim,
-          std::vector<std::wstring> &elems)
+          std::vector<std::wstring> *elems)
     {
         std::wstringstream ss(s);
         std::wstring item;
 
-        elems.clear();
+        elems->clear();
 
         while (std::getline(ss, item, delim))
         {
-            elems.push_back(item);
+            elems->push_back(item);
         }
-
-        return elems;
     }
 
     /**
@@ -388,7 +380,7 @@ class Utils
 
             if (c >= 'A' && c <= 'F')
             {
-                hex_number = static_cast<int64_t>(10 + (c - 'A'));
+                hex_number = 10 + static_cast<int64_t>(c - 'A');
             }
             else
             {
@@ -413,11 +405,6 @@ class Utils
 
         return decimalValue;
     }
-
-  private:
-    explicit Utils() = delete;
-
-    virtual ~Utils() = delete;
 };
 } // namespace vis
 

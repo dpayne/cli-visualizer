@@ -23,6 +23,14 @@ class MpdAudioSource : public vis::AudioSource
     explicit MpdAudioSource(
         const std::shared_ptr<const vis::Settings> settings);
 
+    MpdAudioSource(const MpdAudioSource &other) = delete;
+
+    MpdAudioSource(const MpdAudioSource &&other) = delete;
+
+    MpdAudioSource &operator=(const MpdAudioSource &v) = delete;
+
+    MpdAudioSource &operator=(MpdAudioSource &&v) = delete;
+
     ~MpdAudioSource() override;
 
     bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
@@ -34,6 +42,6 @@ class MpdAudioSource : public vis::AudioSource
 
     bool open_mpd_fifo();
 };
-}
+} // namespace vis
 
 #endif

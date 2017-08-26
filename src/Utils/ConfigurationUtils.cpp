@@ -77,10 +77,6 @@ const std::string k_sgs_smoothing_passes_setting{
     "visualizer.sgs.smoothing.passes"};
 } // namespace
 
-vis::ConfigurationUtils::ConfigurationUtils() = default;
-
-vis::ConfigurationUtils::~ConfigurationUtils() = default;
-
 std::unordered_map<std::string, std::wstring>
 vis::ConfigurationUtils::read_config(const std::string &config_path,
                                      const std::locale &loc)
@@ -104,7 +100,7 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
     {
         if (!line.empty() && line[0] != L'#')
         {
-            vis::Utils::split_first(line, L'=', split_line);
+            vis::Utils::split_first(line, L'=', &split_line);
 
             if (!split_line.first.empty())
             {
@@ -124,15 +120,15 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
 
 void vis::ConfigurationUtils::add_color_gradients(
     const vis::ColorDefinition color, const double gradient_interval,
-    std::vector<vis::ColorDefinition> &colors)
+    std::vector<vis::ColorDefinition> *colors)
 {
-    if (colors.empty())
+    if (colors->empty())
     {
-        colors.push_back(color);
+        colors->push_back(color);
         return;
     }
 
-    auto previous_color = colors[colors.size() - 1];
+    auto previous_color = (*colors)[colors->size() - 1];
     auto start_color = previous_color;
 
     const double red_diff =
@@ -160,10 +156,10 @@ void vis::ConfigurationUtils::add_color_gradients(
         {
             previous_color =
                 vis::ColorDefinition{color_index, red, green, blue};
-            colors.push_back(previous_color);
+            colors->push_back(previous_color);
         }
     }
-    colors.push_back(color);
+    colors->push_back(color);
 }
 
 std::vector<vis::ColorDefinition>
@@ -222,7 +218,7 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
                 blue};
             if (is_gradient_enabled)
             {
-                add_color_gradients(color, gradient_interval, colors);
+                add_color_gradients(color, gradient_interval, &colors);
             }
             else
             {
@@ -236,7 +232,7 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             {
                 if (is_gradient_enabled)
                 {
-                    add_color_gradients(basic_color, gradient_interval, colors);
+                    add_color_gradients(basic_color, gradient_interval, &colors);
                 }
                 else
                 {

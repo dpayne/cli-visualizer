@@ -23,6 +23,14 @@ class SpectrumCircleTransformer : public SpectrumTransformer
         const std::shared_ptr<const vis::Settings> settings,
         const std::string &name);
 
+    SpectrumCircleTransformer(const SpectrumCircleTransformer &other) = delete;
+
+    SpectrumCircleTransformer(const SpectrumCircleTransformer &&other) = delete;
+
+    SpectrumCircleTransformer &operator=(const SpectrumCircleTransformer &v) = delete;
+
+    SpectrumCircleTransformer &operator=(SpectrumCircleTransformer &&v) = delete;
+
     ~SpectrumCircleTransformer() override = default;
 
     void clear_colors() override

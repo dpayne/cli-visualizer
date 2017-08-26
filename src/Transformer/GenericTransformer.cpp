@@ -14,8 +14,6 @@ vis::GenericTransformer::GenericTransformer(std::string name)
 {
 }
 
-vis::GenericTransformer::~GenericTransformer() = default;
-
 void vis::GenericTransformer::recalculate_colors(
     const size_t max, const std::vector<ColorDefinition> &colors,
     std::vector<ColorDefinition> *precomputed_colors,

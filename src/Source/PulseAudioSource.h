@@ -29,7 +29,19 @@ class PulseAudioSource : public vis::AudioSource
     explicit PulseAudioSource(
         const std::shared_ptr<const vis::Settings> settings);
 
+    PulseAudioSource(const PulseAudioSource &other) = delete;
+
+    PulseAudioSource(const PulseAudioSource &&other) = delete;
+
+    PulseAudioSource &operator=(const PulseAudioSource &v) = delete;
+
+    PulseAudioSource &operator=(PulseAudioSource &&v) = delete;
+
+#ifdef _ENABLE_PULSE
     ~PulseAudioSource() override;
+#else
+    ~PulseAudioSource() override = default;
+#endif
 
     bool read(pcm_stereo_sample *buffer, uint32_t buffer_size) override;
 

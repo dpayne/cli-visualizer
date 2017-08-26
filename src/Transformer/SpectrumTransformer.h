@@ -25,6 +25,14 @@ class SpectrumTransformer : public GenericTransformer
         const std::shared_ptr<const vis::Settings> settings,
         const std::string &name);
 
+    SpectrumTransformer(const SpectrumTransformer &other) = delete;
+
+    SpectrumTransformer(const SpectrumTransformer &&other) = delete;
+
+    SpectrumTransformer &operator=(const SpectrumTransformer &v) = delete;
+
+    SpectrumTransformer &operator=(SpectrumTransformer &&v) = delete;
+
     ~SpectrumTransformer() override;
 
     void execute_mono(pcm_stereo_sample *buffer,

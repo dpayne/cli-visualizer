@@ -20,8 +20,6 @@ class Settings
   public:
     explicit Settings(std::string config_path);
 
-    ~Settings();
-
     double get_scaling_multiplier() const noexcept
     {
         return m_scaling_multiplier;

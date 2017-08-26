@@ -52,7 +52,7 @@ class ConfigurationUtils
 
     static void add_color_gradients(vis::ColorDefinition color,
                                     double gradient_interval,
-                                    std::vector<vis::ColorDefinition> &colors);
+                                    std::vector<vis::ColorDefinition> *colors);
 
     static std::vector<vis::ColorDefinition>
     read_colors(const std::string &colors_path);
@@ -63,10 +63,6 @@ class ConfigurationUtils
     static void
     validate_setting_is_greater_than_zero(const double t,
                                           const std::string &setting);
-
-    explicit ConfigurationUtils();
-
-    virtual ~ConfigurationUtils();
 };
 } // namespace vis
 

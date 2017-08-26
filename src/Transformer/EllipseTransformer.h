@@ -23,6 +23,14 @@ class EllipseTransformer : public GenericTransformer
         const std::shared_ptr<const vis::Settings> settings,
         const std::string &name);
 
+    EllipseTransformer(const EllipseTransformer &other) = delete;
+
+    EllipseTransformer(const EllipseTransformer &&other) = delete;
+
+    EllipseTransformer &operator=(const EllipseTransformer &v) = delete;
+
+    EllipseTransformer &operator=(EllipseTransformer &&v) noexcept = delete;
+
     ~EllipseTransformer() override;
 
     void execute_mono(pcm_stereo_sample *buffer,

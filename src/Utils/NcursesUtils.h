@@ -141,9 +141,6 @@ class NcursesUtils
     }
 
   private:
-    explicit NcursesUtils() = delete;
-
-    virtual ~NcursesUtils() = delete;
 
     static inline int16_t to_ansi_color_domain(const int16_t color)
     {

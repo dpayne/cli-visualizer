@@ -55,11 +55,6 @@ class Logger
     static void initialize(std::string log_location);
 
     static void uninitialize();
-
-  private:
-    explicit Logger();
-
-    virtual ~Logger();
 };
 } // namespace vis
 

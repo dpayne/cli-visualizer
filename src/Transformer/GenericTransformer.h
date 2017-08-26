@@ -27,7 +27,7 @@ class GenericTransformer
 
     GenericTransformer &operator=(GenericTransformer &&v) noexcept = default;
 
-    virtual ~GenericTransformer();
+    virtual ~GenericTransformer() = default;
 
     virtual void execute_stereo(pcm_stereo_sample *buffer,
                                 vis::NcursesWriter *writer) = 0;

@@ -1,4 +1,4 @@
-Checks:          'clang-diagnostic-*,clang-analyzer-*,clang-analyzer-*,modernize-*,readability-*,misc-*,cppcoreguidelines-*,google-*,-readability-avoid-const-params-in-decls,-cppcoreguidelines-pro-type-vararg'
+Checks:          'clang-diagnostic-*,clang-analyzer-*,clang-analyzer-*,modernize-*,readability-*,misc-*,cppcoreguidelines-*,google-*,-readability-avoid-const-params-in-decls,-cppcoreguidelines-pro-type-vararg,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-misc-noexcept-move-constructor'
 WarningsAsErrors: ''
 HeaderFilterRegex: ''
 AnalyzeTemporaryDtors: false

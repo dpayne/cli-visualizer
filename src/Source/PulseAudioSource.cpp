@@ -241,12 +241,12 @@ bool vis::PulseAudioSource::read(pcm_stereo_sample *buffer,
     return false;
 }
 
+#ifdef _ENABLE_PULSE
 vis::PulseAudioSource::~PulseAudioSource()
 {
-#ifdef _ENABLE_PULSE
     if (m_pulseaudio_simple != nullptr)
     {
         pa_simple_free(m_pulseaudio_simple);
     }
-#endif
 }
+#endif
