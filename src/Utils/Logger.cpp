@@ -25,7 +25,10 @@ void vis::Logger::initialize(const std::string log_location)
     std::string log_path{log_location};
 
     // redirect stderr to log file
-    std::freopen(log_path.c_str(), "w", stderr);
+    if ( std::freopen(log_path.c_str(), "w", stderr) == nullptr )
+    {
+        std::cerr << "Could not open log path " << log_path << std::endl;
+    }
 }
 
 void vis::Logger::uninitialize()

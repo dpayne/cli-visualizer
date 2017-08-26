@@ -39,7 +39,14 @@ class Utils
     static inline bool is_numeric(const std::string &s)
     {
         char *p;
-        std::strtol(s.c_str(), &p, 10);
+
+        // strtol returns non-zero on success
+        if ( std::strtol(s.c_str(), &p, 10) != 0 )
+        {
+            return true;
+        }
+
+        // check if zero was returned for failure of if the value was really 0
         return *p == '\0';
     }
 
