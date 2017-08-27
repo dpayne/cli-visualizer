@@ -505,7 +505,7 @@ void vis::ConfigurationUtils::load_settings(
     settings->set_spectrum_bar_spacing(
         Utils::get(properties, k_spectrum_bar_spacing_setting,
                    VisConstants::k_default_spectrum_bar_spacing));
-    validate_setting_is_greater_than_zero(settings->get_spectrum_bar_spacing(),
+    validate_setting_is_not_negative(settings->get_spectrum_bar_spacing(),
                                           k_spectrum_bar_spacing_setting);
 
     settings->set_spectrum_smoothing_mode(
