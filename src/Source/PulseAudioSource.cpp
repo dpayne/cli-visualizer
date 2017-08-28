@@ -36,9 +36,14 @@ vis::PulseAudioSource::PulseAudioSource(
 #ifdef _ENABLE_PULSE
     : m_settings{settings}, m_pulseaudio_simple{nullptr},
     m_pulseaudio_mainloop{nullptr}
-#endif
 {
 }
+#else
+{
+    // needed to make the compiler happy
+    settings->get_color_schemes();
+}
+#endif
 
 #ifdef _ENABLE_PULSE
 void vis::PulseAudioSource::pulseaudio_server_info_callback(
