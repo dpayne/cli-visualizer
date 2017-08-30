@@ -393,32 +393,24 @@ void vis::ConfigurationUtils::load_color_settings(
 
     if (settings->get_colors().empty())
     {
-        // Assume 16384 colors are supported, generate a rainbow of colors
-        if (NcursesUtils::is_extended_colors_supported())
+        int32_t number_of_colors_supported =
+            NcursesUtils::number_of_colors_supported();
+
+        if (number_of_colors_supported <= 0)
         {
             setup_default_colors(settings);
         }
+        else if (number_of_colors_supported <= 8)
+        {
+            settings->set_colors(VisConstants::k_default_8_colors);
+        }
+        else if (number_of_colors_supported <= 16)
+        {
+            settings->set_colors(VisConstants::k_default_16_colors);
+        }
         else
         {
-            int32_t number_of_colors_supported =
-                NcursesUtils::number_of_colors_supported();
-
-            if (number_of_colors_supported <= 0)
-            {
-                setup_default_colors(settings);
-            }
-            else if (number_of_colors_supported <= 8)
-            {
-                settings->set_colors(VisConstants::k_default_8_colors);
-            }
-            else if (number_of_colors_supported <= 16)
-            {
-                settings->set_colors(VisConstants::k_default_16_colors);
-            }
-            else
-            {
-                setup_default_colors(settings);
-            }
+            setup_default_colors(settings);
         }
     }
 }

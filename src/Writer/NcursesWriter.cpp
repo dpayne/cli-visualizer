@@ -32,21 +32,6 @@ vis::NcursesWriter::NcursesWriter()
     setup_colors();
 }
 
-void vis::NcursesWriter::setup_extended_color_pairs()
-{
-    // assume their are 32768 color pairs available. Half for foreground and
-    // half for background color pairs.
-    for (int32_t color_index = 1;
-         color_index <= VisConstants::k_max_extended_color; ++color_index)
-    {
-#if VIS_HAVE_EXT_COLORS
-        init_extended_pair(color_index, color_index, -1);
-        init_extended_pair(color_index + VisConstants::k_max_extended_color,
-                           color_index, color_index);
-#endif
-    }
-}
-
 void vis::NcursesWriter::setup_color_pairs()
 {
     // initialize colors
@@ -69,17 +54,8 @@ void vis::NcursesWriter::setup_colors()
         use_default_colors(); // uses default colors of terminal, which allows
                               // transparency to work
 
-        if (NcursesUtils::is_extended_colors_supported())
-        {
-            // initialize color pairs
-            // supports 32768 color pairs
-            setup_color_pairs();
-        }
-        else
-        {
-            // only supports max 256 colors
-            setup_color_pairs();
-        }
+        // only supports max 256 colors
+        setup_color_pairs();
     }
 }
 
