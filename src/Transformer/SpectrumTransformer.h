@@ -11,14 +11,14 @@
 #include <memory>
 
 #include "Domain/Settings.h"
-#include "Transformer/GenericTransformer.h"
+#include "Transformer/FftwTransformer.h"
 #include "Writer/NcursesWriter.h"
 #include <fftw3.h>
 
 namespace vis
 {
 
-class SpectrumTransformer : public GenericTransformer
+class SpectrumTransformer : public FftwTransformer
 {
   public:
     explicit SpectrumTransformer(
@@ -46,38 +46,12 @@ class SpectrumTransformer : public GenericTransformer
     }
 
   private:
-    void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
-                 bool is_stereo);
     const std::shared_ptr<const Settings> m_settings;
 
     /** --- BEGIN MEMBER VARIABLES --- */
 
-    /** --- BEGIN --- fft calculations vars **/
-    size_t m_fftw_results;
-
-    double *m_fftw_input_left;
-    double *m_fftw_input_right;
-
-    fftw_complex *m_fftw_output_left;
-    fftw_complex *m_fftw_output_right;
-
-    fftw_plan m_fftw_plan_left;
-    fftw_plan m_fftw_plan_right;
-    /** --- END --- fft calculations vars **/
-
-    /** --- BEGIN --- frequency cutoff calculations vars **/
-    std::vector<uint32_t> m_low_cutoff_frequencies;
-
-    std::vector<uint32_t> m_high_cutoff_frequencies;
-
-    std::vector<double> m_frequency_constants_per_bin;
-
     int32_t m_previous_win_width; // Used to determine if freq cutoffs need to
                                   // be re-calculated
-    /** --- END --- frequency cutoff calculations vars **/
-
-    uint64_t m_silent_runs; // Used to determine if the transformer should sleep
-                            // and wait for input
 
     // Holds the current bar heights after processing, this is done as a member
     // function to avoid memory allocations on every run
@@ -104,11 +78,14 @@ class SpectrumTransformer : public GenericTransformer
 
     /** --- BEGIN MEMBER FUNCTIONS --- */
 
-    /**
-     * Copies the channel given by "channel_mode" to the fftw_input buffer
-     */
-    bool prepare_fft_input(pcm_stereo_sample *buffer, uint32_t sample_size,
-                           double *fftw_input, ChannelMode channel_mode);
+    virtual void execute(pcm_stereo_sample *buffer, vis::NcursesWriter *writer,
+                         bool is_stereo);
+
+    void generate_bars(const uint32_t number_of_bars, const size_t fftw_results,
+                       const std::vector<uint32_t> &low_cutoff_frequencies,
+                       const std::vector<uint32_t> &high_cutoff_frequencies,
+                       const fftw_complex *fftw_output,
+                       std::vector<double> *bars) const;
 
     /**
      * Populates "bars" and "bars_falloff" with the bar heights to be displayed
@@ -119,17 +96,6 @@ class SpectrumTransformer : public GenericTransformer
                                       uint32_t number_of_bars,
                                       std::vector<double> *bars,
                                       std::vector<double> *bars_falloff);
-
-    void generate_bars(uint32_t number_of_bars, size_t fftw_results,
-                       const std::vector<uint32_t> &low_cutoff_frequencies,
-                       const std::vector<uint32_t> &high_cutoff_frequencies,
-                       const fftw_complex *fftw_output,
-                       std::vector<double> *bars) const;
-
-    void recalculate_cutoff_frequencies(
-        uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
-        std::vector<uint32_t> *high_cutoff_frequencies,
-        std::vector<double> *freqconst_per_bin);
 
     /**
      * Applies the smoothing operations based on the settings in m_settings to

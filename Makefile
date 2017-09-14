@@ -46,7 +46,7 @@ CXX_FLAGS += -D__extern_always_inline=inline
 TEST_CCACHE_CLANG=ccache clang++
 TEST_CLANG=clang++
 
-ALL_WARNINGS=-Werror -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat -Wno-documentation-unknown-command
+ALL_WARNINGS= -Weverything -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat -Wno-documentation-unknown-command
 # Only turn on extra warnings for clang since g++ does not support -Weverything
 ifeq ($(CXX),$(TEST_CLANG))
 CXX_FLAGS += $(ALL_WARNINGS)

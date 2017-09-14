@@ -10,6 +10,7 @@
 #include "Domain/VisException.h"
 #include "Source/MpdAudioSource.h"
 #include "Source/PulseAudioSource.h"
+#include "Transformer/BeatBoxesTransformer.h"
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
 #include "Transformer/SpectrumCircleTransformer.h"
@@ -87,8 +88,8 @@ void vis::Visualizer::allocate_buffer()
         free(m_pcm_buffer); // NOLINT
     }
 
-    m_pcm_buffer = static_cast<pcm_stereo_sample *>(
-        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample))); // NOLINT
+    m_pcm_buffer = static_cast<pcm_stereo_sample *>(calloc(
+        m_settings->get_sample_size(), sizeof(pcm_stereo_sample))); // NOLINT
 }
 
 void vis::Visualizer::setup_audio_source()
@@ -294,8 +295,7 @@ void vis::Visualizer::setup_transformers()
         else if (visualizer == VisConstants::k_spectrum_circle_visualizer_name)
         {
             m_transformers.emplace_back(
-                std::make_unique<SpectrumCircleTransformer>(m_settings,
-                                                            visualizer));
+                std::make_unique<BeatBoxesTransformer>(m_settings, visualizer));
         }
         else if (visualizer == VisConstants::k_ellipse_visualizer_name)
         {

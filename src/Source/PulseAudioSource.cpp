@@ -34,8 +34,8 @@ static const std::string k_default_monitor_postfix = ".monitor";
 vis::PulseAudioSource::PulseAudioSource(
     const std::shared_ptr<const vis::Settings> settings)
 #ifdef _ENABLE_PULSE
-    : m_settings{settings}, m_pulseaudio_simple{nullptr},
-    m_pulseaudio_mainloop{nullptr}
+    : m_settings{settings}, m_pulseaudio_simple{nullptr}, m_pulseaudio_mainloop{
+                                                              nullptr}
 {
 }
 #else
@@ -117,8 +117,9 @@ void vis::PulseAudioSource::populate_default_source_name()
     int ret;
     if (pa_mainloop_run(m_pulseaudio_mainloop, &ret) < 0)
     {
-        VIS_LOG(vis::LogLevel::ERROR, "Could not open pulseaudio mainloop to "
-                                      "find default device name: %d",
+        VIS_LOG(vis::LogLevel::ERROR,
+                "Could not open pulseaudio mainloop to "
+                "find default device name: %d",
                 ret);
     }
 #endif
@@ -219,9 +220,10 @@ bool vis::PulseAudioSource::read(pcm_stereo_sample *buffer,
 
         if (return_code < 0)
         {
-            VIS_LOG(vis::LogLevel::WARN, "Could not finish reading pulse audio "
-                                         "stream buffer, bytes read: %d buffer "
-                                         "size: ",
+            VIS_LOG(vis::LogLevel::WARN,
+                    "Could not finish reading pulse audio "
+                    "stream buffer, bytes read: %d buffer "
+                    "size: ",
                     return_code, buffer_size_bytes);
 
             // zero out buffer

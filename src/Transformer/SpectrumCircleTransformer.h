@@ -27,9 +27,11 @@ class SpectrumCircleTransformer : public SpectrumTransformer
 
     SpectrumCircleTransformer(const SpectrumCircleTransformer &&other) = delete;
 
-    SpectrumCircleTransformer &operator=(const SpectrumCircleTransformer &v) = delete;
+    SpectrumCircleTransformer &
+    operator=(const SpectrumCircleTransformer &v) = delete;
 
-    SpectrumCircleTransformer &operator=(SpectrumCircleTransformer &&v) = delete;
+    SpectrumCircleTransformer &
+    operator=(SpectrumCircleTransformer &&v) = delete;
 
     ~SpectrumCircleTransformer() override = default;
 

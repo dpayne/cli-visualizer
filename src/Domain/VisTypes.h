@@ -33,6 +33,14 @@ enum class SmoothingMode
     Sgs
 };
 
+// Different windowing functions used for fftw transformers
+enum class Windowing
+{
+    None = 0,
+    Blackman,
+    Hanning
+};
+
 // Different falloff modes used in spectrum visualizers
 enum class FalloffMode
 {

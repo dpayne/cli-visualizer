@@ -99,7 +99,8 @@ void vis::EllipseTransformer::execute_stereo(pcm_stereo_sample *buffer,
         // Because fonts are not all the same size, this will not always
         // generate a perfect circle, hence the name "ellipse".
         const auto color_index =
-            static_cast<uint64_t>(std::floor(std::sqrt(x * x + 4 * y * y))) % max_color_index;
+            static_cast<uint64_t>(std::floor(std::sqrt(x * x + 4 * y * y))) %
+            max_color_index;
 
         writer->write(top_half_height + static_cast<int32_t>(y),
                       left_half_width + static_cast<int32_t>(x),

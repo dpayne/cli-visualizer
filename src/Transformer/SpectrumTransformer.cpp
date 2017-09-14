@@ -31,62 +31,14 @@ const double k_deviation_amount_to_reset =
          // max height averages to trigger an auto scaling reset
 
 const double k_minimum_bar_height = 0.125;
-const uint64_t k_max_silent_runs_before_sleep =
-    3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
 }
 
 vis::SpectrumTransformer::SpectrumTransformer(
     const std::shared_ptr<const vis::Settings> settings,
     const std::string &name)
-    : GenericTransformer(name), m_settings{settings}, m_fftw_results{0},
-      m_fftw_input_left{nullptr}, m_fftw_input_right{nullptr},
-      m_fftw_output_left{nullptr}, m_fftw_output_right{nullptr},
-      m_fftw_plan_left{nullptr}, m_fftw_plan_right{nullptr},
-      m_previous_win_width{0}, m_silent_runs{0u}
+    : FftwTransformer(settings, name), m_settings{settings},
+      m_previous_win_width{0}
 {
-    m_fftw_results =
-        (static_cast<size_t>(m_settings->get_sample_size()) / 2) + 1;
-
-    m_fftw_input_left = static_cast<double *>(
-        fftw_malloc(sizeof(double) * m_settings->get_sample_size()));
-    m_fftw_input_right = static_cast<double *>(
-        fftw_malloc(sizeof(double) * m_settings->get_sample_size()));
-
-    m_fftw_output_left = static_cast<fftw_complex *>(
-        fftw_malloc(sizeof(fftw_complex) * m_fftw_results));
-    m_fftw_output_right = static_cast<fftw_complex *>(
-        fftw_malloc(sizeof(fftw_complex) * m_fftw_results));
-}
-
-bool vis::SpectrumTransformer::prepare_fft_input(pcm_stereo_sample *buffer,
-                                                 uint32_t sample_size,
-                                                 double *fftw_input,
-                                                 ChannelMode channel_mode)
-{
-    bool is_silent = true;
-
-    for (auto i = 0u; i < sample_size; ++i)
-    {
-        switch (channel_mode)
-        {
-        case ChannelMode::Left:
-            fftw_input[i] = buffer[i].l;
-            break;
-        case ChannelMode::Right:
-            fftw_input[i] = buffer[i].r;
-            break;
-        case ChannelMode::Both:
-            fftw_input[i] = buffer[i].l + buffer[i].r;
-            break;
-        }
-
-        if (is_silent && fftw_input[i] > 0)
-        {
-            is_silent = false;
-        }
-    }
-
-    return is_silent;
 }
 
 void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
@@ -103,113 +55,57 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
 
     auto width = win_width - right_margin - left_margin;
 
-    bool is_silent_left = true;
-    bool is_silent_right = true;
+    // skip run if there is no sound
+    if (!is_input_available(is_stereo, buffer))
+    {
+        return;
+    }
 
+    execute_fftw(is_stereo);
+
+    std::wstring bar_row_msg =
+        create_bar_row_msg(m_settings->get_spectrum_character(),
+                           m_settings->get_spectrum_bar_width());
+
+    auto number_of_bars = std::max(
+        static_cast<uint32_t>(std::floor(
+            static_cast<uint32_t>(width) /
+            (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing()))),
+        1u);
+
+    auto top_margin = static_cast<int32_t>(
+        m_settings->get_spectrum_top_margin() * win_height);
+
+    auto height = win_height;
+    height -= top_margin;
     if (is_stereo)
     {
-        is_silent_left =
-            prepare_fft_input(buffer, m_settings->get_sample_size(),
-                              m_fftw_input_left, vis::ChannelMode::Left);
-        is_silent_right =
-            prepare_fft_input(buffer, m_settings->get_sample_size(),
-                              m_fftw_input_right, vis::ChannelMode::Right);
+        height = height / 2;
     }
-    else
+
+    create_spectrum_bars(m_fftw_output_left, m_fftw_results, height, width,
+                         number_of_bars, &m_bars_left, &m_bars_falloff_left);
+    create_spectrum_bars(m_fftw_output_right, m_fftw_results, height, width,
+                         number_of_bars, &m_bars_right, &m_bars_falloff_right);
+
+    // clear screen before writing
+    writer->clear();
+
+    auto max_bar_height = height;
+    if (is_stereo)
     {
-        is_silent_left =
-            prepare_fft_input(buffer, m_settings->get_sample_size(),
-                              m_fftw_input_left, vis::ChannelMode::Both);
+        ++max_bar_height; // add one so that the spectrums overlap in the
+                          // middle
     }
 
-    if (!(is_silent_left && is_silent_right))
-    {
-        m_silent_runs = 0;
-    }
-    // if there is no sound, do not do any processing and sleep
-    else
-    {
-        ++m_silent_runs;
-    }
+    draw_bars(m_bars_left, m_bars_falloff_left, max_bar_height, true,
+              bar_row_msg, writer);
+    draw_bars(m_bars_right, m_bars_falloff_right, max_bar_height, false,
+              bar_row_msg, writer);
 
-    if (m_silent_runs < k_max_silent_runs_before_sleep)
-    {
-        m_fftw_plan_left = fftw_plan_dft_r2c_1d(
-            static_cast<int>(m_settings->get_sample_size()), m_fftw_input_left,
-            m_fftw_output_left, FFTW_ESTIMATE);
+    writer->flush();
 
-        if (is_stereo)
-        {
-            m_fftw_plan_right = fftw_plan_dft_r2c_1d(
-                static_cast<int>(m_settings->get_sample_size()),
-                m_fftw_input_right, m_fftw_output_right, FFTW_ESTIMATE);
-        }
-
-        std::wstring bar_row_msg =
-            create_bar_row_msg(m_settings->get_spectrum_character(),
-                               m_settings->get_spectrum_bar_width());
-
-        auto number_of_bars = std::max(
-            static_cast<uint32_t>(std::floor(
-                static_cast<uint32_t>(width) /
-                (bar_row_msg.size() + m_settings->get_spectrum_bar_spacing()))),
-            1u);
-
-        fftw_execute(m_fftw_plan_left);
-
-        if (is_stereo)
-        {
-            fftw_execute(m_fftw_plan_right);
-        }
-
-        auto top_margin = static_cast<int32_t>(
-            m_settings->get_spectrum_top_margin() * win_height);
-
-        auto height = win_height;
-        height -= top_margin;
-        if (is_stereo)
-        {
-            height = height / 2;
-        }
-
-        create_spectrum_bars(m_fftw_output_left, m_fftw_results, height, width,
-                             number_of_bars, &m_bars_left,
-                             &m_bars_falloff_left);
-        create_spectrum_bars(m_fftw_output_right, m_fftw_results, height, width,
-                             number_of_bars, &m_bars_right,
-                             &m_bars_falloff_right);
-
-        // clear screen before writing
-        writer->clear();
-
-        auto max_bar_height = height;
-        if (is_stereo)
-        {
-            ++max_bar_height; // add one so that the spectrums overlap in the
-                              // middle
-        }
-
-        draw_bars(m_bars_left, m_bars_falloff_left, max_bar_height, true,
-                  bar_row_msg, writer);
-        draw_bars(m_bars_right, m_bars_falloff_right, max_bar_height, false,
-                  bar_row_msg, writer);
-
-        writer->flush();
-
-        fftw_destroy_plan(m_fftw_plan_left);
-
-        if (is_stereo)
-        {
-            fftw_destroy_plan(m_fftw_plan_right);
-        }
-    }
-    else
-    {
-        VIS_LOG(vis::LogLevel::DEBUG, "No input, Sleeping for %d milliseconds",
-                VisConstants::k_silent_sleep_milliseconds);
-        std::this_thread::sleep_for(std::chrono::milliseconds(
-            VisConstants::k_silent_sleep_milliseconds));
-    }
+    destroy_fftw(is_stereo);
 }
 
 void vis::SpectrumTransformer::execute_stereo(pcm_stereo_sample *buffer,
@@ -596,50 +492,6 @@ void vis::SpectrumTransformer::draw_bars(
     }
 }
 
-void vis::SpectrumTransformer::recalculate_cutoff_frequencies(
-    uint32_t number_of_bars, std::vector<uint32_t> *low_cutoff_frequencies,
-    std::vector<uint32_t> *high_cutoff_frequencies,
-    std::vector<double> *freqconst_per_bin)
-{
-    auto freqconst =
-        std::log10(
-            static_cast<double>(m_settings->get_low_cutoff_frequency()) /
-            static_cast<double>(m_settings->get_high_cutoff_frequency())) /
-        ((1.0 / (static_cast<double>(number_of_bars) + 1.0)) - 1.0);
-
-    (*low_cutoff_frequencies) = std::vector<uint32_t>(number_of_bars + 1);
-    (*high_cutoff_frequencies) = std::vector<uint32_t>(number_of_bars + 1);
-    (*freqconst_per_bin) = std::vector<double>(number_of_bars + 1);
-
-    for (auto i = 0u; i <= number_of_bars; ++i)
-    {
-        (*freqconst_per_bin)[i] =
-            static_cast<double>(m_settings->get_high_cutoff_frequency()) *
-            std::pow(10.0,
-                     (freqconst * -1) +
-                         (((i + 1.0) / (number_of_bars + 1.0)) * freqconst));
-
-        auto frequency = (*freqconst_per_bin)[i] /
-                         (m_settings->get_sampling_frequency() / 2.0);
-
-        (*low_cutoff_frequencies)[i] = static_cast<uint32_t>(std::floor(
-            frequency *
-            (static_cast<double>(m_settings->get_sample_size()) / 4.0)));
-
-        if (i > 0)
-        {
-            if ((*low_cutoff_frequencies)[i] <=
-                (*low_cutoff_frequencies)[i - 1])
-            {
-                (*low_cutoff_frequencies)[i] =
-                    (*low_cutoff_frequencies)[i - 1] + 1;
-            }
-            (*high_cutoff_frequencies)[i - 1] =
-                (*low_cutoff_frequencies)[i - 1];
-        }
-    }
-}
-
 void vis::SpectrumTransformer::generate_bars(
     const uint32_t number_of_bars, const size_t fftw_results,
     const std::vector<uint32_t> &low_cutoff_frequencies,
@@ -675,9 +527,4 @@ void vis::SpectrumTransformer::generate_bars(
 
 vis::SpectrumTransformer::~SpectrumTransformer()
 {
-    fftw_free(m_fftw_input_left);
-    fftw_free(m_fftw_input_right);
-
-    fftw_free(m_fftw_output_left);
-    fftw_free(m_fftw_output_right);
 }

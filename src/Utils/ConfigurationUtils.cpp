@@ -232,7 +232,8 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             {
                 if (is_gradient_enabled)
                 {
-                    add_color_gradients(basic_color, gradient_interval, &colors);
+                    add_color_gradients(basic_color, gradient_interval,
+                                        &colors);
                 }
                 else
                 {
@@ -241,9 +242,10 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             }
             else
             {
-                VIS_LOG(vis::LogLevel::WARN, "Configuration color "
-                                             "definition line was not "
-                                             "valid at %s",
+                VIS_LOG(vis::LogLevel::WARN,
+                        "Configuration color "
+                        "definition line was not "
+                        "valid at %s",
                         color_line.c_str());
             }
         }
@@ -498,7 +500,7 @@ void vis::ConfigurationUtils::load_settings(
         Utils::get(properties, k_spectrum_bar_spacing_setting,
                    VisConstants::k_default_spectrum_bar_spacing));
     validate_setting_is_not_negative(settings->get_spectrum_bar_spacing(),
-                                          k_spectrum_bar_spacing_setting);
+                                     k_spectrum_bar_spacing_setting);
 
     settings->set_spectrum_smoothing_mode(
         read_smoothing_mode(properties, k_spectrum_smoothing_mode_setting,
