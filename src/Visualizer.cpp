@@ -87,8 +87,8 @@ void vis::Visualizer::allocate_buffer()
         free(m_pcm_buffer); // NOLINT
     }
 
-    m_pcm_buffer = static_cast<pcm_stereo_sample *>(
-        calloc(m_settings->get_sample_size(), sizeof(pcm_stereo_sample))); // NOLINT
+    m_pcm_buffer = static_cast<pcm_stereo_sample *>(calloc(         // NOLINT
+        m_settings->get_sample_size(), sizeof(pcm_stereo_sample))); // NOLINT
 }
 
 void vis::Visualizer::setup_audio_source()

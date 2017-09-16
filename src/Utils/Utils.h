@@ -241,7 +241,8 @@ class Utils
         }
         else
         {
-            elems->second = s.substr(index_of_first_elem + 1, std::string::npos);
+            elems->second =
+                s.substr(index_of_first_elem + 1, std::string::npos);
         }
     }
 
@@ -319,8 +320,8 @@ class Utils
      * Helper method to split a string by the delimiter "delim", contents are
      * put input the vector "elems"
      */
-    static inline void
-    split(const std::string &s, char delim, std::vector<std::string> *elems)
+    static inline void split(const std::string &s, char delim,
+                             std::vector<std::string> *elems)
     {
         std::stringstream ss(s);
         std::string item;
@@ -348,9 +349,8 @@ class Utils
      * Helper method to split a wstring by the delimiter "delim", contents are
      * put input the vector "elems"
      */
-    static inline void
-    split(const std::wstring &s, wchar_t delim,
-          std::vector<std::wstring> *elems)
+    static inline void split(const std::wstring &s, wchar_t delim,
+                             std::vector<std::wstring> *elems)
     {
         std::wstringstream ss(s);
         std::wstring item;

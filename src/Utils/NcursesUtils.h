@@ -129,7 +129,6 @@ class NcursesUtils
     }
 
   private:
-
     static inline int16_t to_ansi_color_domain(const int16_t color)
     {
         return static_cast<int16_t>(6.0 * static_cast<double>(color) / 256.0);

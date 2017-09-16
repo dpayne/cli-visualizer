@@ -2,6 +2,12 @@
 
 - add more visualizers
     - add beat detection
+    - add flashing squares
+    - rotating boxes
+    - revolving lines
+        - color lines based on volume
+        - maybe use ellipse like transformer to generate lines
+            - lines would go from either end of the equivalent ellipse and revolve towards whatever the next position is
 
 - add more color examples
     - add gifs of gradients

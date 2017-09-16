@@ -178,7 +178,8 @@ void vis::LorenzTransformer::execute_stereo(pcm_stereo_sample *buffer,
 
         if (color_distance > m_max_color_index)
         {
-            m_max_color_index = std::min(k_color_distance_limit, color_distance);
+            m_max_color_index =
+                std::min(k_color_distance_limit, color_distance);
             recalculate_colors(m_max_color_index, m_settings->get_colors(),
                                &m_precomputed_colors, writer);
         }
