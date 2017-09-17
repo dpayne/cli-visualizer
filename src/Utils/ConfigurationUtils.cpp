@@ -25,6 +25,9 @@ const std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
 
 const std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
+const std::string k_override_terminal_colors_setting{
+    "colors.override.terminal"};
+
 const std::string k_rotation_interval_setting{"visualizer.rotation.secs"};
 
 const std::string k_vis_pulse_audio_source_setting{"audio.pulse.source"};
@@ -119,8 +122,8 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
 }
 
 void vis::ConfigurationUtils::add_color_gradients(
-    const vis::ColorDefinition color, const double gradient_interval,
-    std::vector<vis::ColorDefinition> *colors)
+    bool is_override_terminal_colors, const vis::ColorDefinition color,
+    const double gradient_interval, std::vector<vis::ColorDefinition> *colors)
 {
     if (colors->empty())
     {
@@ -138,7 +141,7 @@ void vis::ConfigurationUtils::add_color_gradients(
     const double blue_diff =
         (color.get_blue() - previous_color.get_blue()) / gradient_interval;
 
-    for (auto i = 0u; i < std::round(gradient_interval); ++i)
+    for (auto i = 0u; i < std::floor(gradient_interval); ++i)
     {
         const auto red = static_cast<int16_t>(
             std::round(start_color.get_red() + (red_diff * i)));
@@ -149,21 +152,33 @@ void vis::ConfigurationUtils::add_color_gradients(
         const auto blue = static_cast<int16_t>(
             std::round(start_color.get_blue() + (blue_diff * i)));
 
-        const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
-
-        // gradients will generally result in a lot of duplicates
-        if (previous_color.get_color_index() != color_index)
+        if (is_override_terminal_colors)
         {
-            previous_color =
-                vis::ColorDefinition{color_index, red, green, blue};
             colors->push_back(previous_color);
+            previous_color = vis::ColorDefinition{
+                static_cast<ColorIndex>(colors->size() - 1), red, green, blue};
+        }
+        else
+        {
+            const auto color_index =
+                NcursesUtils::to_ansi_color(red, green, blue);
+
+            // gradients will generally result in a lot of duplicates
+            if (previous_color.get_color_index() != color_index)
+            {
+                previous_color =
+                    vis::ColorDefinition{color_index, red, green, blue};
+                colors->push_back(previous_color);
+            }
         }
     }
+
     colors->push_back(color);
 }
 
 std::vector<vis::ColorDefinition>
-vis::ConfigurationUtils::read_colors(const std::string &colors_path)
+vis::ConfigurationUtils::read_colors(bool is_override_terminal_colors,
+                                     const std::string &colors_path)
 {
     std::vector<vis::ColorDefinition> colors;
 
@@ -196,9 +211,12 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
         }
     }
 
+    // Subtract 1 from the max color since color 0 is reserved
     double gradient_interval =
-        static_cast<double>(NcursesUtils::get_max_color()) /
-        static_cast<double>(lines.size());
+        std::floor(static_cast<double>(
+                       std::max(NcursesUtils::get_max_color() - 1, 1)) /
+                   static_cast<double>(std::max(lines.size() - 1, 1ul))) -
+        lines.size();
 
     std::vector<std::string> split_line;
 
@@ -213,12 +231,21 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             const int16_t green = (hex_color >> 8) % 256;
             const int16_t blue = hex_color % 256;
 
-            const auto color = vis::ColorDefinition{
-                NcursesUtils::to_ansi_color(red, green, blue), red, green,
-                blue};
+            // skip color 0, since it is reserved by the terminal for
+            // white/black
+            vis::ColorDefinition color = vis::ColorDefinition{
+                static_cast<int16_t>(colors.size() + 1), red, green, blue};
+            if (!is_override_terminal_colors)
+            {
+                color = vis::ColorDefinition{
+                    NcursesUtils::to_ansi_color(red, green, blue), red, green,
+                    blue};
+            }
+
             if (is_gradient_enabled)
             {
-                add_color_gradients(color, gradient_interval, &colors);
+                add_color_gradients(is_override_terminal_colors, color,
+                                    gradient_interval, &colors);
             }
             else
             {
@@ -232,7 +259,8 @@ vis::ConfigurationUtils::read_colors(const std::string &colors_path)
             {
                 if (is_gradient_enabled)
                 {
-                    add_color_gradients(basic_color, gradient_interval,
+                    add_color_gradients(is_override_terminal_colors,
+                                        basic_color, gradient_interval,
                                         &colors);
                 }
                 else
@@ -356,12 +384,19 @@ void vis::ConfigurationUtils::setup_default_colors(
         const auto blue = static_cast<int16_t>(
             std::sin(frequency * i + 2.0) * width + center);
 
-        const auto color_index = NcursesUtils::to_ansi_color(red, green, blue);
-
-        if (colors_uniq.find(color_index) == colors_uniq.end())
+        if (settings->is_override_terminal_colors())
         {
-            colors.emplace_back(color_index, red, green, blue);
-            colors_uniq.insert(color_index);
+            colors.emplace_back(i + 1, red, green, blue);
+        }
+        else
+        {
+            const vis::ColorIndex color_index =
+                NcursesUtils::to_ansi_color(red, green, blue);
+            if (colors_uniq.find(color_index) == colors_uniq.end())
+            {
+                colors.emplace_back(color_index, red, green, blue);
+                colors_uniq.insert(color_index);
+            }
         }
     }
 
@@ -377,8 +412,8 @@ void vis::ConfigurationUtils::load_color_settings_from_color_scheme(
             VisConstants::k_colors_directory + color_scheme;
         if (!colors_config_path.empty())
         {
-            settings->set_colors(
-                vis::ConfigurationUtils::read_colors(colors_config_path));
+            settings->set_colors(vis::ConfigurationUtils::read_colors(
+                settings->is_override_terminal_colors(), colors_config_path));
         }
     }
 }
@@ -598,6 +633,9 @@ void vis::ConfigurationUtils::load_settings(
 
     settings->set_is_stereo_enabled(
         Utils::get(properties, k_stereo_enabled_setting, true));
+
+    settings->set_is_override_terminal_colors(
+        Utils::get(properties, k_override_terminal_colors_setting, true));
 
     settings->set_color_schemes(Utils::split(
         Utils::get(properties, k_color_scheme_path_setting, std::string{""}),

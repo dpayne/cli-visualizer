@@ -122,6 +122,9 @@ void vis::Visualizer::run()
     // color settings must be re-loaded after ncurses initialization
     vis::ConfigurationUtils::load_color_settings(m_settings);
 
+    m_writer->setup_colors(m_settings->is_override_terminal_colors(),
+                           m_settings->get_colors());
+
     auto last_rotation_timestamp =
         std::chrono::system_clock::now().time_since_epoch() /
         std::chrono::seconds(1);
@@ -230,6 +233,9 @@ void vis::Visualizer::rotate_color_scheme()
             m_settings->get_color_schemes()[m_current_color_scheme_index],
             m_settings);
 
+        m_writer->setup_colors(m_settings->is_override_terminal_colors(),
+                               m_settings->get_colors());
+
         for (const auto &transformer : m_transformers)
         {
             transformer->clear_colors();
@@ -280,6 +286,9 @@ void vis::Visualizer::reload_config()
     {
         vis::ConfigurationUtils::load_color_settings(m_settings);
     }
+
+    m_writer->setup_colors(m_settings->is_override_terminal_colors(),
+                           m_settings->get_colors());
 }
 
 void vis::Visualizer::setup_transformers()

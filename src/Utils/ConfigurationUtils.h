@@ -50,12 +50,14 @@ class ConfigurationUtils
         const std::unordered_map<std::string, std::wstring> &properties,
         const std::string &config_param, vis::FalloffMode default_falloff_mode);
 
-    static void add_color_gradients(vis::ColorDefinition color,
+    static void add_color_gradients(bool is_override_terminal_colors,
+                                    vis::ColorDefinition color,
                                     double gradient_interval,
                                     std::vector<vis::ColorDefinition> *colors);
 
     static std::vector<vis::ColorDefinition>
-    read_colors(const std::string &colors_path);
+    read_colors(bool is_override_terminal_colors,
+                const std::string &colors_path);
 
     static void validate_setting_is_not_negative(const double t,
                                                  const std::string &setting);

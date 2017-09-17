@@ -125,6 +125,16 @@ class Settings
         m_colors = colors;
     }
 
+    void set_is_override_terminal_colors(bool is_override_terminal_colors)
+    {
+        m_is_override_terminal_colors = is_override_terminal_colors;
+    }
+
+    bool is_override_terminal_colors() const noexcept
+    {
+        return m_is_override_terminal_colors;
+    }
+
     wchar_t get_spectrum_character() const noexcept
     {
         return m_spectrum_character;
@@ -348,6 +358,7 @@ class Settings
     std::string m_audio_source;
     std::vector<std::string> m_visualizers;
     std::vector<vis::ColorDefinition> m_colors;
+    bool m_is_override_terminal_colors;
     wchar_t m_spectrum_character;
     wchar_t m_lorenz_character;
     wchar_t m_ellipse_character;
