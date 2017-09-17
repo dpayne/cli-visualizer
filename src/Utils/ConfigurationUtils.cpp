@@ -141,7 +141,7 @@ void vis::ConfigurationUtils::add_color_gradients(
     const double blue_diff =
         (color.get_blue() - previous_color.get_blue()) / gradient_interval;
 
-    for (auto i = 0u; i < std::floor(gradient_interval); ++i)
+    for (auto i = 0u; i <= std::floor(gradient_interval); ++i)
     {
         const auto red = static_cast<int16_t>(
             std::round(start_color.get_red() + (red_diff * i)));
@@ -154,9 +154,9 @@ void vis::ConfigurationUtils::add_color_gradients(
 
         if (is_override_terminal_colors)
         {
-            colors->push_back(previous_color);
             previous_color = vis::ColorDefinition{
-                static_cast<ColorIndex>(colors->size() - 1), red, green, blue};
+                static_cast<ColorIndex>(colors->size()+1), red, green, blue};
+            colors->push_back(previous_color);
         }
         else
         {
@@ -172,8 +172,6 @@ void vis::ConfigurationUtils::add_color_gradients(
             }
         }
     }
-
-    colors->push_back(color);
 }
 
 std::vector<vis::ColorDefinition>
@@ -365,7 +363,7 @@ void vis::ConfigurationUtils::load_settings(
 void vis::ConfigurationUtils::setup_default_colors(
     const std::shared_ptr<Settings> settings)
 {
-    const auto max_color = static_cast<double>(NcursesUtils::get_max_color());
+    const auto max_color = static_cast<double>(NcursesUtils::get_max_color()) - 1;
     const double frequency = (M_PI * 2.0) / max_color;
 
     // used to remove duplicates

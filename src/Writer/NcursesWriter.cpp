@@ -38,6 +38,12 @@ vis::NcursesWriter::NcursesWriter()
     }
 }
 
+int16_t vis::NcursesWriter::scale_color(int16_t color)
+{
+    return static_cast<int16_t>(
+        std::round(static_cast<double>(color) * 1000.0 / 255.0) + 0.5);
+}
+
 void vis::NcursesWriter::setup_color_pairs(
     bool is_override_terminal_colors,
     const std::vector<ColorDefinition> &colors)
@@ -47,8 +53,9 @@ void vis::NcursesWriter::setup_color_pairs(
     {
         if (is_override_terminal_colors)
         {
-            init_color(color.get_color_index(), color.get_red(),
-                       color.get_green(), color.get_blue());
+            init_color(color.get_color_index(), scale_color(color.get_red()),
+                       scale_color(color.get_green()),
+                       scale_color(color.get_blue()));
         }
 
         init_pair(color.get_color_index(), color.get_color_index(), -1);
