@@ -375,6 +375,7 @@ void vis::ConfigurationUtils::setup_default_colors(
 
     for (int16_t i = 0; i < static_cast<int16_t>(max_color); ++i)
     {
+        // use 3.0, 5.0, 1.0 for purple to red
         const auto red = static_cast<int16_t>(
             std::sin(frequency * i + 4.0) * width + center);
         const auto green = static_cast<int16_t>(
