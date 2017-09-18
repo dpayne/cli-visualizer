@@ -65,7 +65,7 @@ TEST_F(ConfigurationUtilsTest, GetGradientIntervalNoColor)
 
 TEST_F(ConfigurationUtilsTest, GetGradientInterval32Color)
 {
-    EXPECT_EQ(7, get_gradient_interval(31, 256)) << "gradient interval failed";
+    EXPECT_EQ(8.5, get_gradient_interval(31, 256)) << "gradient interval failed";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleInvalidLine)
@@ -230,7 +230,7 @@ TEST_F(ConfigurationUtilsTest, AddColorGradientsManyHex)
     EXPECT_EQ(color1, colors.front()) << "First color should always be set";
     EXPECT_EQ(color2, colors.back()) << "Second color should always be set";
 
-    EXPECT_EQ(8, colors.size()) << "Adding color gradient";
+    EXPECT_EQ(9, colors.size()) << "Adding color gradient";
 }
 
 TEST_F(ConfigurationUtilsTest, AddColorGradientsZeroGradient)
@@ -265,11 +265,16 @@ TEST_F(ConfigurationUtilsTest, AddColorGradientsTwoHex)
 
     EXPECT_EQ(255, gradient) << "Gradient should be across whole range";
     int16_t prev = -1;
+    int32_t count = 0;
     for (const auto &color : colors)
     {
-        EXPECT_EQ(1, (color.get_red() - prev)) << "colors are not 1 away";
+        if ((color.get_red() - prev) > 1)
+        {
+            count += 1;
+        }
         prev = color.get_red();
     }
+    EXPECT_EQ(1, count) << "colors are not 1 away";
 
     EXPECT_EQ(255, colors.size()) << "Expected to use the whole color range";
 }
@@ -288,10 +293,9 @@ TEST_F(ConfigurationUtilsTest, AddColorGradientsTwoHexDedupe)
     EXPECT_EQ(color1, colors.front()) << "First color should always be set";
     EXPECT_EQ(color2, colors.back()) << "Second color should always be set";
 
-    EXPECT_EQ(44, colors.size()) << "Expected to dedupe duplicate colors";
+    EXPECT_EQ(45, colors.size()) << "Expected to dedupe duplicate colors";
 }
 
-// TODO: gradient colors
 // TODO: test rainbow color generation
 
 } // namespace vis

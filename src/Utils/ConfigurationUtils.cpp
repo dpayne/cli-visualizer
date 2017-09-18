@@ -141,7 +141,7 @@ void vis::ConfigurationUtils::add_color_gradients(
     const double blue_diff =
         (color.get_blue() - previous_color.get_blue()) / gradient_interval;
 
-    for (auto i = 0u; i <= gradient_interval; ++i)
+    for (auto i = 0u; i < std::round(gradient_interval-1.0); ++i)
     {
         const auto red = static_cast<int16_t>(
             std::round(start_color.get_red() + (red_diff * i)));
@@ -176,6 +176,17 @@ void vis::ConfigurationUtils::add_color_gradients(
             }
         }
     }
+
+    if (is_override_terminal_colors)
+    {
+        colors->emplace_back(vis::ColorDefinition{
+            static_cast<ColorIndex>(colors->size() + 1), color.get_red(),
+            color.get_green(), color.get_blue()});
+    }
+    else
+    {
+        colors->push_back(color);
+    }
 }
 
 double vis::ConfigurationUtils::get_gradient_interval(
@@ -195,8 +206,8 @@ double vis::ConfigurationUtils::get_gradient_interval(
         // Subtract 1 from the number of colors supported since color 0 is
         // reserved
         gradient_interval =
-            std::floor(static_cast<double>(number_of_colors_supported - 1) /
-                       static_cast<double>(number_of_colors - 1));
+            static_cast<double>(number_of_colors_supported - 1) /
+            static_cast<double>(number_of_colors - 1);
     }
 
     return gradient_interval;

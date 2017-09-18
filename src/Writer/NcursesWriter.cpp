@@ -51,7 +51,7 @@ void vis::NcursesWriter::setup_color_pairs(
     // initialize colors
     for (const auto &color : colors)
     {
-        if (is_override_terminal_colors)
+        if (is_override_terminal_colors && color.get_red() >= 0)
         {
             init_color(color.get_color_index(), scale_color(color.get_red()),
                        scale_color(color.get_green()),
