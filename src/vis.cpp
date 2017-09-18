@@ -102,13 +102,7 @@ int main(int argc, char *argv[])
 
     vis::Logger::uninitialize();
 
-    // Clears the terminal on exit
-    if (error_msg.empty())
-    {
-        system("clear");
-    }
-    // Do not clear the screen if and error needs to be printed
-    else
+    if (!error_msg.empty())
     {
         std::cout << error_msg << std::endl;
     }
