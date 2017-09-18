@@ -18,7 +18,7 @@ vis::VisException::VisException(const char *format, ...) noexcept
 
     std::va_list args;
     va_start(args, format);
-    vsprintf(buffer, format, args);
+    vsprintf(buffer, format, args); // NOLINT
     va_end(args);
 
     m_message = std::string{buffer};

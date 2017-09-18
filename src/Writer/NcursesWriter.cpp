@@ -41,7 +41,7 @@ vis::NcursesWriter::NcursesWriter()
 int16_t vis::NcursesWriter::scale_color(int16_t color)
 {
     return static_cast<int16_t>(
-        std::round(static_cast<double>(color) * 1000.0 / 255.0) + 0.5);
+        std::lround(static_cast<double>(color) * 1000.0 / 255.0));
 }
 
 void vis::NcursesWriter::setup_color_pairs(
@@ -63,9 +63,10 @@ void vis::NcursesWriter::setup_color_pairs(
         // initialize colors as background, this is used in write_background to
         // create a
         // full block effect without using a custom font
-        init_pair(static_cast<int16_t>(color.get_color_index() +
-                                       NcursesUtils::get_max_color()),
-                  color.get_color_index(), color.get_color_index());
+        init_pair(
+            static_cast<int16_t>(color.get_color_index() +
+                                 NcursesUtils::number_of_colors_supported()),
+            color.get_color_index(), color.get_color_index());
     }
 }
 
@@ -91,12 +92,12 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
     attron(VIS_COLOR_PAIR(color.get_color_index() +
-                          NcursesUtils::get_max_color()));
+                          NcursesUtils::number_of_colors_supported()));
 
     mvaddwstr(height, width, msg.c_str());
 
     attroff(VIS_COLOR_PAIR(color.get_color_index() +
-                           NcursesUtils::get_max_color()));
+                           NcursesUtils::number_of_colors_supported()));
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,

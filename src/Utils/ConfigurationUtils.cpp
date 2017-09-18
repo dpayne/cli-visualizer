@@ -122,16 +122,16 @@ vis::ConfigurationUtils::read_config(const std::string &config_path,
 }
 
 void vis::ConfigurationUtils::add_color_gradients(
-    bool is_override_terminal_colors, const vis::ColorDefinition color,
+    bool is_override_terminal_colors, const vis::ColorDefinition &color,
     const double gradient_interval, std::vector<vis::ColorDefinition> *colors)
 {
-    if (colors->empty())
+    if (colors->empty() || gradient_interval <= 0)
     {
         colors->push_back(color);
         return;
     }
 
-    auto previous_color = (*colors)[colors->size() - 1];
+    vis::ColorDefinition previous_color = colors->back();
     auto start_color = previous_color;
 
     const double red_diff =
@@ -141,7 +141,7 @@ void vis::ConfigurationUtils::add_color_gradients(
     const double blue_diff =
         (color.get_blue() - previous_color.get_blue()) / gradient_interval;
 
-    for (auto i = 0u; i <= std::floor(gradient_interval); ++i)
+    for (auto i = 0u; i <= gradient_interval; ++i)
     {
         const auto red = static_cast<int16_t>(
             std::round(start_color.get_red() + (red_diff * i)));
@@ -154,9 +154,13 @@ void vis::ConfigurationUtils::add_color_gradients(
 
         if (is_override_terminal_colors)
         {
-            previous_color = vis::ColorDefinition{
-                static_cast<ColorIndex>(colors->size()+1), red, green, blue};
-            colors->push_back(previous_color);
+            const auto gradient_color = vis::ColorDefinition{
+                static_cast<ColorIndex>(colors->size() + 1), red, green, blue};
+            if (previous_color != gradient_color)
+            {
+                previous_color = gradient_color;
+                colors->push_back(previous_color);
+            }
         }
         else
         {
@@ -172,6 +176,117 @@ void vis::ConfigurationUtils::add_color_gradients(
             }
         }
     }
+}
+
+double vis::ConfigurationUtils::get_gradient_interval(
+    int32_t number_of_colors, int32_t number_of_colors_supported)
+{
+    double gradient_interval = 0.0;
+    if (number_of_colors >= number_of_colors_supported)
+    {
+        gradient_interval = 0.0;
+    }
+    else if (number_of_colors <= 1)
+    {
+        gradient_interval = number_of_colors_supported - 1;
+    }
+    else
+    {
+        // Subtract 1 from the number of colors supported since color 0 is
+        // reserved
+        gradient_interval =
+            std::floor(static_cast<double>(number_of_colors_supported - 1) /
+                       static_cast<double>(number_of_colors - 1));
+    }
+
+    return gradient_interval;
+}
+
+std::vector<vis::ColorDefinition>
+vis::ConfigurationUtils::read_color_lines(bool is_override_terminal_colors,
+                                          const std::vector<std::string> &lines)
+{
+    std::vector<vis::ColorDefinition> colors;
+    for (const auto &color_line : lines)
+    {
+        const auto next_color_index = static_cast<int16_t>(colors.size() + 1);
+        if (color_line.size() >= 7)
+        {
+            VIS_LOG(vis::LogLevel::DEBUG, "Reading hex color line %s",
+                    color_line.c_str());
+
+            const auto hex_color =
+                vis::Utils::hex_to_int(color_line.substr(1, 6));
+
+            const int16_t red = (hex_color >> 16) % 256;
+            const int16_t green = (hex_color >> 8) % 256;
+            const int16_t blue = hex_color % 256;
+
+            // skip color 0, since it is reserved by the terminal for
+            // white/black
+            vis::ColorDefinition color =
+                vis::ColorDefinition{next_color_index, red, green, blue};
+            if (!is_override_terminal_colors)
+            {
+                color = vis::ColorDefinition{
+                    NcursesUtils::to_ansi_color(red, green, blue), red, green,
+                    blue};
+            }
+
+            colors.push_back(color);
+        }
+        else
+        {
+            VIS_LOG(vis::LogLevel::DEBUG, "Reading basic color line %s",
+                    color_line.c_str());
+
+            const auto basic_color = NcursesUtils::to_basic_color(color_line);
+            if (basic_color.get_color_index() >= 0)
+            {
+                if (is_override_terminal_colors)
+                {
+                    colors.emplace_back(vis::ColorDefinition{
+                        next_color_index, basic_color.get_red(),
+                        basic_color.get_green(), basic_color.get_blue()});
+                }
+                else
+                {
+                    colors.push_back(basic_color);
+                }
+            }
+            else
+            {
+                VIS_LOG(vis::LogLevel::WARN,
+                        "Configuration color "
+                        "definition line was not "
+                        "valid at %s",
+                        color_line.c_str());
+            }
+        }
+    }
+
+    return colors;
+}
+
+std::vector<vis::ColorDefinition>
+vis::ConfigurationUtils::colors_with_gradients(
+    bool is_override_terminal_colors,
+    const std::vector<vis::ColorDefinition> &colors)
+{
+    const auto gradient_interval =
+        get_gradient_interval(static_cast<int32_t>(colors.size()),
+                              NcursesUtils::number_of_colors_supported());
+    std::vector<vis::ColorDefinition> gradients;
+    gradients.reserve(
+        static_cast<size_t>(NcursesUtils::number_of_colors_supported()));
+
+    for (const auto &color : colors)
+    {
+        add_color_gradients(is_override_terminal_colors, color,
+                            gradient_interval, &gradients);
+    }
+
+    return gradients;
 }
 
 std::vector<vis::ColorDefinition>
@@ -209,74 +324,16 @@ vis::ConfigurationUtils::read_colors(bool is_override_terminal_colors,
         }
     }
 
-    // Subtract 1 from the max color since color 0 is reserved
-    double gradient_interval =
-        std::floor(static_cast<double>(
-                       std::max(NcursesUtils::get_max_color() - 1, 1)) /
-                   static_cast<double>(std::max(lines.size() - 1, 1ul))) -
-        lines.size();
+    const auto color_from_lines =
+        read_color_lines(is_override_terminal_colors, lines);
 
-    std::vector<std::string> split_line;
-
-    for (const auto &color_line : lines)
+    if (is_gradient_enabled)
     {
-        if (color_line.size() >= 7)
-        {
-            const auto hex_color =
-                vis::Utils::hex_to_int(color_line.substr(1, 6));
-
-            const int16_t red = (hex_color >> 16) % 256;
-            const int16_t green = (hex_color >> 8) % 256;
-            const int16_t blue = hex_color % 256;
-
-            // skip color 0, since it is reserved by the terminal for
-            // white/black
-            vis::ColorDefinition color = vis::ColorDefinition{
-                static_cast<int16_t>(colors.size() + 1), red, green, blue};
-            if (!is_override_terminal_colors)
-            {
-                color = vis::ColorDefinition{
-                    NcursesUtils::to_ansi_color(red, green, blue), red, green,
-                    blue};
-            }
-
-            if (is_gradient_enabled)
-            {
-                add_color_gradients(is_override_terminal_colors, color,
-                                    gradient_interval, &colors);
-            }
-            else
-            {
-                colors.push_back(color);
-            }
-        }
-        else
-        {
-            const auto basic_color = NcursesUtils::to_basic_color(color_line);
-            if (basic_color.get_color_index() >= 0)
-            {
-                if (is_gradient_enabled)
-                {
-                    add_color_gradients(is_override_terminal_colors,
-                                        basic_color, gradient_interval,
-                                        &colors);
-                }
-                else
-                {
-                    colors.push_back(basic_color);
-                }
-            }
-            else
-            {
-                VIS_LOG(vis::LogLevel::WARN, "Configuration color "
-                                             "definition line was not "
-                                             "valid at %s",
-                        color_line.c_str());
-            }
-        }
+        return colors_with_gradients(is_override_terminal_colors,
+                                     color_from_lines);
     }
 
-    return colors;
+    return color_from_lines;
 }
 
 vis::FalloffMode vis::ConfigurationUtils::read_falloff_mode(
@@ -363,7 +420,8 @@ void vis::ConfigurationUtils::load_settings(
 void vis::ConfigurationUtils::setup_default_colors(
     const std::shared_ptr<Settings> settings)
 {
-    const auto max_color = static_cast<double>(NcursesUtils::get_max_color()) - 1;
+    const auto max_color =
+        static_cast<double>(NcursesUtils::number_of_colors_supported()) - 1;
     const double frequency = (M_PI * 2.0) / max_color;
 
     // used to remove duplicates
@@ -414,22 +472,18 @@ void vis::ConfigurationUtils::load_color_settings_from_color_scheme(
             settings->set_colors(vis::ConfigurationUtils::read_colors(
                 settings->is_override_terminal_colors(), colors_config_path));
         }
-    }
-}
 
-void vis::ConfigurationUtils::load_color_settings(
-    const std::shared_ptr<Settings> settings)
-{
-    if (!settings->get_color_schemes().empty())
-    {
-        load_color_settings_from_color_scheme(settings->get_color_schemes()[0],
-                                              settings);
+        VIS_LOG(vis::LogLevel::DEBUG, "Read %lld colors from %s",
+                settings->get_colors().size(), color_scheme.c_str());
     }
 
     if (settings->get_colors().empty())
     {
         int32_t number_of_colors_supported =
             NcursesUtils::number_of_colors_supported();
+
+        VIS_LOG(vis::LogLevel::DEBUG, "%d colors supported",
+                NcursesUtils::number_of_colors_supported());
 
         if (number_of_colors_supported <= 0)
         {
@@ -447,6 +501,27 @@ void vis::ConfigurationUtils::load_color_settings(
         {
             setup_default_colors(settings);
         }
+    }
+
+    for (const auto &color : settings->get_colors())
+    {
+        VIS_LOG(vis::LogLevel::DEBUG, "Added color: %02x %02x %02x at index %d",
+                color.get_red(), color.get_green(), color.get_blue(),
+                color.get_color_index());
+    }
+}
+
+void vis::ConfigurationUtils::load_color_settings(
+    const std::shared_ptr<Settings> settings)
+{
+    if (!settings->get_color_schemes().empty())
+    {
+        load_color_settings_from_color_scheme(settings->get_color_schemes()[0],
+                                              settings);
+    }
+    else
+    {
+        load_color_settings_from_color_scheme("", settings);
     }
 }
 

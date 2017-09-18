@@ -42,7 +42,7 @@ void vis::Logger::log(vis::LogLevel level, const char *file, uint16_t line,
     char message_text_buf[k_max_log_line];
     std::va_list args;
     va_start(args, format);
-    vsnprintf(message_text_buf, k_max_log_line, format, args);
+    vsnprintf(message_text_buf, k_max_log_line, format, args); // NOLINT
     fprintf(
         stderr, "%s:%d %s %s\n", file, line,
         log_level_names[std::min(static_cast<uint8_t>(level),

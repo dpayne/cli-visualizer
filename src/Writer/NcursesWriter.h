@@ -79,7 +79,6 @@ class NcursesWriter
      * Ncurses color range is 0-1000, scale the 255 color range to ncurses
      */
     int16_t scale_color(int16_t color);
-
 };
 } // namespace vis
 

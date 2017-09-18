@@ -120,14 +120,6 @@ class NcursesUtils
         return getch();
     }
 
-    /**
-     * Get max color supported by ncurses
-     */
-    static inline int32_t get_max_color()
-    {
-        return COLORS;
-    }
-
   private:
     static inline int16_t to_ansi_color_domain(const int16_t color)
     {
