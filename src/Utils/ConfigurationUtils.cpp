@@ -446,11 +446,11 @@ void vis::ConfigurationUtils::setup_default_colors(
     {
         // use 3.0, 5.0, 1.0 for purple to red
         const auto red = static_cast<int16_t>(
-            std::sin(frequency * i + 4.0) * width + center);
+            std::sin(frequency * i + 3.0) * width + center);
         const auto green = static_cast<int16_t>(
-            std::sin(frequency * i + 0.0) * width + center);
+            std::sin(frequency * i + -1.0 * M_PI / 3.0) * width + center);
         const auto blue = static_cast<int16_t>(
-            std::sin(frequency * i + 2.0) * width + center);
+            std::sin(frequency * i + 7.0 * M_PI / 3.0) * width + center);
 
         if (settings->is_override_terminal_colors())
         {
