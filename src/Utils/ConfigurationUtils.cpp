@@ -444,13 +444,13 @@ void vis::ConfigurationUtils::setup_default_colors(
 
     for (int16_t i = 0; i < static_cast<int16_t>(max_color); ++i)
     {
-        // use 3.0, 5.0, 1.0 for purple to red
+        // https://www.wolframalpha.com/input/?i=graph+sin((pi+*+2.0%2F256)*x+%2B++(-1.5+*+pi+%2F+3)),++sin((pi+*+2.0%2F256)*x+%2B++(0.5*+pi+%2F+3)),+sin((pi+*+2.0%2F256)*x+%2B++(2.5+*+pi+%2F+3))+from+x%3D0+to+256
         const auto red = static_cast<int16_t>(
-            std::sin(frequency * i + 3.0) * width + center);
+            std::sin(frequency * i + 0.5) * width + center);
         const auto green = static_cast<int16_t>(
-            std::sin(frequency * i + -1.0 * M_PI / 3.0) * width + center);
+            std::sin(frequency * i + -1.5 * M_PI / 3.0) * width + center);
         const auto blue = static_cast<int16_t>(
-            std::sin(frequency * i + 7.0 * M_PI / 3.0) * width + center);
+            std::sin(frequency * i + 2.5 * M_PI / 3.0) * width + center);
 
         if (settings->is_override_terminal_colors())
         {
