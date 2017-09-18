@@ -16,7 +16,7 @@ vis::Settings::Settings(std::string config_path)
       m_sampling_frequency{VisConstants::k_default_sampling_frequency},
       m_low_cutoff_frequency{VisConstants::k_default_low_cutoff_frequency},
       m_high_cutoff_frequency{VisConstants::k_default_high_cutoff_frequency},
-      m_is_stereo_enabled{true},
+      m_is_stereo_enabled{true}, m_is_override_terminal_colors{true},
       m_spectrum_character{VisConstants::k_default_spectrum_character},
       m_lorenz_character{VisConstants::k_default_lorenz_character},
       m_ellipse_character{VisConstants::k_default_ellipse_character},

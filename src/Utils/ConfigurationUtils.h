@@ -35,7 +35,7 @@ class ConfigurationUtils
     load_color_settings_from_color_scheme(const std::string &color_scheme,
                                           std::shared_ptr<Settings> settings);
 
-  private:
+  protected:
     static std::unordered_map<std::string, std::wstring>
     read_config(const std::string &config_path, const std::locale &loc);
 
@@ -50,12 +50,14 @@ class ConfigurationUtils
         const std::unordered_map<std::string, std::wstring> &properties,
         const std::string &config_param, vis::FalloffMode default_falloff_mode);
 
-    static void add_color_gradients(vis::ColorDefinition color,
+    static void add_color_gradients(bool is_override_terminal_colors,
+                                    const vis::ColorDefinition &color,
                                     double gradient_interval,
                                     std::vector<vis::ColorDefinition> *colors);
 
     static std::vector<vis::ColorDefinition>
-    read_colors(const std::string &colors_path);
+    read_colors(bool is_override_terminal_colors,
+                const std::string &colors_path);
 
     static void validate_setting_is_not_negative(const double t,
                                                  const std::string &setting);
@@ -63,6 +65,17 @@ class ConfigurationUtils
     static void
     validate_setting_is_greater_than_zero(const double t,
                                           const std::string &setting);
+
+    static double get_gradient_interval(int32_t number_of_colors,
+                                        int32_t number_of_colors_supported);
+
+    static std::vector<vis::ColorDefinition>
+    read_color_lines(bool is_override_terminal_colors,
+                     const std::vector<std::string> &lines);
+
+    static std::vector<vis::ColorDefinition>
+    colors_with_gradients(bool is_override_terminal_colors,
+                          const std::vector<vis::ColorDefinition> &colors);
 };
 } // namespace vis
 

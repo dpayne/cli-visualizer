@@ -36,6 +36,8 @@
     - [Scaling](#scaling)
     - [Full configuration example](#full-configuration-example)
   - [Trouble Shooting](#trouble-shooting)
+    - [General](#general)
+      - [vis is overwriting my terminal colorscheme](#vis-is-overwriting-my-terminal-colorscheme)
     - [Mac OSX](#mac-osx)
       - [vis hangs with no output](#vis-hangs-with-no-output)
 
@@ -585,10 +587,24 @@ This setting can also be controlled with `+/-` keys.
     #The radius of each color ring in the ellipse visualizer. Defaults to 2.
     visualizer.ellipse.radius=2
 
+    ## Turns off overriding the user's terminal colors
+    #colors.override.terminal=false
+
     #Specifies the color scheme. The color scheme must be in ~/.config/vis/colors/ directory. Default is "colors"
     colors.scheme=rainbow
 
 ## Trouble Shooting
+
+###General
+
+#### vis is overwriting my terminal colorscheme
+
+Turn off overriding terminal colors.
+
+    colors.override.terminal=false
+
+Due to the way terminal color schemes work, there is no portable way for ncurses to get the original color scheme. By default it overrides the user's terminal colors with the visualizer colors. It does this to get a smoother transition between gradients, however this overrides the user's terminal color scheme.
+
 
 ### Mac OSX
 

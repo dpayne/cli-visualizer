@@ -51,15 +51,17 @@ class NcursesWriter
     /**
      * Initialize color pairs for ncurses
      */
-    void setup_colors();
+    void setup_colors(bool is_override_terminal_colors,
+                      const std::vector<ColorDefinition> &colors);
 
     virtual void flush();
 
   private:
     /**
-     * Initialize color pairs for ncurses
+     * Initialize color pairs for ncurses using a given set of colors
      */
-    void setup_color_pairs();
+    void setup_color_pairs(bool is_override_terminal_colors,
+                           const std::vector<ColorDefinition> &colors);
 
     /**
      * Write msg to ncurses window using background colors
@@ -72,6 +74,11 @@ class NcursesWriter
      */
     void write_foreground(int32_t height, int32_t width,
                           vis::ColorDefinition color, const std::wstring &msg);
+
+    /**
+     * Ncurses color range is 0-1000, scale the 255 color range to ncurses
+     */
+    int16_t scale_color(int16_t color);
 };
 } // namespace vis
 

@@ -29,24 +29,50 @@ vis::NcursesWriter::NcursesWriter()
     noecho();    // disable printing of pressed keys
     curs_set(0); // sets the cursor to invisible
     setlocale(LC_ALL, "");
-    setup_colors();
+
+    if (static_cast<int>(has_colors()) == TRUE)
+    {
+        start_color();        // turns on color
+        use_default_colors(); // uses default colors of terminal, which allows
+                              // transparency to work
+    }
 }
 
-void vis::NcursesWriter::setup_color_pairs()
+int16_t vis::NcursesWriter::scale_color(int16_t color)
+{
+    return static_cast<int16_t>(
+        std::lround(static_cast<double>(color) * 1000.0 / 255.0));
+}
+
+void vis::NcursesWriter::setup_color_pairs(
+    bool is_override_terminal_colors,
+    const std::vector<ColorDefinition> &colors)
 {
     // initialize colors
-    for (int16_t i = 1; i <= COLORS; ++i)
+    for (const auto &color : colors)
     {
-        init_pair(i, i, -1);
+        if (is_override_terminal_colors && color.get_red() >= 0)
+        {
+            init_color(color.get_color_index(), scale_color(color.get_red()),
+                       scale_color(color.get_green()),
+                       scale_color(color.get_blue()));
+        }
+
+        init_pair(color.get_color_index(), color.get_color_index(), -1);
 
         // initialize colors as background, this is used in write_background to
         // create a
         // full block effect without using a custom font
-        init_pair(static_cast<int16_t>(i + COLORS), i, i);
+        init_pair(
+            static_cast<int16_t>(color.get_color_index() +
+                                 NcursesUtils::number_of_colors_supported()),
+            color.get_color_index(), color.get_color_index());
     }
 }
 
-void vis::NcursesWriter::setup_colors()
+void vis::NcursesWriter::setup_colors(
+    bool is_override_terminal_colors,
+    const std::vector<ColorDefinition> &colors)
 {
     if (static_cast<int>(has_colors()) == TRUE)
     {
@@ -55,7 +81,7 @@ void vis::NcursesWriter::setup_colors()
                               // transparency to work
 
         // only supports max 256 colors
-        setup_color_pairs();
+        setup_color_pairs(is_override_terminal_colors, colors);
     }
 }
 
@@ -66,12 +92,12 @@ void vis::NcursesWriter::write_background(int32_t height, int32_t width,
     // Add COLORS which will set it to have the color as the background, see
     // "setup_colors"
     attron(VIS_COLOR_PAIR(color.get_color_index() +
-                          NcursesUtils::get_max_color()));
+                          NcursesUtils::number_of_colors_supported()));
 
     mvaddwstr(height, width, msg.c_str());
 
     attroff(VIS_COLOR_PAIR(color.get_color_index() +
-                           NcursesUtils::get_max_color()));
+                           NcursesUtils::number_of_colors_supported()));
 }
 
 void vis::NcursesWriter::write_foreground(int32_t height, int32_t width,
