@@ -72,9 +72,11 @@ A C++ compiler that supports C++14 is also needed. On arch linux, the latest g++
 
 In order to show the colors, you need a terminal with 256 color support.`rxvt-unicode` out of the box.
 
-For xterm, the default `$TERM` setting needs to be changed to `xterm-256color`. To change this run
+For xterm, the default `$TERM` setting needs to be changed to `rxvt-256color`. To change this run
 
-    export TERM=xterm-256color
+    export TERM=rxvt-256color
+
+Setting TERM to `xterm-256color` may also work but seems to cause issues with rendering of the visualizers in some terminals.
 
 ### Ubuntu
 
@@ -605,6 +607,11 @@ Turn off overriding terminal colors.
 
 Due to the way terminal color schemes work, there is no portable way for ncurses to get the original color scheme. By default it overrides the user's terminal colors with the visualizer colors. It does this to get a smoother transition between gradients, however this overrides the user's terminal color scheme.
 
+#### Tearing our corrupt output
+
+This is usually and issue with ncurses versions past versions 6.0+20170729. Try changing the TERM variable to rxvt with
+
+    export TERM=rxvt-256color
 
 ### Mac OSX
 

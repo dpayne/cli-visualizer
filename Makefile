@@ -46,13 +46,15 @@ CXX_FLAGS += -D__extern_always_inline=inline
 TEST_CCACHE_CLANG=ccache clang++
 TEST_CLANG=clang++
 
-ALL_WARNINGS=-Werror
+ALL_WARNINGS=-Werror -Weverything -Wno-zero-as-null-pointer-constant -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat -Wno-documentation-unknown-command
+ifdef VIS_COMPILE_WITH_WARNINGS
 # Only turn on extra warnings for clang since g++ does not support -Weverything
 ifeq ($(CXX),$(TEST_CLANG))
 CXX_FLAGS += $(ALL_WARNINGS)
 else
 ifeq ($(CXX),$(TEST_CCACHE_CLANG))
 CXX_FLAGS += $(ALL_WARNINGS)
+endif
 endif
 endif
 
@@ -110,12 +112,18 @@ LD_FLAGS += -fsanitize=$(SANITIZE)
 endif
 
 # Include Paths
-INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
-TEST_INCLUDE_PATH = -I/usr/include
-PERF_TEST_INCLUDE_PATH = -I/usr/include
 
 # Lib Paths
-LIB_PATH = -L/usr/local/lib
+ifdef VIS_NCURSES_LIB_PATH
+	LIB_PATH = -L${VIS_NCURSES_LIB_PATH} -L/usr/local/lib
+	INCLUDE_PATH = -I${VIS_NCURSES_INCLUDE_PATH} -I$(DIR)/include -I$(DIR)/src
+else
+	INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
+	LIB_PATH = -L/usr/local/lib
+endif
+
+TEST_INCLUDE_PATH = ${INCLUDE_PATH}
+PERF_TEST_INCLUDE_PATH = ${INCLUDE_PATH}
 
 # Libs
 LIBS = -lfftw3 -lm -lstdc++
@@ -128,6 +136,11 @@ LD_FLAGS += -D_ENABLE_PULSE
 LIBS += -lpulse -lpulse-simple
 endif
 
+ifdef VIS_NCURSES_LIB_PATH
+	LIBS += -lncursesw -ldl
+	CXX_FLAGS += -DNCURSESW
+	LD_FLAGS += -DNCURSESW
+else
 #if this box has an older version of ncurses
 ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
 	LIBS += -lncursesw
@@ -140,6 +153,7 @@ ifdef VIS_NCURSESW
 	LD_FLAGS += -DNCURSESW
 else
 	LIBS += -lncurses
+endif
 endif
 endif
 

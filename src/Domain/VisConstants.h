@@ -22,6 +22,7 @@ namespace VisConstants
 static const int16_t k_max_extended_color = 2 << 13; // 16384
 static const int16_t k_default_max_color = 256;
 static const std::string k_disabled_gradient_color_config{"gradient=false"};
+static const std::string k_enabled_gradient_color_config{"gradient=true"};
 
 // Various constants
 static const std::string k_default_locale{"en_US.UTF8"};

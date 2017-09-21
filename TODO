@@ -1,5 +1,7 @@
 - use configure or something similar to check for libraries and which compiler to use and flags
 
+- use 1000 color range for ColorDefinition, this is usueful for smoother gradients
+
 - add more visualizers
     - add beat detection
     - add flashing squares

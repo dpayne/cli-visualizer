@@ -328,6 +328,11 @@ vis::ConfigurationUtils::read_colors(bool is_override_terminal_colors,
             {
                 is_gradient_enabled = false;
             }
+            else if (lines.empty() &&
+                line == VisConstants::k_enabled_gradient_color_config)
+            {
+                is_gradient_enabled = true;
+            }
             else
             {
                 lines.push_back(line);
