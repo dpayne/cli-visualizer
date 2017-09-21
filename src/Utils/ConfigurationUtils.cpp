@@ -229,9 +229,10 @@ vis::ConfigurationUtils::read_color_lines(bool is_override_terminal_colors,
             const auto hex_color =
                 vis::Utils::hex_to_int(color_line.substr(1, 6));
 
-            const int16_t red = (hex_color >> 16) % 256;
-            const int16_t green = (hex_color >> 8) % 256;
-            const int16_t blue = hex_color % 256;
+            // ncurses uses colors between 0-1000, so scale from 0-256 to 0-1000
+            const int16_t red = std::round((static_cast<double>((hex_color >> 16) % 256) / 256.0) * 1000.0);
+            const int16_t green = std::round((static_cast<double>((hex_color >> 8) % 256) / 256.0) * 1000.0);
+            const int16_t blue = std::round((static_cast<double>(hex_color % 256) / 256.0) * 1000.0);
 
             // skip color 0, since it is reserved by the terminal for
             // white/black
