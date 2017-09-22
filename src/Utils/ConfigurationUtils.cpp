@@ -141,7 +141,7 @@ void vis::ConfigurationUtils::add_color_gradients(
     const double blue_diff =
         (color.get_blue() - previous_color.get_blue()) / gradient_interval;
 
-    for (auto i = 0u; i < std::round(gradient_interval-1.0); ++i)
+    for (auto i = 0u; i < std::round(gradient_interval - 1.0); ++i)
     {
         const auto red = static_cast<int16_t>(
             std::round(start_color.get_red() + (red_diff * i)));
@@ -230,9 +230,14 @@ vis::ConfigurationUtils::read_color_lines(bool is_override_terminal_colors,
                 vis::Utils::hex_to_int(color_line.substr(1, 6));
 
             // ncurses uses colors between 0-1000, so scale from 0-256 to 0-1000
-            const int16_t red = static_cast<int16_t>(std::round((static_cast<double>((hex_color >> 16) % 256) / 256.0) * 1000.0));
-            const int16_t green = static_cast<int16_t>(std::round((static_cast<double>((hex_color >> 8) % 256) / 256.0) * 1000.0));
-            const int16_t blue = static_cast<int16_t>(std::round((static_cast<double>(hex_color % 256) / 256.0) * 1000.0));
+            const auto red = static_cast<int16_t>(
+                std::round((static_cast<double>((hex_color >> 16) % 256)) *
+                           (1000.0 / 255.0)));
+            const auto green = static_cast<int16_t>(
+                std::round((static_cast<double>((hex_color >> 8) % 256)) *
+                           (1000.0 / 255.0)));
+            const auto blue = static_cast<int16_t>(std::round(
+                (static_cast<double>(hex_color % 256)) * (1000.0 / 255.0)));
 
             // skip color 0, since it is reserved by the terminal for
             // white/black
@@ -330,7 +335,7 @@ vis::ConfigurationUtils::read_colors(bool is_override_terminal_colors,
                 is_gradient_enabled = false;
             }
             else if (lines.empty() &&
-                line == VisConstants::k_enabled_gradient_color_config)
+                     line == VisConstants::k_enabled_gradient_color_config)
             {
                 is_gradient_enabled = true;
             }

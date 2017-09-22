@@ -26,13 +26,13 @@ namespace vis
 
 const static std::map<std::string, vis::ColorDefinition> g_vis_color_map{
     {"black", vis::ColorDefinition{COLOR_BLACK, 0, 0, 0}},
-    {"blue", vis::ColorDefinition{COLOR_BLUE, 0, 0, 255}},
-    {"cyan", vis::ColorDefinition{COLOR_CYAN, 0, 255, 255}},
-    {"green", vis::ColorDefinition{COLOR_GREEN, 0, 255, 0}},
-    {"yellow", vis::ColorDefinition{COLOR_YELLOW, 255, 255, 0}},
-    {"red", vis::ColorDefinition{COLOR_RED, 255, 0, 0}},
-    {"magenta", vis::ColorDefinition{COLOR_MAGENTA, 255, 0, 255}},
-    {"white", vis::ColorDefinition{COLOR_GREEN, 255, 255, 255}},
+    {"blue", vis::ColorDefinition{COLOR_BLUE, 0, 0, 1000}},
+    {"cyan", vis::ColorDefinition{COLOR_CYAN, 0, 1000, 1000}},
+    {"green", vis::ColorDefinition{COLOR_GREEN, 0, 1000, 0}},
+    {"yellow", vis::ColorDefinition{COLOR_YELLOW, 1000, 1000, 0}},
+    {"red", vis::ColorDefinition{COLOR_RED, 1000, 0, 0}},
+    {"magenta", vis::ColorDefinition{COLOR_MAGENTA, 1000, 0, 1000}},
+    {"white", vis::ColorDefinition{COLOR_GREEN, 1000, 1000, 1000}},
 };
 
 class NcursesUtils
@@ -123,7 +123,7 @@ class NcursesUtils
   private:
     static inline int16_t to_ansi_color_domain(const int16_t color)
     {
-        return static_cast<int16_t>(6.0 * static_cast<double>(color) / 256.0);
+        return static_cast<int16_t>(6.0 * static_cast<double>(color) / 1000.0);
     }
 };
 } // namespace vis

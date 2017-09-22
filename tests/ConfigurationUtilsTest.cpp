@@ -65,7 +65,8 @@ TEST_F(ConfigurationUtilsTest, GetGradientIntervalNoColor)
 
 TEST_F(ConfigurationUtilsTest, GetGradientInterval32Color)
 {
-    EXPECT_EQ(8.5, get_gradient_interval(31, 256)) << "gradient interval failed";
+    EXPECT_EQ(8.5, get_gradient_interval(31, 256))
+        << "gradient interval failed";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleInvalidLine)
@@ -84,9 +85,9 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleHexColor)
     EXPECT_EQ(1, colors.size()) << "Incorrect number of colors read";
 
     EXPECT_EQ(1, colors[0].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0x40, colors[0].get_red()) << "incorrect red color";
-    EXPECT_EQ(0x40, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(251, colors[0].get_red()) << "incorrect red color";
+    EXPECT_EQ(251, colors[0].get_green()) << "incorrect green color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleHexColorNoOverride)
@@ -96,10 +97,10 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleHexColorNoOverride)
 
     EXPECT_EQ(1, colors.size()) << "Incorrect number of colors read";
 
-    EXPECT_EQ(63, colors[0].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0x40, colors[0].get_red()) << "incorrect red color";
-    EXPECT_EQ(0x40, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(64, colors[0].get_color_index()) << "incorrect color index";
+    EXPECT_EQ(251, colors[0].get_red()) << "incorrect red color";
+    EXPECT_EQ(251, colors[0].get_green()) << "incorrect green color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleSimpleColor)
@@ -112,7 +113,7 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleSimpleColor)
     EXPECT_EQ(4, colors[0].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[0].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleSimpleColorWithOverride)
@@ -125,7 +126,7 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesSingleSimpleColorWithOverride)
     EXPECT_EQ(1, colors[0].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[0].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 }
 
 TEST_F(ConfigurationUtilsTest, ReadColorLinesMultiSimpleColor)
@@ -138,17 +139,17 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesMultiSimpleColor)
     EXPECT_EQ(4, colors[0].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[0].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(1, colors[1].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0xFF, colors[1].get_red()) << "incorrect red color";
+    EXPECT_EQ(1000, colors[1].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[1].get_green()) << "incorrect green color";
     EXPECT_EQ(0x0, colors[1].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(4, colors[2].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[2].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[2].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[2].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(1000, colors[2].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(0, colors[3].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[3].get_red()) << "incorrect red color";
@@ -166,17 +167,17 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesMultiMixColor)
     EXPECT_EQ(1, colors[0].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[0].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(2, colors[1].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0xFF, colors[1].get_red()) << "incorrect red color";
+    EXPECT_EQ(1000, colors[1].get_red()) << "incorrect red color";
     EXPECT_EQ(0x0, colors[1].get_green()) << "incorrect green color";
-    EXPECT_EQ(0x33, colors[1].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(200, colors[1].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(3, colors[2].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0x40, colors[2].get_red()) << "incorrect red color";
-    EXPECT_EQ(0x40, colors[2].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[2].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(251, colors[2].get_red()) << "incorrect red color";
+    EXPECT_EQ(251, colors[2].get_green()) << "incorrect green color";
+    EXPECT_EQ(1000, colors[2].get_blue()) << "incorrect blue color";
 
     EXPECT_EQ(4, colors[3].get_color_index()) << "incorrect color index";
     EXPECT_EQ(0x0, colors[3].get_red()) << "incorrect red color";
@@ -201,7 +202,7 @@ TEST_F(ConfigurationUtilsTest, ReadColorLinesManyColors)
 
 TEST_F(ConfigurationUtilsTest, AddColorGradientsFirstColor)
 {
-    vis::ColorDefinition color1 = vis::ColorDefinition{1, 0x40, 0x40, 0xff};
+    vis::ColorDefinition color1 = vis::ColorDefinition{1, 251, 251, 1000};
 
     std::vector<vis::ColorDefinition> colors;
 
@@ -211,9 +212,9 @@ TEST_F(ConfigurationUtilsTest, AddColorGradientsFirstColor)
     EXPECT_EQ(1, colors.size()) << "adding first gradient color";
 
     EXPECT_EQ(1, colors[0].get_color_index()) << "incorrect color index";
-    EXPECT_EQ(0x40, colors[0].get_red()) << "incorrect red color";
-    EXPECT_EQ(0x40, colors[0].get_green()) << "incorrect green color";
-    EXPECT_EQ(0xFF, colors[0].get_blue()) << "incorrect blue color";
+    EXPECT_EQ(251, colors[0].get_red()) << "incorrect red color";
+    EXPECT_EQ(251, colors[0].get_green()) << "incorrect green color";
+    EXPECT_EQ(1000, colors[0].get_blue()) << "incorrect blue color";
 }
 
 TEST_F(ConfigurationUtilsTest, AddColorGradientsManyHex)
