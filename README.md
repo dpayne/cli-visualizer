@@ -597,7 +597,7 @@ This setting can also be controlled with `+/-` keys.
 
 ## Trouble Shooting
 
-###General
+### General
 
 #### vis is overwriting my terminal colorscheme
 
