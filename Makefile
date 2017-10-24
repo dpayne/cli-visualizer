@@ -42,6 +42,7 @@ CXX_FLAGS += -march=$(VIS_COMPILER_ARCH)
 CXX_FLAGS += -ffast-math
 CXX_FLAGS += -fno-omit-frame-pointer
 CXX_FLAGS += -D__extern_always_inline=inline
+CXX_FLAGS += -D_XOPEN_SOURCE_EXTENDED
 
 TEST_CCACHE_CLANG=ccache clang++
 TEST_CLANG=clang++
@@ -68,7 +69,7 @@ PERF_TEST_CXX_FLAGS += -ggdb -g2
 
 # Mac OS
 ifeq ($(OS),Darwin)
-CXX_FLAGS += -dynamic -D_OS_OSX -D_XOPEN_SOURCE_EXTENDED
+CXX_FLAGS += -dynamic -D_OS_OSX
 
 # Linux
 else
