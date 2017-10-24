@@ -127,7 +127,7 @@ TEST_INCLUDE_PATH = ${INCLUDE_PATH}
 PERF_TEST_INCLUDE_PATH = ${INCLUDE_PATH}
 
 # Libs
-LIBS = -lfftw3 -lm -lstdc++
+LIBS = -lfftw3 -lm -lstdc++ -ltinfo
 TEST_LIBS = -lgtest -lpthread
 PERF_TEST_LIBS = -lbenchmark -lpthread
 
