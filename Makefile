@@ -67,6 +67,11 @@ PERF_TEST_CXX_FLAGS += -ffast-math
 PERF_TEST_CXX_FLAGS += -fno-omit-frame-pointer
 PERF_TEST_CXX_FLAGS += -ggdb -g2
 
+# Libs
+LIBS = -lfftw3 -lm -lstdc++
+TEST_LIBS = -lgtest -lpthread
+PERF_TEST_LIBS = -lbenchmark -lpthread
+
 # Mac OS
 ifeq ($(OS),Darwin)
 CXX_FLAGS += -dynamic -D_OS_OSX
@@ -74,7 +79,7 @@ CXX_FLAGS += -dynamic -D_OS_OSX
 # Linux
 else
 CXX_FLAGS += -D_LINUX
-
+LIBS += -ltinfo
 ifndef ENABLE_PULSE
 CHECK_PULSE=$(shell ldconfig -p | grep libpulse-simple)
 ifeq ($(strip $(CHECK_PULSE)),)
@@ -125,11 +130,6 @@ endif
 
 TEST_INCLUDE_PATH = ${INCLUDE_PATH}
 PERF_TEST_INCLUDE_PATH = ${INCLUDE_PATH}
-
-# Libs
-LIBS = -lfftw3 -lm -lstdc++ -ltinfo
-TEST_LIBS = -lgtest -lpthread
-PERF_TEST_LIBS = -lbenchmark -lpthread
 
 ifeq ($(ENABLE_PULSE),1)
 CXX_FLAGS += -D_ENABLE_PULSE
