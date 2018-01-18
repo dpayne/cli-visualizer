@@ -33,6 +33,9 @@ const int16_t k_input_decrease_scaling{'-'};
 const int16_t k_input_increase_scaling{'+'};
 
 const double k_scaling_multiplier_interval{0.1};
+
+sigset_t signal_set{};
+bool is_received_reload_signal = false;
 }
 
 vis::Visualizer::Visualizer(const std::string &config_path,
@@ -64,7 +67,7 @@ static inline void reload_config_sig(int sig)
 
     if (g_vis != nullptr)
     {
-        g_vis->reload_config();
+        is_received_reload_signal = true;
     }
 }
 
@@ -72,11 +75,20 @@ void vis::Visualizer::setup_signal_handlers()
 {
     if (!m_signal_handlers_setup)
     {
-        // Catch interrupt and termination signals so the program can be cleanly
-        // shutdown.
-        std::signal(SIGINT, shutdown_sig);
-        std::signal(SIGTERM, shutdown_sig);
-        std::signal(SIGUSR1, reload_config_sig);
+        struct sigaction action;
+
+        sigemptyset(&signal_set);
+        sigaddset(&signal_set, SIGUSR1);
+
+        sigemptyset(&action.sa_mask);
+        action.sa_flags = 0;
+        action.sa_handler = shutdown_sig;
+
+        sigaction(SIGTERM, &action, nullptr);
+        sigaction(SIGINT, &action, nullptr);
+
+        action.sa_handler = reload_config_sig;
+        sigaction(SIGUSR1, &action, nullptr);
     }
 }
 
@@ -161,6 +173,12 @@ void vis::Visualizer::run()
         // Only do this after at least one loop to prevent CTRL-C not killing
         // the process if audio cannot be read
         setup_signal_handlers();
+
+        if (is_received_reload_signal)
+        {
+            is_received_reload_signal = false;
+            reload_config();
+        }
     }
 }
 
