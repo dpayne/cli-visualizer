@@ -8,6 +8,7 @@
     - [Ubuntu](#ubuntu)
     - [Arch Linux](#arch-linux)
     - [Fedora](#fedora)
+    - [Solus](#solus)
     - [Mac OS X](#mac-os-x)
   - [Installing](#installing)
     - [Arch Linux](#arch-linux-1)
@@ -102,6 +103,17 @@ In arch, the ncursesw is bundled with the ncurses package.
 ### Fedora
 
 	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel
+	
+### Solus
+
+Solus requires a handful of development packages and creating a link for libtinfo before installing.
+
+	sudo eopkg it -c system.devel
+	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel
+	sudo ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5 # Should already be there, but just in case.
+	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
+	
+	./install.sh
 
 ### Mac OS X
 
