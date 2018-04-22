@@ -260,7 +260,7 @@ Start with
 
 	vis
 
-###Controls
+### Controls
 
 | Key | Description |
 | --- | ----------- |
