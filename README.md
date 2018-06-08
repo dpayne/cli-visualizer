@@ -113,7 +113,7 @@ Solus requires a handful of development packages and creating a link for libtinf
 	sudo ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5 # Should already be there, but just in case.
 	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
 	
-	./install.sh
+	sudo ./install.sh
 
 ### Mac OS X
 
@@ -127,14 +127,14 @@ Mac os x has a version of ncurses builtin, but a newer version is required.
 
 After the pre-requisites have been installed, run the install script.
 
-    ./install.sh
+    sudo ./install.sh
 
 The configuration file is installed under "~/.config/vis/config".
 
 Older version of Ubuntu need to compile with the newer g++ compiler.
 
 	export CXX=g++-4.9
-	./install.sh
+	sudo ./install.sh
 
 ### Arch Linux
 
