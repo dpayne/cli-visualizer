@@ -101,10 +101,10 @@ endif
 
 # Lib Paths
 ifdef VIS_NCURSES_LIB_PATH
-	LIB_PATH = -L${VIS_NCURSES_LIB_PATH} -L/usr/local/lib
-	INCLUDE_PATH = -I${VIS_NCURSES_INCLUDE_PATH} -I$(DIR)/include -I$(DIR)/src
+	LIB_PATH = -L"${VIS_NCURSES_LIB_PATH}" -L/usr/local/lib
+	INCLUDE_PATH = -I"${VIS_NCURSES_INCLUDE_PATH}" -I"$(DIR)/include" -I"$(DIR)/src"
 else
-	INCLUDE_PATH = -I/usr/local/include -I$(DIR)/include -I$(DIR)/src
+	INCLUDE_PATH = -I/usr/local/include -I"$(DIR)/include" -I"$(DIR)/src"
 	LIB_PATH = -L/usr/local/lib
 endif
 
@@ -177,18 +177,18 @@ perf_tests: prepare_perf_tests build_perf_tests
 
 .PHONY: prepare
 prepare:
-	mkdir -p $(BUILD_DIR)
-	rm -f $(BUILD_DIR)/$(TARGET)
+	mkdir -p "$(BUILD_DIR)"
+	rm -f "$(BUILD_DIR)/$(TARGET)"
 
 .PHONY: prepare_tests
 prepare_tests:
-	mkdir -p $(BUILD_TEST_DIR)
-	rm -f $(BUILD_TEST_DIR)/$(TEST_TARGET)
+	mkdir -p "$(BUILD_TEST_DIR)"
+	rm -f "$(BUILD_TEST_DIR)/$(TEST_TARGET)"
 
 .PHONY: prepare_perf_tests
 prepare_perf_tests:
-	mkdir -p $(BUILD_PERF_TEST_DIR)
-	rm -f $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
+	mkdir -p "$(BUILD_PERF_TEST_DIR)"
+	rm -f "$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)"
 
 .PHONY: build
 build: $(OBJECTS) $(TARGET)
@@ -201,9 +201,9 @@ build_perf_tests: $(PERF_TEST_OBJECTS) $(PERF_TEST_TARGET)
 
 .PHONY:clean
 clean:
-	@rm -rf $(BUILD_DIR)
-	@rm -rf $(BUILD_TEST_DIR)
-	@rm -rf $(BUILD_PERF_TEST_DIR)
+	@rm -rf "$(BUILD_DIR)"
+	@rm -rf "$(BUILD_TEST_DIR)"
+	@rm -rf "$(BUILD_PERF_TEST_DIR)"
 	@rm -rf bin/safe_fifo
 
 .PHONY:safe_fifo
@@ -215,8 +215,8 @@ uninstall:
 	@rm -f $(PREFIX)/safe_fifo
 
 install:
-	cp $(BUILD_DIR)/$(TARGET) $(PREFIX)
-#	cp bin/safe_fifo $(PREFIX)
+	cp "$(BUILD_DIR)/$(TARGET)" "$(PREFIX)"
+#	cp bin/safe_fifo "$(PREFIX)"
 
 ###############################################################################
 ##  BUILD TARGETS                                                            ##
@@ -226,21 +226,21 @@ $(BUILD_DIR)/%.o: %.cpp
 	$(CXX) $(CXX_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) -c $< -o $@
 
 $(TARGET): $(OBJECTS)
-	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_DIR)/$(TARGET) $(OBJECTS) $(LIBS)
+	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(LIB_PATH) -o "$(BUILD_DIR)/$(TARGET)" $(OBJECTS) $(LIBS)
 
 $(BUILD_TEST_DIR)/%.o: %.cpp
 	$(CXX) $(CXX_FLAGS) $(LD_FLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) -c $< -o $@
 
 $(TEST_TARGET): $(OBJECTS) $(TEST_OBJECTS)
-	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_TEST_DIR)/$(TEST_TARGET) $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
-	$(BUILD_TEST_DIR)/$(TEST_TARGET)
+	$(CXX) $(CXX_FLAGS) $(LDFLAGS) $(INCLUDE_PATH) $(TEST_INCLUDE_PATH) $(LIB_PATH) -o "$(BUILD_TEST_DIR)/$(TEST_TARGET)" $(TEST_OBJECTS) $(LIBS) $(TEST_LIBS)
+	"$(BUILD_TEST_DIR)/$(TEST_TARGET)"
 
 $(BUILD_PERF_TEST_DIR)/%.o: %.cpp
 	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) -c $< -o $@
 
 $(PERF_TEST_TARGET): $(OBJECTS) $(PERF_TEST_OBJECTS)
-	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o $(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET) $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
-	$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)
+	$(CXX) $(PERF_TEST_CXX_FLAGS) $(PERF_TEST_LD_FLAGS) $(INCLUDE_PATH) $(PERF_TEST_INCLUDE_PATH) $(LIB_PATH) -o "$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)" $(PERF_TEST_OBJECTS) $(LIBS) $(PERF_TEST_LIBS)
+	"$(BUILD_PERF_TEST_DIR)/$(PERF_TEST_TARGET)"
 
 clang_tidy: $(HEADERS) $(SOURCES)
 	clang-tidy $? -- -x c++ -std=c++14 -I$(INCLUDE_PATH)

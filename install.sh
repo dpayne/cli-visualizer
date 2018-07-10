@@ -18,7 +18,7 @@ else
 fi
 
 #create config directory
-mkdir -p $CONFIG_DIR/colors
+mkdir -p "$CONFIG_DIR/colors"
 
 #copy over example files
 cp examples/config $CONFIG_DIR/
