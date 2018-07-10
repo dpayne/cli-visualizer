@@ -14,11 +14,6 @@ CLANG := $(shell which clang)
 CCACHE := $(shell which ccache)
 OS= $(shell uname)
 
-#prefer clang over g++
-ifdef VIS_COMPILER
-CXX=$(VIS_COMPILER)
-endif
-
 ifndef PREFIX
 PREFIX=/bin/
 endif
@@ -43,21 +38,6 @@ CXX_FLAGS += -ffast-math
 CXX_FLAGS += -fno-omit-frame-pointer
 CXX_FLAGS += -D__extern_always_inline=inline
 CXX_FLAGS += -D_XOPEN_SOURCE_EXTENDED
-
-TEST_CCACHE_CLANG=ccache clang++
-TEST_CLANG=clang++
-
-ALL_WARNINGS=-Werror -Weverything -Wno-zero-as-null-pointer-constant -Wno-variadic-macros -Wno-format-nonliteral -Wno-global-constructors -Wno-exit-time-destructors -Wno-padded -Wno-reserved-id-macro -Wno-gnu-zero-variadic-macro-arguments -Wno-c++98-compat -Wno-documentation-unknown-command
-ifdef VIS_COMPILE_WITH_WARNINGS
-# Only turn on extra warnings for clang since g++ does not support -Weverything
-ifeq ($(CXX),$(TEST_CLANG))
-CXX_FLAGS += $(ALL_WARNINGS)
-else
-ifeq ($(CXX),$(TEST_CCACHE_CLANG))
-CXX_FLAGS += $(ALL_WARNINGS)
-endif
-endif
-endif
 
 #perf tests should not have many warnings or error out on warning
 PERF_TEST_CXX_FLAGS = -std=c++14
