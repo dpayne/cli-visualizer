@@ -211,8 +211,9 @@ uninstall:
 	@rm -f $(PREFIX)/safe_fifo
 
 install:
+ifdef DESTDIR
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
-#FIXME: "vis" binary is created by default
+endif
 	cp $(BUILD_DIR)/vis $(DESTDIR)$(PREFIX)/bin/$(TARGET)
 #	cp bin/safe_fifo "$(PREFIX)"
 
