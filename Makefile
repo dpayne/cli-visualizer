@@ -14,9 +14,7 @@ CLANG := $(shell which clang)
 CCACHE := $(shell which ccache)
 OS= $(shell uname)
 
-ifndef PREFIX
-PREFIX=/bin/
-endif
++PREFIX ?= /usr/local
 
 ifndef VIS_COMPILER_ARCH
 VIS_COMPILER_ARCH=native
@@ -78,8 +76,6 @@ PERF_TEST_LD_FLAGS = -fno-omit-frame-pointer
 
 ifeq ($(OS),Darwin)
 LD_FLAGS += -D_XOPEN_SOURCE_EXTENDED
-#El Capitan has SIP, so things need to live in usr/local/bin now.
-PREFIX=/usr/local/bin/
 endif
 
 # DEBUG Settings
@@ -215,7 +211,9 @@ uninstall:
 	@rm -f $(PREFIX)/safe_fifo
 
 install:
-	cp "$(BUILD_DIR)/$(TARGET)" "$(PREFIX)"
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+#FIXME: "vis" binary is created by default
+	cp $(BUILD_DIR)/vis $(DESTDIR)$(PREFIX)/bin/$(TARGET)
 #	cp bin/safe_fifo "$(PREFIX)"
 
 ###############################################################################
