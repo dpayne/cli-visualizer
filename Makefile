@@ -10,8 +10,6 @@ PERF_TEST_TARGET= run_perf_tests
 ##  SETTINGS                                                                 ##
 ###############################################################################
 
-CLANG := $(shell which clang)
-CCACHE := $(shell which ccache)
 OS= $(shell uname)
 
 +PREFIX ?= /usr/local
