@@ -627,7 +627,7 @@ This is usually and issue with ncurses versions past versions 6.0+20170729. Try 
 
 ### Mac OSX
 
-#### vis hangs with no output
+#### vis hangs with no output #1
 
 It is possible there is a naming conflict with an existing BSD tool `vis`. Try running `vis -h`. If the output looks something like
 
@@ -636,3 +636,11 @@ It is possible there is a naming conflict with an existing BSD tool `vis`. Try r
     usage: vis [-cbflnostw] [-F foldwidth] [file ...]
 
 then there is a naming conflict with cli-visualizer. To fix this issue, put `/usr/local/bin` before `/usr/bin/` in `$PATH`.
+
+#### vis hangs with no output #2
+
+MPD on mac os does not automatically create the output file for the visualizer.
+
+    mkfifo /tmp/mpd.fifo
+
+Running `mkfifo` will create the output file. This file is usually `/tmp/mpd.fifo`, but please make sure it matches any overrides set in your `mpd.conf` and vis config `~/.config/vis/config`.
