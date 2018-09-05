@@ -12,7 +12,7 @@ PERF_TEST_TARGET= run_perf_tests
 
 OS= $(shell uname)
 
-+PREFIX ?= /usr/local
+PREFIX ?= /usr/local
 
 ifndef VIS_COMPILER_ARCH
 VIS_COMPILER_ARCH=native
