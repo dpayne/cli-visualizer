@@ -55,18 +55,16 @@ CXX_FLAGS += -dynamic -D_OS_OSX
 # Linux
 else
 CXX_FLAGS += -D_LINUX
-ifdef VIS_NCURSES_LIB_PATH
-    LIBS += -ltinfow
+
+CHECK_LTINFOW=$(shell ldconfig -p | grep tinfow)
+CHECK_LTINFO=$(shell ldconfig -p | grep tinfo)
+ifeq ($(strip $(CHECK_LTINFOW)),)
+$(info Using ltinfow)
+LIBS += -ltinfow
 else
-#if this box has an older version of ncurses
-ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
-    LIBS += -ltinfow
-else
-ifdef VIS_NCURSESW
-    LIBS += -ltinfow
-else
-    LIBS += -ltinfo
-endif
+ifeq ($(strip $(CHECK_LTINFO)),)
+$(info Using ltinfo)
+LIBS += -ltinfo
 endif
 endif
 
