@@ -59,13 +59,14 @@ CXX_FLAGS += -D_LINUX
 CHECK_LTINFOW=$(shell ldconfig -p | grep tinfow)
 CHECK_LTINFO=$(shell ldconfig -p | grep tinfo)
 ifeq ($(strip $(CHECK_LTINFOW)),)
-$(info Using ltinfow)
-LIBS += -ltinfow
-else
 ifeq ($(strip $(CHECK_LTINFO)),)
+else
 $(info Using ltinfo)
 LIBS += -ltinfo
 endif
+else
+$(info Using ltinfow)
+LIBS += -ltinfow
 endif
 
 ifndef ENABLE_PULSE
