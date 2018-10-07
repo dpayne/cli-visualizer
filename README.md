@@ -9,6 +9,7 @@
     - [Arch Linux](#arch-linux)
     - [Fedora](#fedora)
     - [Solus](#solus)
+    - [Gentoo](#gentoo)
     - [Mac OS X](#mac-os-x)
   - [Installing](#installing)
     - [Arch Linux](#arch-linux-1)
@@ -114,6 +115,13 @@ Solus requires a handful of development packages and creating a link for libtinf
 	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
 	
 	./install.sh
+	
+### Gentoo
+
+Make sure to compile ncurses with tinfo flag, have clang and ccache installed on your Gentoo system.
+	
+	sudo USE="tinfo" emerge ncurses
+	sudo emerge clang ccache
 
 ### Mac OS X
 
