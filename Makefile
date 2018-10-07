@@ -223,10 +223,7 @@ uninstall:
 	@rm -f $(PREFIX)/safe_fifo
 
 install:
-ifdef DESTDIR
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-endif
-	cp $(BUILD_DIR)/vis $(DESTDIR)$(PREFIX)/bin/$(TARGET)
+	install -Dm0755 $(BUILD_DIR)/vis $(DESTDIR)/$(PREFIX)/bin/$(TARGET)
 #	cp bin/safe_fifo "$(PREFIX)"
 
 ###############################################################################
