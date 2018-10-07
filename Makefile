@@ -56,19 +56,20 @@ CXX_FLAGS += -dynamic -D_OS_OSX
 else
 CXX_FLAGS += -D_LINUX
 ifdef VIS_NCURSES_LIB_PATH
-	LIBS += -ltinfow
+    LIBS += -ltinfow
 else
 #if this box has an older version of ncurses
 ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
-	LIBS += -ltinfow
+    LIBS += -ltinfow
 else
 ifdef VIS_NCURSESW
-	LIBS += -ltinfow
+    LIBS += -ltinfow
 else
-	LIBS += -ltinfo
+    LIBS += -ltinfo
 endif
 endif
 endif
+
 ifndef ENABLE_PULSE
 CHECK_PULSE=$(shell ldconfig -p | grep libpulse-simple)
 ifeq ($(strip $(CHECK_PULSE)),)
