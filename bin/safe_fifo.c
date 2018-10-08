@@ -1,79 +1,71 @@
 #include <stdio.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <time.h>
 
 #define BUF_SIZE 16384
-
-char write_buffer[BUF_SIZE];
-char read_buffer[BUF_SIZE];
-char default_fifo_name[] = "/tmp/audio";
-
-static struct timespec k_read_attempt_sleep_timespec = {0, 1L * 1000000L};
 
 int main(int argc, char *argv[])
 {
     char *fifo_file_name;
+    char buf[BUF_SIZE];
+    struct stat st;
+    int fdr = 0, fdw = 0, n;
+
     if (argc < 2)
     {
-        fifo_file_name = default_fifo_name;
+        fifo_file_name = "/tmp/audio";
     }
     else
     {
         fifo_file_name = argv[1];
     }
 
-    int retval = mkfifo(fifo_file_name, 777);
-    if (retval < 0)
+    if (mkfifo(fifo_file_name, 0666) < 0 && errno != EEXIST)
     {
-        fprintf(stderr, "error creating fifo buffer: %d", errno);
-        return -1;
+        fprintf(stderr, "error creating fifo buffer: %d\n", errno);
+        goto err;
     }
 
-    int fd = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0);
-
-    if (fd < 0)
+    // hacky solution to prevent ENXIO
+    if ((fdr = open(fifo_file_name, O_RDONLY | O_NONBLOCK, 0)) < 0)
     {
-        fprintf(stderr, "error opening fifo buffer: %d", errno);
-        return -1;
+        fprintf(stderr, "error opening fifo buffer read only: %d\n", errno);
+        goto err;
     }
 
-    // mark stdin as binary
-    freopen(NULL, "rb", stdin);
-
-    while (!feof(stdin))
+    if ((fdw = open(fifo_file_name, O_WRONLY | O_NONBLOCK, 0)) < 0)
     {
-        // read input into buffer
-        int bytes_read = read(STDIN_FILENO, write_buffer, BUF_SIZE);
-        if (bytes_read > 0)
-        {
-            // pipe buffer to fifo
-            write(fd, write_buffer, bytes_read);
-
-            // EAGAIN means the buffer is full, clear it and try again
-            if (errno == EAGAIN)
-            {
-                bytes_read = read(fd, read_buffer, BUF_SIZE);
-                if (bytes_read < 0)
-                {
-                    fprintf(stderr, "error flushing fifo buffer: %d", errno);
-                }
-            }
-        }
-        else
-        {
-            break;
-        }
+        fprintf(stderr, "error opening fifo buffer write only: %d\n", errno);
+        goto err;
     }
 
-    if (close(fd) < 0)
+    if (fstat(fdw, &st) < 0)
     {
-        fprintf(stderr, "error closing fifo buffer: %d", errno);
-        return -1;
+        fprintf(stderr, "error running fstat on fifo buffer: %d\n", errno);
+        goto err;
     }
-    exit(0);
+
+    if (!S_ISFIFO(st.st_mode))
+    {
+        fprintf(stderr, "%s is no a fifo buffer\n", fifo_file_name);
+        goto err;
+    }
+
+    while (!feof(stdin) && (n = read(STDIN_FILENO, buf, BUF_SIZE)) > 0)
+    {
+        write(fdw, buf, n);
+    }
+
+    close(fdr);
+    close(fdw);
+
+    return 0;
+
+err:
+    close(fdr);
+    close(fdw);
+
+    return 1;
 }
