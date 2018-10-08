@@ -7,6 +7,7 @@ set(PROJECT_PERF_TEST_NAME ${PROJECT_NAME}_perf_test)
 option(VIS_WITH_TESTS "Compile tests executables" OFF)
 option(VIS_WITH_PERF_TESTS "Compile tests executables" OFF)
 option(VIS_RUN_CLANG_FORMAT "Run clang formatter" OFF)
+option(VIS_RUN_CLANG_TIDY "Run clang tidy" OFF)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -162,7 +163,7 @@ if(VIS_WITH_TESTS)
     set(GMOCK_MAIN_LIBRARY_PATH ${EXTERNAL_PROJECTS_LIB_DIR}/${CMAKE_FIND_LIBRARY_PREFIXES}gmock_main.a)
     set(GMOCK_MAIN_LIBRARY gmock_main)
     add_library(${GMOCK_MAIN_LIBRARY} UNKNOWN IMPORTED)
-    set_TARGET_PROPERTIES(${GMOCK_MAIN_LIBRARY} PROPERTIES
+    set_target_properties(${GMOCK_MAIN_LIBRARY} PROPERTIES
       IMPORTED_LOCATION ${GMOCK_MAIN_LIBRARY_PATH} )
     add_dependencies(${GMOCK_MAIN_LIBRARY} ${GTEST_LIBRARY})
 
@@ -198,7 +199,7 @@ endif()
 ########################################################################
 # Add Perf Test libraries
 ########################################################################
-IF(VIS_WITH_PERF_TESTS)
+if(VIS_WITH_PERF_TESTS)
     ExternalProject_Add(googlebenchmark
       PREFIX ${EXTERNAL_PROJECTS_DIR}
       GIT_REPOSITORY "git@github.com:google/benchmark.git"
@@ -239,8 +240,8 @@ IF(VIS_WITH_PERF_TESTS)
         SOURCES ${VIS_PROJECT_PERF_TEST_FILES}
     )
 
-    ADD_DEPENDENCIES(vis_perf_test_run ${PROJECT_PERF_TEST_NAME})
-ENDIF()
+    add_dependencies(vis_perf_test_run ${PROJECT_PERF_TEST_NAME})
+endif()
 
 ########################################################################
 # Add clang format
@@ -249,7 +250,7 @@ find_program(CLANGFORMAT_CMD clang-format)
 function(ADD_CLANGFORMAT _TARGETNAME)
     if (CLANGFORMAT_CMD)
         if (NOT TARGET ${_TARGETNAME})
-            MESSAGE(FATAL_ERROR "add_clangformat should only be called on targets (got " ${_TARGETNAME} ")")
+            message(FATAL_ERROR "add_clangformat should only be called on targets (got " ${_TARGETNAME} ")")
         endif()
 
         # figure out which sources this should be applied to
@@ -286,5 +287,31 @@ function(ADD_CLANGFORMAT _TARGETNAME)
 endfunction()
 
 if(VIS_RUN_CLANG_FORMAT)
-    ADD_CLANGFORMAT(${PROJECT_NAME})
+    add_clangformat(${PROJECT_NAME})
 endif()
+
+if(${VIS_RUN_CLANG_TIDY})
+    find_program(
+      CLANG_TIDY
+      NAMES "clang-tidy"
+      DOC "Path to clang-tidy executable"
+      )
+    message(STATUS "clang-tidy found: ${CLANG_TIDY}")
+    set(DO_CLANG_TIDY "${CLANG_TIDY}" "-p=${CMAKE_CURRENT_SOURCE_DIR}")
+
+    set_target_properties(
+        ${PROJECT_NAME} PROPERTIES
+        CXX_STANDARD 14
+        CXX_STANDARD_REQUIRED ON
+        COMPILE_FLAGS ""
+    )
+
+    if(CLANG_TIDY)
+      set_target_properties(
+          ${PROJECT_NAME} PROPERTIES
+        CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+      )
+    endif()
+endif()
+
+
