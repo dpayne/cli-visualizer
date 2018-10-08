@@ -14,8 +14,7 @@ compiler:
     - clang++
     - g++
 
-before_install:
- - "export ENABLE_PULSE=0 && export TMP_CC=$CC && export TMP_CXX=$CXX && export CC=gcc && export CXX=g++ && cd /usr/src/gtest && sudo cmake . && sudo cmake --build . && sudo mv libg* /usr/local/lib/ ; cd - && export CXX=$TMP_CXX && export CC=$TMP_CC"
+script: cmake
 
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc"; fi
@@ -31,6 +30,8 @@ addons:
     - libncursesw5-dev
     - libgtest-dev
     - gcc
+    - cmake-data
+    - cmake
     - g++-6
     - clang-4.0
   coverity_scan:
