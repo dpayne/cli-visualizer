@@ -103,7 +103,7 @@ In arch, the ncursesw is bundled with the ncurses package.
 
 ### Fedora
 
-	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel cmake-devel
+	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel cmake
 	
 ### Solus
 
