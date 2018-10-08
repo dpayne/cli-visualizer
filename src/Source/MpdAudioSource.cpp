@@ -23,7 +23,7 @@ const int64_t k_read_attempt_sleep_interval_nanosecs =
     1L * 1000000L; // 1 millisecond
 struct timespec k_read_attempt_sleep_timespec = {
     0, k_read_attempt_sleep_interval_nanosecs};
-}
+} // namespace
 
 vis::MpdAudioSource::MpdAudioSource(
     const std::shared_ptr<const vis::Settings> settings)
