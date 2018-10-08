@@ -82,7 +82,7 @@ Setting TERM to `xterm-256color` may also work but seems to cause issues with re
 ### Ubuntu
 
 
-	sudo apt-get install libfftw3-dev libncursesw5-dev
+	sudo apt-get install libfftw3-dev libncursesw5-dev cmake
 
 For pulseaudio support, the pulseaudio library also needs to be installed
 
@@ -98,18 +98,18 @@ Older versions of Ubuntu also need newer a newer gcc compiler. Note, while this 
 
 In arch, the ncursesw is bundled with the ncurses package.
 
-    sudo pacman -S ncurses fftw
+    sudo pacman -S ncurses fftw cmake
 
 ### Fedora
 
-	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel
+	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel cmake-devel
 	
 ### Solus
 
 Solus requires a handful of development packages and creating a link for libtinfo before installing.
 
 	sudo eopkg it -c system.devel
-	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel
+	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel cmake-devel
 	sudo ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5 # Should already be there, but just in case.
 	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
 	
@@ -119,7 +119,7 @@ Solus requires a handful of development packages and creating a link for libtinf
 
 Mac os x has a version of ncurses builtin, but a newer version is required.
 
-	brew install fftw
+	brew install fftw cmake
 	brew tap homebrew/dupes
 	brew install ncurses
 

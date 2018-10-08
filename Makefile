@@ -2,6 +2,9 @@
 #  LIBRARY DEFINITIONS
 # ====================
 
+$(warning Building with Makefile has been deprecated!)
+$(warning Please use the cmake build process instead.)
+
 TARGET= vis
 TEST_TARGET= run_tests
 PERF_TEST_TARGET= run_perf_tests
