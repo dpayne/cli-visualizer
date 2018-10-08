@@ -42,8 +42,8 @@ endif()
 
 # OS specific flags
 if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D _OS_OSX")
-    set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -D _OS_OSX")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -L/usr/local/lib/ -I/usr/local/include/ -D _OS_OSX")
+    set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -L/usr/local/lib/ -D _OS_OSX")
 
     # Enable runtime search path support for dynamic libraries on OSX
     set(CMAKE_MACOSX_RPATH 1)
