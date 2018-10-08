@@ -110,7 +110,7 @@ In arch, the ncursesw is bundled with the ncurses package.
 Solus requires a handful of development packages and creating a link for libtinfo before installing.
 
 	sudo eopkg it -c system.devel
-	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel cmake-devel
+	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel cmake
 	sudo ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5 # Should already be there, but just in case.
 	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
 	
