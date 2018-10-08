@@ -13,6 +13,12 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if (NOT CMAKE_BUILD_TYPE)
+  message(STATUS "No build type selected, default to Release")
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release" FORCE)
+endif()
+
+
 set(PROJECT_VERSION ${vis_version})
 project(${PROJECT_NAME} VERSION ${vis_version} LANGUAGES CXX C)
 

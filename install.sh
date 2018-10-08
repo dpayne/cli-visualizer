@@ -6,9 +6,10 @@ if [[ $ARCH == "arm6"* ]]; then export "VIS_COMPILER_ARCH"="armv6"; fi
 if [[ $ARCH == "armv6"* ]]; then export "VIS_COMPILER_ARCH"="armv6"; fi
 if [[ $ARCH == "armv7"* ]]; then export "VIS_COMPILER_ARCH"="armv6"; fi
 
-make clean
-make
-sudo make install
+mkdir build/
+cd build/
+cmake ../ && make clean && make && sudo make install
+cd ..
 
 if [ -z "$XDG_CONFIG_HOME" ]
 then
