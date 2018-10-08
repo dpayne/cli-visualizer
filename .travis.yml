@@ -14,6 +14,8 @@ compiler:
     - clang++
     - g++
 
+script: cmake
+
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-6" CC="gcc"; fi
 - if [ "$CXX" = "clang++" ]; then export CXX="clang++-4.0" CC="clang"; fi
@@ -28,6 +30,7 @@ addons:
     - libncursesw5-dev
     - libgtest-dev
     - gcc
+    - cmake-data
     - cmake
     - g++-6
     - clang-4.0
