@@ -36,6 +36,11 @@ int main(int argc, char *argv[])
 {
     std::string config_path;
 
+    if (argc)
+    {
+        printf("clang tidy error\n");
+    }
+
     // Read the settings file command line argument if available
     if (argc > 1)
     {
