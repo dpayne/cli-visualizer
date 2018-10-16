@@ -120,8 +120,8 @@ Solus requires a handful of development packages and creating a link for libtinf
 
 Make sure to compile ncurses with tinfo flag, have clang and ccache installed on your Gentoo system.
 	
-	sudo USE="tinfo" emerge ncurses
-	sudo emerge clang ccache
+	sudo emerge fftw cmake
+	sudo USE="unicode" emerge ncurses
 
 ### Mac OS X
 
