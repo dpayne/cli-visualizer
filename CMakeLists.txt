@@ -18,7 +18,6 @@ if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release" FORCE)
 endif()
 
-
 set(PROJECT_VERSION ${vis_version})
 project(${PROJECT_NAME} VERSION ${vis_version} LANGUAGES CXX C)
 
@@ -33,6 +32,12 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -ffast-math -g1 -O3 -mar
 set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} ${VIS_DEFAULT_FLAGS} -fno-omit-frame-pointer -D__extern_always_inline=inline -D_XOPEN_SOURCE_EXTENDED")
 set(CMAKE_LD_FLAGS_DEBUG "${CMAKE_LD_FLAGS_DEBUG} -ggdb -g3 -ffast-math -march=x86-64 -mtune=generic -DVIS_LOG_DEBUG")
 set(CMAKE_LD_FLAGS_RELEASE "${CMAKE_LD_FLAGS_RELEASE} -ffast-math -g1 -O3 -march=${VIS_COMPILER_ARCH} -fno-omit-frame-pointer -DNDEBUG")
+
+include(CheckIncludeFile)
+check_include_file("<ncursesw/ncurses.h>" HAVE_NCURSESW_H)
+if(HAVE_NCURSESW_H)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNCURSESW")
+endif()
 
 if(DEFINED VIS_SANITIZER)
     # compile with O1 to cause a little more havoc
