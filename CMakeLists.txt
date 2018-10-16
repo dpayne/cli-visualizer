@@ -34,7 +34,7 @@ set(CMAKE_LD_FLAGS_DEBUG "${CMAKE_LD_FLAGS_DEBUG} -ggdb -g3 -ffast-math -march=x
 set(CMAKE_LD_FLAGS_RELEASE "${CMAKE_LD_FLAGS_RELEASE} -ffast-math -g1 -O3 -march=${VIS_COMPILER_ARCH} -fno-omit-frame-pointer -DNDEBUG")
 
 include(CheckIncludeFile)
-check_include_file("<ncursesw/ncurses.h>" HAVE_NCURSESW_H)
+check_include_file("ncursesw/ncurses.h" HAVE_NCURSESW_H)
 if(HAVE_NCURSESW_H)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNCURSESW")
 endif()
