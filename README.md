@@ -118,8 +118,8 @@ Solus requires a handful of development packages and creating a link for libtinf
 	
 ### Gentoo
 
-Make sure to compile `ncurses` with `unicode` flag, have fftw and 
-cmake installed on your Gentoo system.
+Make sure to compile `ncurses` with `unicode` flag, have `fftw` and 
+`cmake` installed on your Gentoo system.
 	
 	sudo emerge fftw cmake
 	sudo USE="unicode" emerge ncurses
