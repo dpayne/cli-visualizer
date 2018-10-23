@@ -36,7 +36,7 @@ const double k_scaling_multiplier_interval{0.1};
 
 sigset_t signal_set{};
 bool is_received_reload_signal = false;
-}
+} // namespace
 
 vis::Visualizer::Visualizer(const std::string &config_path,
                             const std::locale &loc)

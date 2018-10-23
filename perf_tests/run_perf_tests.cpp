@@ -21,6 +21,7 @@ static void test_color_settings(benchmark::State &state)
 {
     while (state.KeepRunning())
     {
+        // place holder for any perf tests
     }
 }
 

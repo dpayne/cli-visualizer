@@ -33,7 +33,7 @@ const double k_deviation_amount_to_reset =
 const double k_minimum_bar_height = 0.125;
 const uint64_t k_max_silent_runs_before_sleep =
     3000ul / VisConstants::k_silent_sleep_milliseconds; // silent for 3 seconds
-}
+} // namespace
 
 vis::SpectrumTransformer::SpectrumTransformer(
     const std::shared_ptr<const vis::Settings> settings,
@@ -401,10 +401,9 @@ void vis::SpectrumTransformer::scale_bars(const int32_t height,
                                &std_dev);
 
     auto max_height = moving_average + (2 * std_dev);
-    max_height =
-        std::max(max_height, 1.0); // avoid division by zero when height
-                                   // is zero, this happens when the
-                                   // sound is muted
+    max_height = std::max(max_height, 1.0); // avoid division by zero when
+                                            // height is zero, this happens when
+                                            // the sound is muted
 
     for (double &bar : *bars)
     {

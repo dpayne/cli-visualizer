@@ -34,3 +34,5 @@ bin/safe_fifo
 
 #vim files
 .ycm_extra_conf.pyc
+
+gtestresults.xml

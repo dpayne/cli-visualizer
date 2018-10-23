@@ -29,7 +29,7 @@ static const int32_t k_channels = 2;
 
 static const std::string k_default_monitor_postfix = ".monitor";
 #endif
-}
+} // namespace
 
 vis::PulseAudioSource::PulseAudioSource(
     const std::shared_ptr<const vis::Settings> settings)

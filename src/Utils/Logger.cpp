@@ -18,7 +18,7 @@ namespace
 const uint64_t k_max_log_line = 4096;
 const std::vector<const char *> log_level_names{"DEBUG", "INFO", "WARN",
                                                 "ERROR"};
-}
+} // namespace
 
 void vis::Logger::initialize(const std::string log_location)
 {

@@ -2,6 +2,9 @@
 #  LIBRARY DEFINITIONS
 # ====================
 
+$(warning Building with Makefile has been deprecated!)
+$(warning Please use the cmake build process instead.)
+
 TARGET= vis
 TEST_TARGET= run_tests
 PERF_TEST_TARGET= run_perf_tests
@@ -55,19 +58,18 @@ CXX_FLAGS += -dynamic -D_OS_OSX
 # Linux
 else
 CXX_FLAGS += -D_LINUX
-ifdef VIS_NCURSES_LIB_PATH
-    LIBS += -ltinfow
+
+CHECK_LTINFOW=$(shell ldconfig -p | grep tinfow)
+CHECK_LTINFO=$(shell ldconfig -p | grep tinfo)
+ifeq ($(strip $(CHECK_LTINFOW)),)
+ifeq ($(strip $(CHECK_LTINFO)),)
 else
-#if this box has an older version of ncurses
-ifneq ("$(wildcard /usr/include/ncursesw/ncurses.h)","")
-    LIBS += -ltinfow
-else
-ifdef VIS_NCURSESW
-    LIBS += -ltinfow
-else
-    LIBS += -ltinfo
+$(info Using ltinfo)
+LIBS += -ltinfo
 endif
-endif
+else
+$(info Using ltinfow)
+LIBS += -ltinfow
 endif
 
 ifndef ENABLE_PULSE
@@ -223,10 +225,7 @@ uninstall:
 	@rm -f $(PREFIX)/safe_fifo
 
 install:
-ifdef DESTDIR
-	mkdir -p $(DESTDIR)$(PREFIX)/bin
-endif
-	cp $(BUILD_DIR)/vis $(DESTDIR)$(PREFIX)/bin/$(TARGET)
+	install -Dm0755 $(BUILD_DIR)/vis $(DESTDIR)/$(PREFIX)/bin/$(TARGET)
 #	cp bin/safe_fifo "$(PREFIX)"
 
 ###############################################################################

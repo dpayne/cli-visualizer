@@ -45,7 +45,7 @@ const double k_lorenz_a = 10.0;
 const double k_lorenz_b1 = 7.1429;
 const double k_lorenz_b2 = 0.000908845;
 const double k_lorenz_c = 8.0 / 3.0;
-}
+} // namespace
 
 vis::LorenzTransformer::LorenzTransformer(
     const std::shared_ptr<const vis::Settings> settings,
