@@ -101,7 +101,7 @@ find_library(PULSE_FOUND NAMES pulse)
 if(PULSE_FOUND)
   set(DYNAMIC_LIBRARIES ${DYNAMIC_LIBRARIES} pulse pulse-simple)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_ENABLE_PULSE")
-  set(CMAKE_LD_FLAGS "${CMAKE_CXX_FLAGS} -D_ENABLE_PULSE")
+  set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -D_ENABLE_PULSE")
 endif()
 
 ########################################################################
