@@ -545,8 +545,8 @@ This setting can also be controlled with `+/-` keys.
 
     #Configures the samples rate and the cutoff frequencies.
     audio.sampling.frequency=44100
-    audio.low.cutoff.frequency=22050
-    audio.high.cutoff.frequency=30
+    audio.low.cutoff.frequency=30
+    audio.high.cutoff.frequency=22050
 
     ##Applies scaling factor to both lorenz and ellipse visualizers. This is useful when the system audio is set
     #to a low volume.
