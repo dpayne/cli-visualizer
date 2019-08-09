@@ -262,6 +262,18 @@ To enable pulse audio in the vis config set audio sources to pulse with
 If this does not work, then vis has most likely not guess the correct sink to use. Try switching the pulseaudio source vis uses. A list can be found by running the command `pacmd list-sinks  | grep -e 'name:'  -e 'index'`. The correct pulseaudio source can then be set with
 
     audio.pulse.source=0
+    
+**Troubleshooting with Pulse For MacOS Users:**
+
+If vis is hanging for you after running it make sure the pulseaudio daemon is running. You can start it if you installed it with brew by running
+
+    brew services start pulseaudio
+    
+Alternatively you can run the `pulseaudio` command and send it to the background, then run `bg` to continue it.
+
+Then try to run `vis` again. You'll know it worked if it asks to have access to your microphone.
+
+
 
 ## Usage
 
