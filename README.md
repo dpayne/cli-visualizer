@@ -385,7 +385,7 @@ Color index color scheme example
 
 ![basic_colors](http://i.imgur.com/TUrQU01l.gif "Basic Colors")
 
-All the basic 16 terminal colors from 0-16 in-order. The spectrum colors can be ordered in any you want, this example was done in order to show all colors.
+All the basic 16 terminal colors from 0-15 in-order. The spectrum colors can be ordered in any you want, this example was done in order to show all colors.
 
 <br><br>
 
