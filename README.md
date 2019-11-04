@@ -28,6 +28,7 @@
       - [RGB colors](#rgb-colors)
       - [Color indexes](#color-indexes)
       - [Color names](#color-names)
+      - [Pywal Integration](#pywal-integration)
     - [Spectrum](#spectrum)
       - [Smoothing](#smoothing)
         - [Sgs Smoothing](#sgs-smoothing)
@@ -399,6 +400,10 @@ For example, dark themes often set `white` to something dark since `white` is us
 ![blue](http://i.imgur.com/vn1u9tVl.gif "Blue")
 
 A color scheme with only one color `blue`.
+
+#### Pywal Integration
+
+Use the following third party plugin to generate a colorscheme based on your wallpaper through pywal: [cli-visualizer_pywal](https://github.com/aryakaul/cli-visualizer_pywal)
 
 <br><br>
 
