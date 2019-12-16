@@ -383,7 +383,7 @@ Color index color scheme example
     0
 
 
-![basic_colors](http://i.imgur.com/TUrQU01l.gif "Basic Colors")
+![basic_colors](https://web.archive.org/web/20160228121439if_/https://camo.githubusercontent.com/0c48ed2b72622c935165c5127cb2cc699f46ea0c/687474703a2f2f692e696d6775722e636f6d2f545572515530316c2e676966 "Basic Colors")
 
 All the basic 16 terminal colors from 0-15 in-order. The spectrum colors can be ordered in any you want, this example was done in order to show all colors.
 
@@ -396,7 +396,7 @@ The third way to define a color scheme is by the color name. Only 8 color names 
 Note that these 8 colors are the basic terminal colors and are often set by a terminal's color scheme. This means that the color name might not match the color shown since the terminal theme might change it.
 For example, dark themes often set `white` to something dark since `white` is usually the default color for the terminal background.
 
-![blue](http://i.imgur.com/vn1u9tVl.gif "Blue")
+![blue](https://web.archive.org/web/20160228121442if_/https://camo.githubusercontent.com/31f5dda569d6bfa2ef50f126773172f465ee5315/687474703a2f2f692e696d6775722e636f6d2f766e31753974566c2e676966 "Blue")
 
 A color scheme with only one color `blue`.
 
@@ -423,14 +423,14 @@ The first option is controlling the number of smoothing passes done when renderi
 The second option is the number of neighbors to look at when smoothing. This is set with `visualizer.sgs.smoothing.points`. This should always be an odd number.
 A larger number will generally increase the smoothing since more neighbors will be looked at.
 
-![sgs_smoothing](http://i.imgur.com/fuxuNQTl.gif "Sgs Smoothing")
+![sgs_smoothing](https://web.archive.org/web/20160228121446if_/https://camo.githubusercontent.com/9e44a48c1054b7811e2d8c2361ecb50899928088/687474703a2f2f692e696d6775722e636f6d2f667578754e51546c2e676966 "Sgs Smoothing")
 
 Default sgs smoothing.
 
 <br><br>
 
 
-![sgs_smoothing](http://i.imgur.com/ptF0UhBl.gif "Sgs Smoothing High Pass")
+![sgs_smoothing](https://web.archive.org/web/20160228121449if_/https://camo.githubusercontent.com/b5c60fd86580c295672aa6ce43f665ca81f229f9/687474703a2f2f692e696d6775722e636f6d2f707446305568426c2e676966 "Sgs Smoothing High Pass")
 
 Sgs smoothing with number of passes set to `5`.
 
@@ -438,7 +438,7 @@ Sgs smoothing with number of passes set to `5`.
 
 Monster cat smoothing is inspired by the monster cat youtube channel (https://www.youtube.com/user/MonstercatMedia). To control the amount of smoothing for montercat use `visualizer.monstercat.smoothing.factor`. The default smoothing factor for monstercat is `1.5`. Increase the smoothing factor by a lot could hurt performance.
 
-![monstercat_smoothing](http://i.imgur.com/1wmgrjel.gif "MonsterCat")
+![monstercat_smoothing](https://web.archive.org/web/20160228121453if_/https://camo.githubusercontent.com/9a753ed6d780255f13e045af06345b84d0ec8689/687474703a2f2f692e696d6775722e636f6d2f31776d67726a656c2e676966 "MonsterCat")
 
 
 ##### No Smoothing
@@ -449,7 +449,7 @@ Smoothing can be completely turned off by setting the smoothing option to `none`
 
 Spectrum with smoothing off
 
-![none_smoothing](http://i.imgur.com/8vLS91kl.gif "No Smoothing")
+![none_smoothing](https://web.archive.org/web/20160228121452if_/https://camo.githubusercontent.com/56b0cedb7696c9bb1adf092ca2be616182e66575/687474703a2f2f692e696d6775722e636f6d2f38764c5339316b6c2e676966 "No Smoothing")
 
 
 #### Falloff
@@ -460,7 +460,7 @@ This configures the falloff effect on the spectrum visualizer. This effect creat
 
 With the `top` setting the falloff effect is only applied to the top character in the bar. This creates a gap between the main bar and the top falloff character.
 
-![top_falloff](http://i.imgur.com/F64NBWY.gif "Top falloff")
+![top_falloff](https://web.archive.org/web/20160228121459if_/https://camo.githubusercontent.com/feffa089f19172af420596c0c86c8369d515e335/687474703a2f2f692e696d6775722e636f6d2f4636344e4257592e676966 "Top falloff")
 
 top falloff effect with the spectrum character set to `#`.
 <br><br>
@@ -468,7 +468,7 @@ top falloff effect with the spectrum character set to `#`.
 The `fill` option leaves no gaps between the very top character and the rest of the bar.
 
 
-![fill_falloff](http://i.imgur.com/RUOUkKQ.gif "Fill falloff")
+![fill_falloff](https://web.archive.org/web/20160228121500if_/https://camo.githubusercontent.com/25787201d24335811997b57edcfcad5987b373e9/687474703a2f2f692e696d6775722e636f6d2f52554f556b4b512e676966 "Fill falloff")
 
 fill falloff effect with the spectrum character set to `#`.
 
@@ -476,7 +476,7 @@ fill falloff effect with the spectrum character set to `#`.
 
 The `none` option removing the falloff effect entirely..
 
-![none_falloff](http://i.imgur.com/DXPQdp2.gif "No Falloff")
+![none_falloff](https://web.archive.org/web/20160228121620if_/https://camo.githubusercontent.com/2bd05e48f7ea07bbe26b522abc7263c06953f69f/687474703a2f2f692e696d6775722e636f6d2f445850516470322e676966 "No Falloff")
 
 Falloff effect removed with the spectrum character set to `#`.
 
@@ -488,7 +488,7 @@ The bar width can be controlled to make it wider or narrower. The default is `2`
 
     visualizer.spectrum.bar.width=2
 
-![bar_width](http://i.imgur.com/LT5wRGVl.gif "Wide bar width")
+![bar_width](https://web.archive.org/web/20160228121621if_/https://camo.githubusercontent.com/70c02d20e43cc7dec4804dc6c91bde40764aa542/687474703a2f2f692e696d6775722e636f6d2f4c5435775247566c2e676966 "Wide bar width")
 
 Bar width set to `5`.
 
@@ -498,7 +498,7 @@ The spacing between bars can also be controlled to make it wider or narrower. Th
 
     visualizer.spectrum.bar.spacing=1
 
-![bar_spacing](http://i.imgur.com/VO8oHZBl.gif "No bar spacing")
+![bar_spacing](https://web.archive.org/web/20160228121623if_/https://camo.githubusercontent.com/9303a29b961d222dbd21860ea479335a2aef7e7c/687474703a2f2f692e696d6775722e636f6d2f564f386f485a426c2e676966 "No bar spacing")
 
 Bar spacing set to `0`.
 
