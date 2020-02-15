@@ -5,7 +5,7 @@
 - [cli-visualizer](#cli-visualizer)
   - [Installing Pre-requisites](#installing-pre-requisites)
     - [256 Colors](#256-colors)
-    - [Debian / Ubuntu](#debian-ubuntu)
+    - [Debian / Ubuntu](#debian--ubuntu)
     - [Arch Linux](#arch-linux)
     - [Fedora](#fedora)
     - [Solus](#solus)
