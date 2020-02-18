@@ -5,7 +5,7 @@
 - [cli-visualizer](#cli-visualizer)
   - [Installing Pre-requisites](#installing-pre-requisites)
     - [256 Colors](#256-colors)
-    - [Ubuntu](#ubuntu)
+    - [Debian / Ubuntu](#debian--ubuntu)
     - [Arch Linux](#arch-linux)
     - [Fedora](#fedora)
     - [Solus](#solus)
@@ -80,14 +80,13 @@ For xterm, the default `$TERM` setting needs to be changed to `rxvt-256color`. T
 
 Setting TERM to `xterm-256color` may also work but seems to cause issues with rendering of the visualizers in some terminals.
 
-### Ubuntu
+### Debian & Ubuntu
 
-
-	sudo apt-get install libfftw3-dev libncursesw5-dev cmake
+	sudo apt install libfftw3-dev libncursesw5-dev cmake
 
 For pulseaudio support, the pulseaudio library also needs to be installed
 
-	sudo apt-get install libpulse-dev
+	sudo apt install libpulse-dev
 
 Older versions of Ubuntu also need newer a newer gcc compiler. Note, while this should be safe, it will upgrade some base libc libraries that might break your system.
 
