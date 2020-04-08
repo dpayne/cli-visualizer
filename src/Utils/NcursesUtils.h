@@ -107,6 +107,7 @@ class NcursesUtils
     static inline int32_t get_window_width()
     {
         int32_t width, height;
+        (void) height;
 
         // getmaxyx is actually a macro, not a function, so pass it two integers
         getmaxyx(stdscr, height, width);
