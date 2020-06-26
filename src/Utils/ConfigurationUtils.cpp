@@ -30,6 +30,8 @@ const std::string k_override_terminal_colors_setting{
 
 const std::string k_rotation_interval_setting{"visualizer.rotation.secs"};
 
+const std::string k_vis_port_audio_source_setting{"audio.port.source"};
+
 const std::string k_vis_pulse_audio_source_setting{"audio.pulse.source"};
 
 const std::string k_visualizers_setting{"visualizers"};
@@ -582,8 +584,13 @@ void vis::ConfigurationUtils::load_settings(
     const std::string default_audio_source =
         VisConstants::k_pulse_audio_source_name;
 #else
+#ifdef _ENABLE_PORT
+    const std::string default_audio_source =
+        VisConstants::k_port_audio_source_name;
+#else
     const std::string default_audio_source =
         VisConstants::k_mpd_audio_source_name;
+#endif
 #endif
 
     // setup audio sources
@@ -722,6 +729,10 @@ void vis::ConfigurationUtils::load_settings(
                    VisConstants::k_default_visualizer_rotation_interval));
     validate_setting_is_not_negative(settings->get_rotation_interval(),
                                      k_rotation_interval_setting);
+
+    settings->set_port_audio_source(
+        Utils::get(properties, k_vis_port_audio_source_setting,
+                   VisConstants::k_default_visualizer_port_audio_source));
 
     settings->set_pulse_audio_source(
         Utils::get(properties, k_vis_pulse_audio_source_setting,

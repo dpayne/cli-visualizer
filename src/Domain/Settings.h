@@ -315,6 +315,16 @@ class Settings
         return m_rotation_interval;
     }
 
+    void set_port_audio_source(const std::string &port_audio_source)
+    {
+        m_port_audio_source = port_audio_source;
+    }
+
+    const std::string &get_port_audio_source() const noexcept
+    {
+        return m_port_audio_source;
+    }
+
     void set_pulse_audio_source(const std::string &pulse_audio_source)
     {
         m_pulse_audio_source = pulse_audio_source;
@@ -377,6 +387,7 @@ class Settings
     double m_spectrum_left_margin;
     bool m_is_spectrum_reversed;
     int64_t m_rotation_interval;
+    std::string m_port_audio_source;
     std::string m_pulse_audio_source;
     std::vector<std::string> m_color_schemes;
     std::string m_config_path;

@@ -5,7 +5,7 @@
 - [cli-visualizer](#cli-visualizer)
   - [Installing Pre-requisites](#installing-pre-requisites)
     - [256 Colors](#256-colors)
-    - [Debian / Ubuntu](#debian--ubuntu)
+    - [Debian & Ubuntu](#debian--ubuntu)
     - [Arch Linux](#arch-linux)
     - [Fedora](#fedora)
     - [Solus](#solus)
@@ -18,6 +18,7 @@
     - [ALSA Setup](#alsa-setup)
       - [ALSA with dmix](#alsa-with-dmix)
     - [Pulse Audio Setup (Easy)](#pulse-audio-setup-easy)
+    - [Port Audio Setup (Wicked Easy)](#port-audio-setup-wicked-easy)
   - [Usage](#usage)
     - [Controls](#controls)
   - [Configuration](#configuration)
@@ -40,8 +41,10 @@
   - [Trouble Shooting](#trouble-shooting)
     - [General](#general)
       - [vis is overwriting my terminal colorscheme](#vis-is-overwriting-my-terminal-colorscheme)
+      - [Tearing our corrupt output](#tearing-our-corrupt-output)
     - [Mac OSX](#mac-osx)
-      - [vis hangs with no output](#vis-hangs-with-no-output)
+      - [vis hangs with no output #1](#vis-hangs-with-no-output-1)
+      - [vis hangs with no output #2](#vis-hangs-with-no-output-2)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -55,13 +58,13 @@ Command line visualizer. Supports mpd, with experimental support for alsa and pu
 
 This project was heavily inspired by [C.A.V.A](https://github.com/karlstav/cava), [ncmpcpp](http://rybczak.net/ncmpcpp/), and [rainbow](https://github.com/sickill/rainbow)
 
-![spectrum_stereo](http://i.imgur.com/BGyfYiv.gif "Spectrum Stereo")
+![spectrum_stereo](https://i.imgur.com/BGyfYiv.gif "Spectrum Stereo")
 
-![spectrum_mono](http://i.imgur.com/Zo5lByM.gif "Spectrum Mono")
+![spectrum_mono](https://i.imgur.com/Zo5lByM.gif "Spectrum Mono")
 
-![ellipse](http://i.imgur.com/WoQlObi.gif "Ellipse")
+![ellipse](https://i.imgur.com/WoQlObi.gif "Ellipse")
 
-![lorenz](http://i.imgur.com/9QJjnDI.gif "Lorenz")
+![lorenz](https://i.imgur.com/9QJjnDI.gif "Lorenz")
 
 
 ## Installing Pre-requisites
@@ -103,7 +106,7 @@ In arch, the ncursesw is bundled with the ncurses package.
 ### Fedora
 
 	sudo dnf install fftw-devel ncurses-devel pulseaudio-libs-devel cmake
-	
+
 ### Solus
 
 Solus requires a handful of development packages and creating a link for libtinfo before installing.
@@ -112,14 +115,14 @@ Solus requires a handful of development packages and creating a link for libtinf
 	sudo eopkg install fftw fftw-devel ncurses ncurses-devel pulseaudio-devel cmake
 	sudo ln -s /usr/lib/libncurses.so.5 /usr/lib/libtinfo.so.5 # Should already be there, but just in case.
 	sudo ln -s /usr/lib/libtinfo.so.5 /usr/lib/libtinfo.so
-	
+
 	./install.sh
-	
+
 ### Gentoo
 
-Make sure to compile `ncurses` with `unicode` flag, have `fftw` and 
+Make sure to compile `ncurses` with `unicode` flag, have `fftw` and
 `cmake` installed on your Gentoo system.
-	
+
 	sudo emerge fftw cmake
 	sudo USE="unicode" emerge ncurses
 
@@ -180,7 +183,7 @@ If you have any sync issues with the audio where the visualizer either get ahead
 
 WARNING: alsa support is very very experimental. It is very possible that it will be completely broken on various systems and could cause weird/bad behaviour.
 
-Similar to the MPD setup, the visualizer needs to use a fifo output file to read in the alsa audio stream. To do this, add the following lines to your alsa config file, usually at `/etc/asound.conf`. If the file does not exist create it under `/etc/asound.conf`. 
+Similar to the MPD setup, the visualizer needs to use a fifo output file to read in the alsa audio stream. To do this, add the following lines to your alsa config file, usually at `/etc/asound.conf`. If the file does not exist create it under `/etc/asound.conf`.
 
     pcm.!default {
         type file               # File PCM
@@ -200,46 +203,46 @@ Note that alsa support is still very experimental. There are a couple of caveats
 
 #### ALSA with dmix
 
-On sound cards that do not support hardware level mixing, alsa uses dmix to allow playback from multiple applications at once. In order to make this work with the visualizer a dmixer plugin needs to be defined in `/etc/asound.conf` and the visualizer pcm set to use `dmixer` instead of the hardware device directly. This configuration might will change slightly depending on the system. 
+On sound cards that do not support hardware level mixing, alsa uses dmix to allow playback from multiple applications at once. In order to make this work with the visualizer a dmixer plugin needs to be defined in `/etc/asound.conf` and the visualizer pcm set to use `dmixer` instead of the hardware device directly. This configuration might will change slightly depending on the system.
 
 This is an example `asound.conf` for Intel HD Audio.
 
-    pcm.dmixer { 
-        type dmix 
+    pcm.dmixer {
+        type dmix
         ipc_key 1024
         ipc_key_add_uid false
         ipc_perm 0666            # mixing for all users
-        slave { 
-            pcm "hw:0,0" 
-            period_time 0 
-            period_size 1024 
+        slave {
+            pcm "hw:0,0"
+            period_time 0
+            period_size 1024
             buffer_size 8192
             rate 44100
         }
-        bindings { 
-            0 0 
-            1 1 
-        } 
-    } 
+        bindings {
+            0 0
+            1 1
+        }
+    }
 
-    pcm.dsp0 { 
-        type plug 
-        slave.pcm "dmixer" 
-    } 
+    pcm.dsp0 {
+        type plug
+        slave.pcm "dmixer"
+    }
 
-    pcm.!default { 
-        type plug 
-        slave.pcm "dmixer" 
-    } 
+    pcm.!default {
+        type plug
+        slave.pcm "dmixer"
+    }
 
-    pcm.default { 
-       type plug 
-       slave.pcm "dmixer" 
-    } 
+    pcm.default {
+       type plug
+       slave.pcm "dmixer"
+    }
 
-    ctl.mixer0 { 
-        type hw 
-        card 0 
+    ctl.mixer0 {
+        type hw
+        card 0
     }
 
     pcm.!default {
@@ -261,17 +264,30 @@ To enable pulse audio in the vis config set audio sources to pulse with
 If this does not work, then vis has most likely not guess the correct sink to use. Try switching the pulseaudio source vis uses. A list can be found by running the command `pacmd list-sinks  | grep -e 'name:'  -e 'index'`. The correct pulseaudio source can then be set with
 
     audio.pulse.source=0
-    
+
 **Troubleshooting with Pulse For MacOS Users:**
 
 If vis is hanging for you after running it make sure the pulseaudio daemon is running. You can start it if you installed it with brew by running
 
     brew services start pulseaudio
-    
+
 Alternatively you can run the `pulseaudio` command and send it to the background, then run `bg` to continue it.
 
 Then try to run `vis` again. You'll know it worked if it asks to have access to your microphone.
 
+
+
+### Port Audio Setup (Wicked Easy)
+
+Install portaudio, then build vis. That's it.
+
+To enable port audio in the vis config set audio sources to port with
+
+    audio.sources=port
+
+The correct port audio device can then be set with
+
+    audio.port.source=DEVICE NAME
 
 
 ## Usage
@@ -600,13 +616,18 @@ This setting can also be controlled with `+/-` keys.
     visualizer.spectrum.reversed=false
 
     #Sets the audio sources to use. Currently available ones are "mpd" and "alsa"Sets the audio sources to use.
-    #Currently available ones are "mpd", "pulse", and "alsa". Defaults to "mpd".
+    #Currently available ones are "mpd", "pulse", "port", and "alsa". Defaults to "mpd".
     audio.sources=pulse
 
     ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
     #If pulse audio is not working with vis try switching the audio source. A list can be found by running the
     #command pacmd list-sinks  | grep -e 'name:'  -e 'index'
     audio.pulse.source=0
+
+    #vis tries to find the correct portaudio device (through portaudio default method), however its not for-sure.
+    #If port audio is not working with vis try switching the audio srouce. A list can be found by setting
+    #this value to "list" and checking the vis log file. Replace this value with the device name desired
+    audio.port.source=auto
 
     #This configures the sgs smoothing effect on the spectrum visualizer. More points spreads out the smoothing
     #effect and increasing passes runs the smoother multiple times on reach run. Defaults are points=3 and passes=2.

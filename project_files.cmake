@@ -7,6 +7,7 @@ SET( VIS_PROJECT_HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/Domain/VisTypes.h
     ${CMAKE_SOURCE_DIR}/src/Source/AudioSource.h
     ${CMAKE_SOURCE_DIR}/src/Source/MpdAudioSource.h
+    ${CMAKE_SOURCE_DIR}/src/Source/PortAudioSource.h
     ${CMAKE_SOURCE_DIR}/src/Source/PulseAudioSource.h
     ${CMAKE_SOURCE_DIR}/src/Transformer/EllipseTransformer.h
     ${CMAKE_SOURCE_DIR}/src/Transformer/GenericTransformer.h
@@ -27,6 +28,7 @@ SET( VIS_PROJECT_SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/Domain/VisException.cpp
     ${CMAKE_SOURCE_DIR}/src/Source/AudioSource.cpp
     ${CMAKE_SOURCE_DIR}/src/Source/MpdAudioSource.cpp
+    ${CMAKE_SOURCE_DIR}/src/Source/PortAudioSource.cpp
     ${CMAKE_SOURCE_DIR}/src/Source/PulseAudioSource.cpp
     ${CMAKE_SOURCE_DIR}/src/Transformer/EllipseTransformer.cpp
     ${CMAKE_SOURCE_DIR}/src/Transformer/GenericTransformer.cpp

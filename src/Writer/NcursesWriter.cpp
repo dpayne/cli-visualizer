@@ -28,7 +28,7 @@ vis::NcursesWriter::NcursesWriter()
     initscr();
     noecho();    // disable printing of pressed keys
     curs_set(0); // sets the cursor to invisible
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, VisConstants::k_default_locale.c_str());
 
     if (static_cast<int>(has_colors()) == TRUE)
     {

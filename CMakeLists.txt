@@ -33,6 +33,10 @@ set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} ${VIS_DEFAULT_FLAGS} -fno-omit-frame-point
 set(CMAKE_LD_FLAGS_DEBUG "${CMAKE_LD_FLAGS_DEBUG} -ggdb -g3 -ffast-math -march=x86-64 -mtune=generic -DVIS_LOG_DEBUG")
 set(CMAKE_LD_FLAGS_RELEASE "${CMAKE_LD_FLAGS_RELEASE} -ffast-math -g1 -O3 -march=${VIS_COMPILER_ARCH} -fno-omit-frame-pointer -DNDEBUG")
 
+if(FORCE_NCURSESW AND APPLE)
+    set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/local/opt/ncurses/include")
+endif()
+
 include(CheckIncludeFile)
 check_include_file("ncursesw/ncurses.h" HAVE_NCURSESW_H)
 if(HAVE_NCURSESW_H)
@@ -82,7 +86,11 @@ endif(CCACHE_FOUND)
 # Setup libraries
 ########################################################################
 # Find correct ncurses lib
-find_library(LIB_NCURSES NAMES ncursesw ncurses)
+if (FORCE_NCURSESW AND APPLE)
+    set(LIB_NCURSES "/usr/local/opt/ncurses/lib/libncursesw.dylib")
+else()
+    find_library(LIB_NCURSES NAMES ncursesw ncurses)
+endif()
 
 set(DYNAMIC_LIBRARIES -lfftw3 -lm -lstdc++ ${LIB_NCURSES})
 
@@ -95,6 +103,13 @@ endif()
 find_library(LIB_TINFO NAMES tinfow tinfo)
 if(LIB_TINFO)
     set(DYNAMIC_LIBRARIES ${DYNAMIC_LIBRARIES} ${LIB_TINFO})
+endif()
+
+find_library(PORT_FOUND NAMES portaudio)
+if(PORT_FOUND)
+  set(DYNAMIC_LIBRARIES ${DYNAMIC_LIBRARIES} portaudio)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_ENABLE_PORT")
+  set(CMAKE_LD_FLAGS "${CMAKE_LD_FLAGS} -D_ENABLE_PORT")
 endif()
 
 find_library(PULSE_FOUND NAMES pulse)
