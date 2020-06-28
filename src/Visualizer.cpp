@@ -9,6 +9,7 @@
 #include "Domain/VisConstants.h"
 #include "Domain/VisException.h"
 #include "Source/MpdAudioSource.h"
+#include "Source/PortAudioSource.h"
 #include "Source/PulseAudioSource.h"
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
@@ -109,6 +110,10 @@ void vis::Visualizer::setup_audio_source()
     if (audio_source == VisConstants::k_mpd_audio_source_name)
     {
         m_audio_source = std::make_unique<vis::MpdAudioSource>(m_settings);
+    }
+    else if (audio_source == VisConstants::k_port_audio_source_name)
+    {
+        m_audio_source = std::make_unique<vis::PortAudioSource>(m_settings);
     }
     else if (audio_source == VisConstants::k_pulse_audio_source_name)
     {
