@@ -39,6 +39,7 @@ static const std::string k_osx_audio_source_name{"osx"};
 static const std::string k_port_audio_source_name{"port"};
 static const std::string k_default_visualizer_port_audio_source;
 static const std::string k_pulse_audio_source_name{"pulse"};
+static const std::string k_shmem_audio_source_name{"shmem"};
 static const std::string k_default_visualizer_pulse_audio_source;
 static const std::string k_spectrum_circle_visualizer_name{"spectrum_circle"};
 static const std::string k_ellipse_visualizer_name{"ellipse"};
@@ -52,6 +53,7 @@ static const uint32_t k_default_fps = 20;
 
 const static std::string k_default_audio_source{k_pulse_audio_source_name};
 const static std::string k_default_mpd_fifo_path{"/tmp/mpd.fifo"};
+const static std::string k_default_shmem_name{"/squeezelite-00:00:00:00:00:00"};
 const static std::string k_default_visualizers{"spectrum,ellipse,lorenz"};
 
 // visualizer names

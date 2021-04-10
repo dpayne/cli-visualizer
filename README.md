@@ -19,6 +19,7 @@
       - [ALSA with dmix](#alsa-with-dmix)
     - [Pulse Audio Setup (Easy)](#pulse-audio-setup-easy)
     - [Port Audio Setup (Wicked Easy)](#port-audio-setup-wicked-easy)
+    - [squeezelite Setup](#squeezelite-setup)
   - [Usage](#usage)
     - [Controls](#controls)
   - [Configuration](#configuration)
@@ -157,7 +158,7 @@ You will have to copy config and colors manually.
 
 ## Setup
 
-At least one of the following needs to be configured (and linked in the config): mpd, alsa and pulseaudio
+At least one of the following needs to be configured (and linked in the config): mpd, alsa, pulseaudio or squeezelite.
 
 ### MPD Setup
 
@@ -289,6 +290,14 @@ The correct port audio device can then be set with
 
     audio.port.source=DEVICE NAME
 
+### squeezelite Setup
+[squeezelite](https://en.wikipedia.org/wiki/Squeezelite) is one of several software clients available for the Logitech Media Server. Squeezelite can export its audio data as shared memory, which is what this source module uses. Just adapt your config:
+
+	audio.sources=shmem
+	shmem.shmemname=/squeezelite-AA:BB:CC:DD:EE:FF
+
+where AA:BB:CC:DD:EE:FF is squeezelite's MAC address (check the LMS Web GUI (Settings&gt;Information) if unsure).  
+Note: squeezelite must be started with the `-v` flag to enable visualizer support.
 
 ## Usage
 

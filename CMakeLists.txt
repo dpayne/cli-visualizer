@@ -92,7 +92,7 @@ else()
     find_library(LIB_NCURSES NAMES ncursesw ncurses)
 endif()
 
-set(DYNAMIC_LIBRARIES -lfftw3 -lm -lstdc++ ${LIB_NCURSES})
+set(DYNAMIC_LIBRARIES -lfftw3 -lm -lstdc++ -lrt ${LIB_NCURSES})
 
 # Add jemalloc if avaiable
 find_library(JEMALLOC_FOUND NAMES jemalloc)

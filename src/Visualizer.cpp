@@ -11,6 +11,7 @@
 #include "Source/MpdAudioSource.h"
 #include "Source/PortAudioSource.h"
 #include "Source/PulseAudioSource.h"
+#include "Source/ShmemAudioSource.h"
 #include "Transformer/EllipseTransformer.h"
 #include "Transformer/LorenzTransformer.h"
 #include "Transformer/SpectrumCircleTransformer.h"
@@ -118,6 +119,10 @@ void vis::Visualizer::setup_audio_source()
     else if (audio_source == VisConstants::k_pulse_audio_source_name)
     {
         m_audio_source = std::make_unique<vis::PulseAudioSource>(m_settings);
+    }
+    else if (audio_source == VisConstants::k_shmem_audio_source_name)
+    {
+        m_audio_source = std::make_unique<vis::ShmemAudioSource>(m_settings);
     }
     else
     {
