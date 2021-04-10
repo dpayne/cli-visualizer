@@ -1,8 +1,8 @@
 ##Refresh rate of the visualizers. A really high refresh rate may cause screen tearing. Default is 20.
 #visualizer.fps=20
 
-##Sets the audio sources to use. Currently available ones are "mpd" and "alsa"Sets the audio sources to use.
-##Currently available ones are "mpd", "pulse" and "alsa". Defaults to "mpd".
+##Sets the audio sources to use.
+##Currently available ones are "mpd", "pulse", "alsa" and "shmem". Defaults to "mpd".
 #audio.sources=pulse
 
 ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.

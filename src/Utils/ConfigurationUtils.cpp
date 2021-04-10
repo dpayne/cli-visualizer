@@ -22,6 +22,7 @@ namespace
 const std::string k_audio_sources_setting{"audio.sources"}; // mpd,alsa
 
 const std::string k_mpd_fifo_path_setting{"mpd.fifo.path"};
+const std::string k_shmem_name_setting{"shmem.shmemname"};
 
 const std::string k_stereo_enabled_setting{"audio.stereo.enabled"};
 
@@ -578,6 +579,11 @@ void vis::ConfigurationUtils::load_settings(
     settings->set_mpd_fifo_path(
         Utils::get(properties, k_mpd_fifo_path_setting,
                    VisConstants::k_default_mpd_fifo_path));
+
+    // setup shmem
+    settings->set_shmem_name(
+        Utils::get(properties, k_shmem_name_setting,
+                   VisConstants::k_default_shmem_name));
 
 // enable pulse audio by default if available
 #ifdef _ENABLE_PULSE
