@@ -2,7 +2,7 @@
 #visualizer.fps=20
 
 ##Sets the audio sources to use.
-##Currently available ones are "mpd", "pulse", "alsa" and "shmem". Defaults to "mpd".
+##Currently available ones are "mpd", "pulse", "shmem", and "alsa". Defaults to "pulse".
 #audio.sources=pulse
 
 ##vis tries to find the correct pulseaudio sink, however this will not work on all systems.
