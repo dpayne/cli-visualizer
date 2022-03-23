@@ -85,6 +85,16 @@ class Settings
         m_mpd_fifo_path = path;
     }
 
+    const std::string &get_shmem_name() const noexcept
+    {
+        return m_shmem_name;
+    }
+
+    void set_shmem_name(const std::string &path)
+    {
+        m_shmem_name = path;
+    }
+
     const std::vector<std::string> &get_visualizers() const noexcept
     {
         return m_visualizers;
@@ -359,6 +369,7 @@ class Settings
 
   private:
     std::string m_mpd_fifo_path;
+    std::string m_shmem_name;
     double m_scaling_multiplier;
     uint32_t m_fps;
     uint32_t m_sampling_frequency;
