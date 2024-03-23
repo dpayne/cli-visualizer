@@ -187,11 +187,11 @@ void vis::SpectrumTransformer::execute(pcm_stereo_sample *buffer,
         {
             ++max_bar_height; // add one so that the spectrums overlap in the
                               // middle
+            draw_bars(m_bars_right, m_bars_falloff_right, max_bar_height, false,
+                    bar_row_msg, writer);
         }
 
         draw_bars(m_bars_left, m_bars_falloff_left, max_bar_height, true,
-                  bar_row_msg, writer);
-        draw_bars(m_bars_right, m_bars_falloff_right, max_bar_height, false,
                   bar_row_msg, writer);
 
         writer->flush();
